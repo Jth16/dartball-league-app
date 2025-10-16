@@ -3,6 +3,7 @@ import TeamsTable from "./components/TeamsTable";
 import AdminLogin from "./components/AdminLogin";
 import PlayersPage from "./components/PlayersTable";
 import HeaderImage from "./components/HeaderImage"; // Import the header
+import { BrowserRouter } from "react-router-dom";
 
 function App() {
   const [page, setPage] = useState("teams");
@@ -10,7 +11,7 @@ function App() {
   const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
-    fetch("http://localhost:5000/routes/teams")
+    fetch("https://dartball-backend-669423444851.us-central1.run.app/routes/teams")
       .then((res) => res.json())
       .then(setTeams);
   }, []);
