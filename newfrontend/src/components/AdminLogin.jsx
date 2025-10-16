@@ -67,7 +67,7 @@ const AdminLogin = () => {
     const handleAddTeam = async (e) => {
         e.preventDefault();
         setNewTeamMessage('');
-        const res = await fetch("http://localhost:5000/routes/admin/add_team", {
+        const res = await fetch("http://dartball-backend-669423444851.us-central1.run.app/routes/admin/add_team", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ name: newTeamName }),
@@ -76,7 +76,7 @@ const AdminLogin = () => {
         if (res.ok) {
             setNewTeamMessage('Team added successfully!');
             setNewTeamName('');
-            fetch("http://localhost:5000/routes/teams")
+            fetch("http://dartball-backend-669423444851.us-central1.run.app/routes/teams")
                 .then((res) => res.json())
                 .then(setTeams);
         } else {
@@ -88,7 +88,7 @@ const AdminLogin = () => {
     const handleAddPlayer = async (e) => {
         e.preventDefault();
         setNewPlayerMessage('');
-        const res = await fetch("http://localhost:5000/routes/admin/add_player", {
+        const res = await fetch("http://dartball-backend-669423444851.us-central1.run.app/routes/admin/add_player", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ name: newPlayerName, team_id: newPlayerTeamId }),
@@ -104,7 +104,7 @@ const AdminLogin = () => {
     };
 
     useEffect(() => {
-        fetch("http://localhost:5000/routes/teams")
+        fetch("http://dartball-backend-669423444851.us-central1.run.app/routes/teams")
             .then((res) => res.json())
             .then(setTeams);
     }, []);

@@ -5,7 +5,7 @@ const TeamsTable = () => {
 
     useEffect(() => {
         const fetchTeams = async () => {
-            const response = await fetch('http://localhost:5000/routes/teams');
+            const response = await fetch('http://dartball-backend-669423444851.us-central1.run.app/routes/teams');
             const data = await response.json();
 
             // Calculate win percentage for each team
