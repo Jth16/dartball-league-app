@@ -3,10 +3,9 @@ import TeamsTable from "./components/TeamsTable";
 import AdminLogin from "./components/AdminLogin";
 import PlayersPage from "./components/PlayersTable";
 import HeaderImage from "./components/HeaderImage"; // Import the header
-import { BrowserRouter } from "react-router-dom";
 
 function App() {
-  const [page, setPage] = useState("teams");
+ const [page, setPage] = useState("teams");
   const [teams, setTeams] = useState([]);
   const [isAdmin, setIsAdmin] = useState(false);
 
@@ -15,9 +14,8 @@ function App() {
       .then((res) => res.json())
       .then(setTeams);
   }, []);
-
   return (
-    <div
+   <div
       style={{
         minHeight: "100vh",
         background: "#000",
@@ -96,7 +94,7 @@ function App() {
         {page === "players" && <PlayersPage />}
         {page === "admin" &&
           (isAdmin ? (
-            <AdminLogin setIsAdmin={setIsAdmin} setTeams={setTeams} teams={teams} />
+            <AdminLogin setIsAdmin={setIsAdmin} />
           ) : (
             <button
               onClick={() => setIsAdmin(true)}
@@ -116,7 +114,7 @@ function App() {
               Login as Admin
             </button>
           ))}
-      </div>
+    </div>
     </div>
   );
 }

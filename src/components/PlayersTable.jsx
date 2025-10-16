@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-const PlayersPage = () => {
+const PlayersTable = () => {
     const [teams, setTeams] = useState([]);
     const [selectedTeamId, setSelectedTeamId] = useState("");
     const [players, setPlayers] = useState([]);
@@ -63,7 +63,11 @@ const PlayersPage = () => {
                                 <td style={{ padding: "12px", textAlign: "center" }}>{player.Triples}</td>
                                 <td style={{ padding: "12px", textAlign: "center" }}>{player.Dimes}</td>
                                 <td style={{ padding: "12px", textAlign: "center" }}>{player.HRs}</td>
-                                <td style={{ padding: "12px", textAlign: "center" }}>{player.Avg?.toFixed(3).replace(/^0\./, ".")}</td>
+                                <td style={{ padding: "12px", textAlign: "center" }}>
+                                    {typeof player.Avg === 'number'
+                                        ? player.Avg.toFixed(3).replace(/^0\./, ".")
+                                        : 'N/A'}
+                                </td>
                                 <td style={{ padding: "12px", textAlign: "center" }}>{player.GP}</td>
                                 <td style={{ padding: "12px", textAlign: "center" }}>{player.AtBats}</td>
                             </tr>
@@ -77,4 +81,4 @@ const PlayersPage = () => {
     );
 };
 
-export default PlayersPage;
+export default PlayersTable;
