@@ -3,6 +3,7 @@ import TeamsTable from "./components/TeamsTable";
 import AdminLogin from "./components/AdminLogin";
 import PlayersPage from "./components/PlayersTable";
 import HeaderImage from "./components/HeaderImage"; // Import the header
+import { BrowserRouter } from "react-router-dom";
 
 function App() {
   const [page, setPage] = useState("teams");
