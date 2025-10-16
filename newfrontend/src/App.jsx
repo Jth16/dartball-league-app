@@ -11,7 +11,7 @@ function App() {
   const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
-    fetch("http://localhost:5000/routes/teams")
+    fetch("https://dartball-backend-669423444851.us-central1.run.app/routes/teams")
       .then((res) => res.json())
       .then(setTeams);
   }, []);

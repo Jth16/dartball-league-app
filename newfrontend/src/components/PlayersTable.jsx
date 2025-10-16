@@ -7,14 +7,14 @@ const PlayersPage = () => {
 
     useEffect(() => {
         // Fetch teams for dropdown
-        fetch("http://dartball-backend-669423444851.us-central1.run.app/routes/teams")
+        fetch("https://dartball-backend-669423444851.us-central1.run.app/routes/teams")
             .then((res) => res.json())
             .then(setTeams);
     }, []);
 
     useEffect(() => {
         if (selectedTeamId) {
-            fetch(`http://dartball-backend-669423444851.us-central1.run.app/routes/players?team_id=${selectedTeamId}`)
+            fetch(`https://dartball-backend-669423444851.us-central1.run.app/routes/players?team_id=${selectedTeamId}`)
                 .then((res) => res.json())
                 .then(setPlayers);
         } else {
