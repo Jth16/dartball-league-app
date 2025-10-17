@@ -25,7 +25,6 @@ function App() {
         color: "#fff",
         fontFamily: "Segoe UI, Arial, sans-serif",
         position: "relative",
-        height:"100%",
       }}
     >
       <HeaderImage />
