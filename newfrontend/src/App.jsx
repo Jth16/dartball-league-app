@@ -17,6 +17,13 @@ function App() {
       .then(setTeams);
   }, []);
 
+  // Reset admin flag whenever user navigates away from the admin page
+  useEffect(() => {
+    if (page !== "admin" && isAdmin) {
+      setIsAdmin(false);
+    }
+  }, [page]);
+
   return (
     <div
       style={{
@@ -141,7 +148,5 @@ function App() {
     </div>
   );
 }
-
-
 
 export default App;
