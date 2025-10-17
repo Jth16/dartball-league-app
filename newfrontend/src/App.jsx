@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import TeamsTable from "./components/TeamsTable";
-import AdminLogin from "./components/AdminLogin";
 import PlayersPage from "./components/PlayersTable";
-import HeaderImage from "./components/HeaderImage"; // Import the header
-import { BrowserRouter } from "react-router-dom";
+import AdminLogin from "./components/AdminLogin";
+import HeaderImage from "./components/HeaderImage";
+import Schedule from "./components/Schedule"; // Import the new Schedule component
 
 function App() {
   const [page, setPage] = useState("teams");
@@ -11,7 +11,7 @@ function App() {
   const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
-    fetch("https://dartball-backend-669423444851.us-central1.run.app/routes/teams")
+    fetch("http://localhost:5000/routes/teams")
       .then((res) => res.json())
       .then(setTeams);
   }, []);
@@ -19,10 +19,12 @@ function App() {
   return (
     <div
       style={{
-        minHeight: "100vh",
+        minWidth: "600px",
         background: "#000",
+        minHeight: "100vh",
         color: "#fff",
         fontFamily: "Segoe UI, Arial, sans-serif",
+        position: "relative",
       }}
     >
       <HeaderImage />
@@ -73,9 +75,9 @@ function App() {
           Players Page
         </button>
         <button
-          onClick={() => setPage("admin")}
+          onClick={() => setPage("schedule")}
           style={{
-            background: page === "admin" ? "#ff9800" : "#222",
+            background: page === "schedule" ? "#ff9800" : "#222",
             color: "#fff",
             border: "none",
             borderRadius: "25px",
@@ -84,38 +86,54 @@ function App() {
             fontSize: "1.1rem",
             fontWeight: "bold",
             cursor: "pointer",
-            boxShadow: page === "admin" ? "0 0 10px #ff9800" : "none",
+            boxShadow: page === "schedule" ? "0 0 10px #ff9800" : "none",
             transition: "all 0.2s",
           }}
         >
-          Admin Login
+          Schedule
         </button>
       </nav>
       <div style={{ maxWidth: 900, margin: "2rem auto", background: "#111", padding: "2rem", borderRadius: 16, boxShadow: "0 4px 24px rgba(0,0,0,0.8)" }}>
         {page === "teams" && <TeamsTable teams={teams} />}
         {page === "players" && <PlayersPage />}
+        {page === "schedule" && <Schedule />}
         {page === "admin" &&
           (isAdmin ? (
             <AdminLogin setIsAdmin={setIsAdmin} setTeams={setTeams} teams={teams} />
-          ) : (
-            <button
-              onClick={() => setIsAdmin(true)}
-              style={{
-                background: "#ff9800",
-                color: "#fff",
-                border: "none",
-                borderRadius: "25px",
-                padding: "0.75rem 2rem",
-                fontSize: "1.1rem",
-                fontWeight: "bold",
-                cursor: "pointer",
-                boxShadow: "0 0 10px #ff9800",
-                marginTop: "1rem",
-              }}
-            >
-              Login as Admin
-            </button>
-          ))}
+          ) : null)}
+      </div>
+      <div
+        style={{
+          left: 0,
+          bottom: 0,
+          width: "100%",
+          background: "#222",
+          textAlign: "center",
+          padding: "1rem 0",
+          boxShadow: "0 -2px 8px rgba(0,0,0,0.7)",
+        }}
+      >
+        <a
+          href="#"
+          onClick={e => {
+            e.preventDefault();
+            setPage("admin");
+          }}
+          style={{
+            color: "#ff9800",
+            fontWeight: "bold",
+            fontSize: "1.1rem",
+            textDecoration: "none",
+            padding: "0.75rem 2rem",
+            borderRadius: "25px",
+            background: "#222",
+            boxShadow: "0 0 10px #ff9800",
+            cursor: "pointer",
+            transition: "all 0.2s",
+          }}
+        >
+          Admin Login
+        </a>
       </div>
     </div>
   );
