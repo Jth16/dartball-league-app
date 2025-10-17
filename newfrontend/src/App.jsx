@@ -3,7 +3,8 @@ import TeamsTable from "./components/TeamsTable";
 import PlayersPage from "./components/PlayersTable";
 import AdminLogin from "./components/AdminLogin";
 import HeaderImage from "./components/HeaderImage";
-import Schedule from "./components/Schedule"; // Import the new Schedule component
+import AdminPwdPage from "./components/AdminPwd";
+import Schedule from "./components/Schedule";
 
 function App() {
   const [page, setPage] = useState("teams");
@@ -100,7 +101,9 @@ function App() {
         {page === "admin" &&
           (isAdmin ? (
             <AdminLogin setIsAdmin={setIsAdmin} setTeams={setTeams} teams={teams} />
-          ) : null)}
+          ) : (
+            <AdminPwdPage setIsAdmin={setIsAdmin} />
+          ))}
       </div>
       <div
         style={{
@@ -138,5 +141,7 @@ function App() {
     </div>
   );
 }
+
+
 
 export default App;
