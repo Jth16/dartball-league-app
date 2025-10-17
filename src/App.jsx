@@ -15,10 +15,11 @@ function App() {
       .then(setTeams);
   }, []);
   return (
-   <div
+    <div
       style={{
-        minHeight: "100vh",
+        minWidth: "600px",
         background: "#000",
+        minHeight: "100vh",
         color: "#fff",
         fontFamily: "Segoe UI, Arial, sans-serif",
       }}

@@ -5,17 +5,26 @@ const TeamsTable = () => {
 
     useEffect(() => {
         const fetchTeams = async () => {
-            const response = await fetch('https://dartball-backend-669423444851.us-central1.run.app/routes/teams');
+            const response = await fetch('http://localhost:5000/routes/teams');
             const data = await response.json();
 
-            // Calculate win percentage for each team
             const teamsWithPct = data.map(team => {
                 const winPct = team.games_played > 0 ? (team.wins / team.games_played) : 0;
                 return { ...team, win_pct: winPct };
             });
 
-            // Sort teams by most wins
-            const sortedTeams = teamsWithPct.sort((a, b) => b.wins - a.wins);
+            const leader = teamsWithPct.reduce((best, t) => {
+                if (t.win_pct > best.win_pct) return t;
+                if (t.win_pct === best.win_pct && t.wins > best.wins) return t;
+                return best;
+            }, teamsWithPct[0] || { wins: 0, losses: 0, win_pct: 0 });
+
+            const teamsWithGB = teamsWithPct.map(team => {
+                const gb = ((leader.wins - team.wins) + (team.losses - leader.losses)) / 2;
+                return { ...team, games_behind: gb };
+            });
+
+            const sortedTeams = teamsWithGB.sort((a, b) => b.win_pct - a.win_pct);
             setTeams(sortedTeams);
         };
 
@@ -23,30 +32,42 @@ const TeamsTable = () => {
     }, []);
 
     return (
-        <div>
-           <h1 style={{ marginBottom: "2rem" }}>Dartball League Teams</h1>
-            <table style={{ width: "100%", borderCollapse: "separate", borderSpacing: "0 16px" }}>
+        <div style={{ overflowX: "auto" }}>
+            <h1 style={{ marginBottom: "2rem" }}>Dartball League Teams</h1>
+            <table style={{
+                width: "100%",
+                minWidth: "600px",
+                borderCollapse: "separate",
+                borderSpacing: "0 12px",
+                fontSize: "0.95rem"
+            }}>
                 <thead>
                     <tr style={{ background: "#222", color: "#fff" }}>
-                        <th style={{ padding: "16px" }}>Team Name</th>
-                        <th style={{ padding: "16px" }}>Wins</th>
-                        <th style={{ padding: "16px" }}>Losses</th>
-                        <th style={{ padding: "16px" }}>Games Behind</th>
-                        <th style={{ padding: "16px" }}>Games Played</th>
-                        <th style={{ padding: "16px" }}>Win Pct.</th>
+                        <th style={{ padding: "2px" }}>Team Name</th>
+                        <th style={{ padding: "2px" }}>Wins</th>
+                        <th style={{ padding: "2px" }}>Losses</th>
+                        <th style={{ padding: "2px" }}>Win Pct.</th>
+                        <th style={{ padding: "2px" }}>Games Behind</th>
+                        <th style={{ padding: "2px" }}>Games Played</th>
                     </tr>
                 </thead>
                 <tbody>
                     {teams.map((team) => (
                         <tr key={team.id} style={{ background: "#111", color: "#fff" }}>
-                            <td style={{ padding: "16px 24px" }}>{team.name}</td>
-                            <td style={{ padding: "16px 24px", textAlign: "center" }}>{team.wins}</td>
-                            <td style={{ padding: "16px 24px", textAlign: "center" }}>{team.losses}</td>
-                            <td style={{ padding: "16px 24px", textAlign: "center" }}>{team.games_behind}</td>
-                            <td style={{ padding: "16px 24px", textAlign: "center" }}>{team.games_played}</td>
-                            <td style={{ padding: "16px 24px", textAlign: "center" }}>
-                                {team.games_played > 0 ? (team.win_pct * 100).toFixed(1) + '%' : '0.0%'}
+                            <td style={{ padding: "2px 8px" }}>{team.name}</td>
+                            <td style={{ padding: "2px 8px", textAlign: "center" }}>{team.wins}</td>
+                            <td style={{ padding: "2px 8px", textAlign: "center" }}>{team.losses}</td>
+                            <td style={{ padding: "2px 8px", textAlign: "center" }}>
+                                {team.games_played > 0
+                                    ? (team.win_pct).toFixed(3).replace(/^0\./, ".") + '%'
+                                    : '.0%'}
                             </td>
+                            <td style={{ padding: "2px 8px", textAlign: "center" }}>
+                                {team.games_behind === 0
+                                    ? "—"
+                                    : team.games_behind.toFixed(1)}
+                            </td>
+                            <td style={{ padding: "2px 8px", textAlign: "center" }}>{team.games_played}</td>
                         </tr>
                     ))}
                 </tbody>
