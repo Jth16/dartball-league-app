@@ -11,7 +11,7 @@ function App() {
   const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
-    fetch("http://localhost:5000/routes/teams")
+    fetch("http://dartball-backend-669423444851.us-central1.run.app/routes/teams")
       .then((res) => res.json())
       .then(setTeams);
   }, []);
@@ -25,6 +25,7 @@ function App() {
         color: "#fff",
         fontFamily: "Segoe UI, Arial, sans-serif",
         position: "relative",
+        height:"100%",
       }}
     >
       <HeaderImage />
@@ -54,7 +55,7 @@ function App() {
             transition: "all 0.2s",
           }}
         >
-          Teams Table
+          Teams
         </button>
         <button
           onClick={() => setPage("players")}
@@ -72,7 +73,7 @@ function App() {
             transition: "all 0.2s",
           }}
         >
-          Players Page
+          Player Stats
         </button>
         <button
           onClick={() => setPage("schedule")}
@@ -93,7 +94,7 @@ function App() {
           Schedule
         </button>
       </nav>
-      <div style={{ maxWidth: 900, margin: "2rem auto", background: "#111", padding: "2rem", borderRadius: 16, boxShadow: "0 4px 24px rgba(0,0,0,0.8)" }}>
+      <div style={{ maxWidth: 900, height: "800px", margin: "auto", background: "#111", padding: "2rem", borderRadius: 16, boxShadow: "0 4px 24px rgba(0,0,0,0.8)" }}>
         {page === "teams" && <TeamsTable teams={teams} />}
         {page === "players" && <PlayersPage />}
         {page === "schedule" && <Schedule />}
