@@ -1,6 +1,6 @@
-from flask import Blueprint, jsonify, request, current_app, abort
+from flask import Blueprint, jsonify, request, current_app
 from flask_cors import cross_origin
-from models import Player, Team, db
+from models import db, Team, Player
 import os, re, time
 from sqlalchemy import text
 
@@ -109,4 +109,95 @@ def admin_db_status():
         "last_error": error,
         "timestamp": time.time()
     })
+
+@routes.route('/routes/admin/delete_team', methods=['DELETE', 'OPTIONS'])
+@cross_origin(headers=['Content-Type', 'X-Download-Token'])
+def delete_team():
+    # short-circuit preflight
+    if request.method == 'OPTIONS':
+        return ('', 200)
+
+    data = request.get_json(silent=True) or {}
+    team_id = data.get('team_id') or request.args.get('team_id')
+    if not team_id:
+        return jsonify({'message': 'team_id is required'}), 400
+
+    try:
+        team = Team.query.get(int(team_id))
+        if not team:
+            return jsonify({'message': 'team not found'}), 404
+
+        # delete related players (cascade if not configured)
+        try:
+            Player.query.filter_by(team_id=team.id).delete()
+        except Exception:
+            # continue; some schemas may cascade automatically
+            current_app.logger.info("delete_team: no players deleted or cascade handled by DB")
+
+        db.session.delete(team)
+        db.session.commit()
+
+        current_app.logger.info("delete_team removed id=%s name=%s", team.id, team.name)
+        return jsonify({'message': 'Team deleted successfully', 'team_id': team.id}), 200
+
+    except Exception as ex:
+        current_app.logger.exception("delete_team failed: %s", ex)
+        db.session.rollback()
+        return jsonify({'message': 'Internal server error', 'error': str(ex)}), 500
+
+@routes.route('/routes/admin/update_player', methods=['POST', 'OPTIONS'])
+@cross_origin(headers=['Content-Type', 'X-Download-Token'])
+def update_player():
+    # allow preflight
+    if request.method == 'OPTIONS':
+        return ('', 200)
+
+    data = request.get_json(silent=True) or {}
+    player_id = data.get('player_id') or request.args.get('player_id')
+    if not player_id:
+        return jsonify({'message': 'player_id is required'}), 400
+
+    try:
+        player = Player.query.get(int(player_id))
+        if not player:
+            return jsonify({'message': 'player not found'}), 404
+
+        # list of allowed updatable fields (adjust names to match your model)
+        allowed_fields = [
+            'name',
+            'Singles', 'Doubles', 'Triples', 'Dimes', 'HRs',
+            'GP', 'AtBats', 'Avg'
+        ]
+
+        updated = {}
+        for key in allowed_fields:
+            if key in data:
+                val = data[key]
+                # coerce numeric fields where appropriate
+                if key in ('Singles', 'Doubles', 'Triples', 'Dimes', 'HRs', 'GP', 'AtBats'):
+                    try:
+                        val = int(val)
+                    except Exception:
+                        val = 0
+                elif key == 'Avg':
+                    try:
+                        val = float(val)
+                    except Exception:
+                        val = 0.0
+                setattr(player, key, val)
+                updated[key] = val
+
+        # Optionally recompute Avg if AtBats and hit counts are present in model logic.
+        db.session.add(player)
+        db.session.commit()
+
+        current_app.logger.info("update_player updated id=%s fields=%s", player.id, list(updated.keys()))
+        # serialize a minimal player object for response
+        player_json = {k: getattr(player, k, None) for k in ['id', 'name', 'Singles', 'Doubles', 'Triples', 'Dimes', 'HRs', 'GP', 'AtBats', 'Avg']}
+        return jsonify({'message': 'Player updated', 'player': player_json}), 200
+
+    except Exception as ex:
+        current_app.logger.exception("update_player failed: %s", ex)
+        db.session.rollback()
+        return jsonify({'message': 'Internal server error', 'error': str(ex)}), 500
 

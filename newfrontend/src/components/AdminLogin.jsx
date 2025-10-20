@@ -25,6 +25,25 @@ const AdminLogin = () => {
     const [newPlayerTeamId, setNewPlayerTeamId] = useState('');
     const [newPlayerMessage, setNewPlayerMessage] = useState('');
 
+    // Delete team state
+    const [deleteTeamId, setDeleteTeamId] = useState('');
+    const [deleteTeamMessage, setDeleteTeamMessage] = useState('');
+
+    // player update state
+    const [playersForTeam, setPlayersForTeam] = useState([]);
+    const [selectedPlayerId, setSelectedPlayerId] = useState('');
+    const [playerStats, setPlayerStats] = useState({
+        Singles: '',
+        Doubles: '',
+        Triples: '',
+        Dimes: '',
+        HRs: '',
+        GP: '',
+        AtBats: '',
+        Avg: ''
+    });
+    const [updateMessage, setUpdateMessage] = useState('');
+
     const handleLogin = async (e) => {
         e.preventDefault();
         setError('');
@@ -132,11 +151,156 @@ const AdminLogin = () => {
         }
     };
 
+    const handleDeleteTeam = async (e) => {
+        e.preventDefault();
+        if (!deleteTeamId) {
+            setDeleteTeamMessage('Select a team to delete.');
+            return;
+        }
+        if (!confirm('Delete team and all related data? This cannot be undone.')) return;
+
+        setDeleteTeamMessage('');
+        try {
+            // try DELETE with JSON body; if backend expects query param, change accordingly
+            const res = await fetchWithToken('/routes/admin/delete_team', {
+                method: 'DELETE',
+                body: JSON.stringify({ team_id: deleteTeamId })
+            });
+            const text = await res.text();
+            if (!res.ok) {
+                setDeleteTeamMessage(`Error: ${res.status} ${text}`);
+                console.error('delete_team failed', res.status, text);
+                return;
+            }
+            setDeleteTeamMessage('Team deleted');
+            setDeleteTeamId('');
+            // refresh teams list
+            const teamsRes = await fetchWithToken('/routes/teams', { method: 'GET' });
+            const teamsData = teamsRes.ok ? await teamsRes.json() : [];
+            setTeams(teamsData);
+        } catch (err) {
+            console.error('delete_team exception', err);
+            setDeleteTeamMessage('Request failed');
+        }
+    };
+
     useEffect(() => {
-        fetch("https://dartball-backend-654879525708.us-central1.run.app/routes/teams")
-            .then((res) => res.json())
-            .then(setTeams);
+        (async () => {
+            try {
+                const res = await fetchWithToken('/routes/teams', { method: 'GET' });
+                if (res.ok) {
+                    const data = await res.json();
+                    setTeams(data);
+                } else {
+                    setTeams([]);
+                }
+            } catch (err) {
+                console.error('initial teams fetch failed', err);
+                setTeams([]);
+            }
+        })();
     }, []);
+
+    // load players when a team is selected for the player-update UI
+    const handleTeamForPlayersChange = async (teamId) => {
+        setPlayersForTeam([]);
+        setSelectedPlayerId('');
+        setPlayerStats({
+            Singles: '',
+            Doubles: '',
+            Triples: '',
+            Dimes: '',
+            HRs: '',
+            GP: '',
+            AtBats: '',
+            Avg: ''
+        });
+        if (!teamId) return;
+        try {
+            const res = await fetchWithToken(`/routes/players?team_id=${teamId}`, { method: 'GET' });
+            if (!res.ok) throw new Error(`HTTP ${res.status}`);
+            const data = await res.json();
+            setPlayersForTeam(data);
+        } catch (err) {
+            console.error('fetch players failed', err);
+            setPlayersForTeam([]);
+        }
+    };
+
+    const handlePlayerSelect = (playerId) => {
+        setSelectedPlayerId(playerId);
+        const p = playersForTeam.find(pl => String(pl.id) === String(playerId));
+        if (p) {
+            setPlayerStats({
+                Singles: p.Singles ?? '',
+                Doubles: p.Doubles ?? '',
+                Triples: p.Triples ?? '',
+                Dimes: p.Dimes ?? '',
+                HRs: p.HRs ?? '',
+                GP: p.GP ?? '',
+                AtBats: p.AtBats ?? '',
+                Avg: p.Avg ?? ''
+            });
+        } else {
+            setPlayerStats({
+                Singles: '',
+                Doubles: '',
+                Triples: '',
+                Dimes: '',
+                HRs: '',
+                GP: '',
+                AtBats: '',
+                Avg: ''
+            });
+        }
+        setUpdateMessage('');
+    };
+
+    const handlePlayerStatChange = (field, value) => {
+        setPlayerStats(prev => ({ ...prev, [field]: value }));
+    };
+
+    const handleUpdatePlayer = async (e) => {
+        e.preventDefault();
+        setUpdateMessage('');
+        if (!selectedPlayerId) {
+            setUpdateMessage('Select a player to update');
+            return;
+        }
+        try {
+            const payload = { player_id: selectedPlayerId };
+            // include only fields with values (allow zero values)
+            Object.keys(playerStats).forEach(k => {
+                const v = playerStats[k];
+                if (v !== '' && v !== null && v !== undefined) payload[k] = v;
+            });
+
+            const res = await fetchWithToken('/routes/admin/update_player', {
+                method: 'POST',
+                body: JSON.stringify(payload)
+            });
+            const text = await res.text();
+            if (!res.ok) {
+                setUpdateMessage(`Error: ${res.status} ${text}`);
+                console.error('update_player failed', res.status, text);
+                return;
+            }
+            const data = JSON.parse(text);
+            setUpdateMessage('Player updated');
+            // refresh players list for the selected team
+            if (playersForTeam.length && selectedPlayerId) {
+                const teamId = playersForTeam[0]?.team_id || ''; // if players include team_id
+                if (teamId) await handleTeamForPlayersChange(teamId);
+                else {
+                    // fallback: reload players for whichever team is selected in the teams list UI
+                    // (no-op here)
+                }
+            }
+        } catch (err) {
+            console.error('update player exception', err);
+            setUpdateMessage('Request failed');
+        }
+    };
 
     return (
         <div style={{ maxWidth: 600, margin: '2rem auto' }}>
@@ -232,6 +396,77 @@ const AdminLogin = () => {
                 <button type="submit">Add Player</button>
                 {newPlayerMessage && <p>{newPlayerMessage}</p>}
             </form>
+
+            <h2>Delete Team</h2>
+            <form onSubmit={handleDeleteTeam}>
+                <div>
+                    <label>Team to delete:</label>
+                    <select value={deleteTeamId} onChange={(e) => setDeleteTeamId(e.target.value)}>
+                        <option value="">Select a team</option>
+                        {teams.map((team) => (
+                            <option key={team.id} value={team.id}>{team.name} (id: {team.id})</option>
+                        ))}
+                    </select>
+                </div>
+                <button type="submit" style={{ marginTop: 8, background: '#c33', color: '#fff' }}>Delete Team</button>
+                {deleteTeamMessage && <p>{deleteTeamMessage}</p>}
+            </form>
+
+            <h2>Update Player Record</h2>
+            <div>
+                <label>Team:</label>
+                <select onChange={(e) => handleTeamForPlayersChange(e.target.value)} defaultValue="">
+                    <option value="">Select team</option>
+                    {teams.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
+                </select>
+            </div>
+
+            <div style={{ marginTop: 8 }}>
+                <label>Player:</label>
+                <select value={selectedPlayerId} onChange={(e) => handlePlayerSelect(e.target.value)}>
+                    <option value="">Select player</option>
+                    {playersForTeam.map(p => <option key={p.id} value={p.id}>{p.name} (id:{p.id})</option>)}
+                </select>
+            </div>
+
+            {selectedPlayerId && (
+                <form onSubmit={handleUpdatePlayer} style={{ marginTop: 12 }}>
+                    <div>
+                        <label>Singles</label>
+                        <input type="number" value={playerStats.Singles} onChange={e => handlePlayerStatChange('Singles', e.target.value)} />
+                    </div>
+                    <div>
+                        <label>Doubles</label>
+                        <input type="number" value={playerStats.Doubles} onChange={e => handlePlayerStatChange('Doubles', e.target.value)} />
+                    </div>
+                    <div>
+                        <label>Triples</label>
+                        <input type="number" value={playerStats.Triples} onChange={e => handlePlayerStatChange('Triples', e.target.value)} />
+                    </div>
+                    <div>
+                        <label>Dimes</label>
+                        <input type="number" value={playerStats.Dimes} onChange={e => handlePlayerStatChange('Dimes', e.target.value)} />
+                    </div>
+                    <div>
+                        <label>HRs</label>
+                        <input type="number" value={playerStats.HRs} onChange={e => handlePlayerStatChange('HRs', e.target.value)} />
+                    </div>
+                    <div>
+                        <label>GP</label>
+                        <input type="number" value={playerStats.GP} onChange={e => handlePlayerStatChange('GP', e.target.value)} />
+                    </div>
+                    <div>
+                        <label>AtBats</label>
+                        <input type="number" value={playerStats.AtBats} onChange={e => handlePlayerStatChange('AtBats', e.target.value)} />
+                    </div>
+                    <div>
+                        <label>Avg</label>
+                        <input type="number" step="0.001" value={playerStats.Avg} onChange={e => handlePlayerStatChange('Avg', e.target.value)} />
+                    </div>
+                    <button type="submit" style={{ marginTop: 8 }}>Update Player</button>
+                    {updateMessage && <p>{updateMessage}</p>}
+                </form>
+            )}
         </div>
     );
 };
