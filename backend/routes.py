@@ -208,3 +208,47 @@ def update_player():
         db.session.rollback()
         return jsonify({'message': 'Internal server error', 'error': str(ex)}), 500
 
+from flask import request, jsonify, current_app
+from flask_cors import cross_origin
+from models import db, Player
+
+@routes.route('/routes/players', methods=['GET', 'OPTIONS'])
+@cross_origin(headers=['Content-Type', 'X-Download-Token'])
+def get_players():
+    # short-circuit preflight
+    if request.method == 'OPTIONS':
+        return ('', 200)
+
+    try:
+        team_id = request.args.get('team_id', None)
+        query = Player.query
+        if team_id:
+            try:
+                query = query.filter_by(team_id=int(team_id))
+            except ValueError:
+                return jsonify({'message': 'invalid team_id'}), 400
+
+        players = query.order_by(Player.id).all()
+
+        players_list = []
+        for p in players:
+            players_list.append({
+                'id': p.id,
+                'name': getattr(p, 'name', None),
+                'team_id': getattr(p, 'team_id', None),
+                'Singles': getattr(p, 'Singles', None),
+                'Doubles': getattr(p, 'Doubles', None),
+                'Triples': getattr(p, 'Triples', None),
+                'Dimes': getattr(p, 'Dimes', None),
+                'HRs': getattr(p, 'HRs', None),
+                'GP': getattr(p, 'GP', None),
+                'AtBats': getattr(p, 'AtBats', None),
+                'Avg': getattr(p, 'Avg', None)
+            })
+
+        return jsonify(players_list), 200
+
+    except Exception as ex:
+        current_app.logger.exception("get_players failed: %s", ex)
+        return jsonify({'message': 'Internal server error', 'error': str(ex)}), 500
+
