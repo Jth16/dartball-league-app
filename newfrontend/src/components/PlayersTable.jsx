@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { fetchWithToken } from '../api';
 
 const PlayersTable = () => {
     const [teams, setTeams] = useState([]);
@@ -6,17 +7,24 @@ const PlayersTable = () => {
     const [players, setPlayers] = useState([]);
 
     useEffect(() => {
-        // Fetch teams for dropdown
-        fetch("https://dartball-backend-669423444851.us-central1.run.app/routes/teams")
-            .then((res) => res.json())
-            .then(setTeams);
+        fetchWithToken('/routes/teams', { method: 'GET' })
+            .then(res => res.ok ? res.json() : Promise.reject(res.status))
+            .then(setTeams)
+            .catch(err => {
+                console.error('fetch teams failed', err);
+                setTeams([]);
+            });
     }, []);
 
     useEffect(() => {
         if (selectedTeamId) {
-            fetch(`https://dartball-backend-669423444851.us-central1.run.app/routes/players?team_id=${selectedTeamId}`)
-                .then((res) => res.json())
-                .then(setPlayers);
+            fetchWithToken(`/routes/players?team_id=${selectedTeamId}`, { method: 'GET' })
+                .then(res => res.ok ? res.json() : Promise.reject(res.status))
+                .then(setPlayers)
+                .catch(err => {
+                    console.error('fetch players failed', err);
+                    setPlayers([]);
+                });
         } else {
             setPlayers([]);
         }

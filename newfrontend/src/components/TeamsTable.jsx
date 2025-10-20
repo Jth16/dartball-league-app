@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from 'react';
+import { fetchWithToken } from '../api';
 
 const TeamsTable = () => {
     const [teams, setTeams] = useState([]);
-    // Use env var or fall back to deployed backend
-    const API_BASE = process.env.REACT_APP_API_URL || 'https://dartball-backend-654879525708.us-central1.run.app';
 
     useEffect(() => {
         const fetchTeams = async () => {
             try {
-                const response = await fetch(`${API_BASE}/routes/teams`);
+                const response = await fetchWithToken('/routes/teams', { method: 'GET' });
                 if (!response.ok) throw new Error(`HTTP ${response.status}`);
                 const data = await response.json();
 
@@ -37,7 +36,7 @@ const TeamsTable = () => {
         };
 
         fetchTeams();
-    }, [API_BASE]);
+    }, []);
 
     return (
         <div>
