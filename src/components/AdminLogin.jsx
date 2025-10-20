@@ -1,6 +1,15 @@
 import React, { useState, useEffect } from 'react';
+import { fetchWithToken } from '../api';
+
+const API_BASE = process.env.REACT_APP_API_URL || 'https://dartball-backend-654879525708.us-central1.run.app';
+const DOWNLOAD_TOKEN = process.env.REACT_APP_DOWNLOAD_TOKEN || 'your-token-here'; // temporary hardcode for test
 
 const AdminLogin = () => {
+    // debug: show whether token was loaded (do NOT log the token value in public logs)
+    useEffect(() => {
+        console.log('DOWNLOAD_TOKEN present?', !!DOWNLOAD_TOKEN, 'length:', DOWNLOAD_TOKEN.length);
+    }, []);
+
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
@@ -20,7 +29,7 @@ const AdminLogin = () => {
         e.preventDefault();
         setError('');
 
-        const response = await fetch('https://dartball-backend-669423444851.us-central1.run.app/routes/admin/login', {
+        const response = await fetch('https://dartball-backend-654879525708.us-central1.run.app/routes/admin/login', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -48,14 +57,17 @@ const AdminLogin = () => {
         e.preventDefault();
         const gamesBehind = calculateGamesBehind(Number(wins), Number(losses));
 
-        const res = await fetch("https://dartball-backend-669423444851.us-central1.run.app/routes/admin/record", {
+        const res = await fetch(`${API_BASE}/routes/admin/record`, {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: { 
+                "Content-Type": "application/json",
+                ...(DOWNLOAD_TOKEN ? { "X-Download-Token": DOWNLOAD_TOKEN } : {})
+            },
             body: JSON.stringify({ team_id: teamId, wins, losses, games_behind: gamesBehind }),
         });
 
         if (res.ok) {
-            fetch("https://dartball-backend-669423444851.us-central1.run.app/routes/teams")
+            fetch("https://dartball-backend-654879525708.us-central1.run.app/routes/teams")
                 .then((res) => res.json())
                 .then(setTeams);
             // Clear input fields after successful submit
@@ -68,20 +80,31 @@ const AdminLogin = () => {
     const handleAddTeam = async (e) => {
         e.preventDefault();
         setNewTeamMessage('');
-        const res = await fetch("https://dartball-backend-669423444851.us-central1.run.app/routes/admin/add_team", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ name: newTeamName }),
-        });
-        const data = await res.json();
-        if (res.ok) {
-            setNewTeamMessage('Team added successfully!');
+        try {
+            // include header unconditionally so we can see it in DevTools (value may be empty)
+            const res = await fetch(`${API_BASE}/routes/admin/add_team`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Download-Token': DOWNLOAD_TOKEN
+                },
+                body: JSON.stringify({ name: newTeamName })
+            });
+            const text = await res.text();
+            if (!res.ok) {
+                setNewTeamMessage(`Error: ${res.status} ${text}`);
+                console.error('add_team failed', res.status, text);
+                return;
+            }
+            const data = JSON.parse(text);
+            setNewTeamMessage(`Added: ${data.team?.name || 'ok'}`);
             setNewTeamName('');
-            fetch("https://dartball-backend-669423444851.us-central1.run.app/routes/teams")
-                .then((res) => res.json())
-                .then(setTeams);
-        } else {
-            setNewTeamMessage(data.message || 'Failed to add team');
+            // refresh teams UI — quick reload; replace with state refetch if available
+            window.location.reload();
+            console.log('add_team response', data);
+        } catch (err) {
+            console.error('add_team exception', err);
+            setNewTeamMessage('Request failed');
         }
     };
 
@@ -89,29 +112,34 @@ const AdminLogin = () => {
     const handleAddPlayer = async (e) => {
         e.preventDefault();
         setNewPlayerMessage('');
-        const res = await fetch("https://dartball-backend-669423444851.us-central1.run.app/routes/admin/add_player", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ name: newPlayerName, team_id: newPlayerTeamId }),
-        });
-        const data = await res.json();
-        if (res.ok) {
+        try {
+            const res = await fetchWithToken('/routes/admin/add_player', {
+                method: 'POST',
+                body: JSON.stringify({ name: newPlayerName, team_id: newPlayerTeamId })
+            });
+            const text = await res.text();
+            if (!res.ok) {
+                setNewPlayerMessage(`Error: ${res.status} ${text}`);
+                return;
+            }
             setNewPlayerMessage('Player added successfully!');
             setNewPlayerName('');
             setNewPlayerTeamId('');
-        } else {
-            setNewPlayerMessage(data.message || 'Failed to add player');
+            window.location.reload();
+        } catch (err) {
+            console.error('add player failed', err);
+            setNewPlayerMessage('Request failed');
         }
     };
 
     useEffect(() => {
-        fetch("https://dartball-backend-669423444851.us-central1.run.app/routes/teams")
+        fetch("https://dartball-backend-654879525708.us-central1.run.app/routes/teams")
             .then((res) => res.json())
             .then(setTeams);
     }, []);
 
     return (
-        <div>
+        <div style={{ maxWidth: 600, margin: '2rem auto' }}>
 
             <h2>Record Admin</h2>
             <form onSubmit={handleRecordSubmit}>
