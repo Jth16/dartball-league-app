@@ -17,6 +17,13 @@ def _log_request():
     except Exception:
         current_app.logger.exception("request logging failed")
 
+# If you have auth/token checks, make sure preflight OPTIONS requests are not blocked.
+@routes.before_app_request
+def allow_preflight():
+    if request.method == 'OPTIONS':
+        # return empty 200 so Flask-CORS can attach proper CORS headers
+        return ('', 200)
+
 @routes.route("/routes/teams", methods=["GET"])
 def get_teams():
     try:

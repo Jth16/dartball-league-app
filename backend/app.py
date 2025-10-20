@@ -15,12 +15,13 @@ ALLOWED_ORIGINS = os.environ.get(
 )
 _origins = [o.strip() for o in ALLOWED_ORIGINS.split(",") if o.strip()]
 
-from flask_cors import CORS
+# register CORS globally (allow X-Download-Token header used by frontend)
 CORS(app, resources={r"/*": {
     "origins": _origins,
-    "methods": ["GET","POST","PUT","DELETE","OPTIONS","PATCH","HEAD"],
-    "allow_headers": ["Content-Type","X-Download-Token","Authorization","X-Requested-With"]
+    "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH", "HEAD"],
+    "allow_headers": ["Content-Type", "X-Download-Token", "Authorization", "X-Requested-With"]
 }}, supports_credentials=True)
+
 app.logger.info("CORS configured for origins: %s", _origins)
 
 # Prefer explicit URI for local dev
