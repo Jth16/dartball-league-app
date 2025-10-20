@@ -157,11 +157,11 @@ const AdminLogin = () => {
             setDeleteTeamMessage('Select a team to delete.');
             return;
         }
-        if (!confirm('Delete team and all related data? This cannot be undone.')) return;
+        // use window.confirm to avoid ESLint no-restricted-globals
+        if (!window.confirm('Delete team and all related data? This cannot be undone.')) return;
 
         setDeleteTeamMessage('');
         try {
-            // try DELETE with JSON body; if backend expects query param, change accordingly
             const res = await fetchWithToken('/routes/admin/delete_team', {
                 method: 'DELETE',
                 body: JSON.stringify({ team_id: deleteTeamId })
