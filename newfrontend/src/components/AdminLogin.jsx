@@ -39,8 +39,8 @@ const AdminLogin = () => {
         Dimes: '',
         HRs: '',
         GP: '',
-        AtBats: '',
-        Avg: ''
+        AtBats: ''
+        // removed Avg and hits from editable state so they are not sent
     });
     const [updateMessage, setUpdateMessage] = useState('');
 
@@ -212,8 +212,7 @@ const AdminLogin = () => {
             Dimes: '',
             HRs: '',
             GP: '',
-            AtBats: '',
-            Avg: ''
+            AtBats: ''
         });
         if (!teamId) return;
         try {
@@ -238,8 +237,8 @@ const AdminLogin = () => {
                 Dimes: p.Dimes ?? '',
                 HRs: p.HRs ?? '',
                 GP: p.GP ?? '',
-                AtBats: p.AtBats ?? '',
-                Avg: p.Avg ?? ''
+                AtBats: p.AtBats ?? ''
+                // do NOT populate Avg or hits here
             });
         } else {
             setPlayerStats({
@@ -249,8 +248,7 @@ const AdminLogin = () => {
                 Dimes: '',
                 HRs: '',
                 GP: '',
-                AtBats: '',
-                Avg: ''
+                AtBats: ''
             });
         }
         setUpdateMessage('');
@@ -438,42 +436,39 @@ const AdminLogin = () => {
 
                 {selectedPlayerId && (
                     <form onSubmit={handleUpdatePlayer} style={{ marginTop: 12 }}>
-                        <div>
-                            <label>Singles</label>
-                            <input type="number" value={playerStats.Singles} onChange={e => handlePlayerStatChange('Singles', e.target.value)} />
-                        </div>
-                        <div>
-                            <label>Doubles</label>
-                            <input type="number" value={playerStats.Doubles} onChange={e => handlePlayerStatChange('Doubles', e.target.value)} />
-                        </div>
-                        <div>
-                            <label>Triples</label>
-                            <input type="number" value={playerStats.Triples} onChange={e => handlePlayerStatChange('Triples', e.target.value)} />
-                        </div>
-                        <div>
-                            <label>Dimes</label>
-                            <input type="number" value={playerStats.Dimes} onChange={e => handlePlayerStatChange('Dimes', e.target.value)} />
-                        </div>
-                        <div>
-                            <label>HRs</label>
-                            <input type="number" value={playerStats.HRs} onChange={e => handlePlayerStatChange('HRs', e.target.value)} />
-                        </div>
-                        <div>
-                            <label>GP</label>
-                            <input type="number" value={playerStats.GP} onChange={e => handlePlayerStatChange('GP', e.target.value)} />
-                        </div>
-                        <div>
-                            <label>AtBats</label>
-                            <input type="number" value={playerStats.AtBats} onChange={e => handlePlayerStatChange('AtBats', e.target.value)} />
-                        </div>
-                        <div>
-                            <label>Avg</label>
-                            <input type="number" step="0.001" value={playerStats.Avg} onChange={e => handlePlayerStatChange('Avg', e.target.value)} />
-                        </div>
-                        <button type="submit" style={{ marginTop: 8 }}>Update Player</button>
-                        {updateMessage && <p>{updateMessage}</p>}
+                      <div>
+                        <label>Singles</label>
+                        <input type="number" value={playerStats.Singles} onChange={e => handlePlayerStatChange('Singles', e.target.value)} />
+                      </div>
+                      <div>
+                        <label>Doubles</label>
+                        <input type="number" value={playerStats.Doubles} onChange={e => handlePlayerStatChange('Doubles', e.target.value)} />
+                      </div>
+                      <div>
+                        <label>Triples</label>
+                        <input type="number" value={playerStats.Triples} onChange={e => handlePlayerStatChange('Triples', e.target.value)} />
+                      </div>
+                      <div>
+                        <label>Dimes</label>
+                        <input type="number" value={playerStats.Dimes} onChange={e => handlePlayerStatChange('Dimes', e.target.value)} />
+                      </div>
+                      <div>
+                        <label>HRs</label>
+                        <input type="number" value={playerStats.HRs} onChange={e => handlePlayerStatChange('HRs', e.target.value)} />
+                      </div>
+                      <div>
+                        <label>GP</label>
+                        <input type="number" value={playerStats.GP} onChange={e => handlePlayerStatChange('GP', e.target.value)} />
+                      </div>
+                      <div>
+                        <label>AtBats</label>
+                        <input type="number" value={playerStats.AtBats} onChange={e => handlePlayerStatChange('AtBats', e.target.value)} />
+                      </div>
+
+                      <button type="submit" style={{ marginTop: 8 }}>Update Player</button>
+                      {updateMessage && <p>{updateMessage}</p>}
                     </form>
-                )}
+                  )}
             </div>
         </div>
     );

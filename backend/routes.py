@@ -169,38 +169,60 @@ def update_player():
         if not player:
             return jsonify({'message': 'player not found'}), 404
 
-        # list of allowed updatable fields (adjust names to match your model)
-        allowed_fields = [
-            'name',
-            'Singles', 'Doubles', 'Triples', 'Dimes', 'HRs',
-            'GP', 'AtBats', 'Avg', 'hits'
-        ]
+        # Treat incoming stat numbers as increments to existing values
+        def to_int(v):
+            try:
+                return int(v)
+            except Exception:
+                return 0
 
-        updated = {}
-        for key in allowed_fields:
-            if key in data:
-                val = data[key]
-                # coerce numeric fields where appropriate
-                if key in ('Singles', 'Doubles', 'Triples', 'Dimes', 'HRs', 'GP', 'AtBats'):
-                    try:
-                        val = int(val)
-                    except Exception:
-                        val = 0
-                elif key == 'Avg':
-                    try:
-                        val = float(val)
-                    except Exception:
-                        val = 0.0
-                setattr(player, key, val)
-                updated[key] = val
+        singles_inc = to_int(data.get('Singles', 0))
+        doubles_inc = to_int(data.get('Doubles', 0))
+        triples_inc = to_int(data.get('Triples', 0))
+        dimes_inc = to_int(data.get('Dimes', 0))
+        hrs_inc = to_int(data.get('HRs', 0))
+        atbats_inc = to_int(data.get('AtBats', 0))
 
-        # Optionally recompute Avg if AtBats and hit counts are present in model logic.
+        # Add increments to existing fields (handle None)
+        player.Singles = (getattr(player, 'Singles', 0) or 0) + singles_inc
+        player.Doubles = (getattr(player, 'Doubles', 0) or 0) + doubles_inc
+        player.Triples = (getattr(player, 'Triples', 0) or 0) + triples_inc
+        player.Dimes = (getattr(player, 'Dimes', 0) or 0) + dimes_inc
+        player.HRs = (getattr(player, 'HRs', 0) or 0) + hrs_inc
+
+        # Update AtBats
+        player.AtBats = (getattr(player, 'AtBats', 0) or 0) + atbats_inc
+
+        # Update hits by adding the event increments
+        hits_inc = singles_inc + doubles_inc + triples_inc + hrs_inc
+        player.hits = (getattr(player, 'hits', 0) or 0) + hits_inc
+
+        # Recompute Avg = hits / atbats (safe divide)
+        total_atbats = getattr(player, 'AtBats', 0) or 0
+        total_hits = getattr(player, 'hits', 0) or 0
+        player.Avg = float(total_hits) / total_atbats if total_atbats > 0 else 0.0
+
+        # Optionally update name if provided
+        if 'name' in data:
+            player.name = data.get('name')
+
         db.session.add(player)
         db.session.commit()
 
-        current_app.logger.info("update_player updated id=%s fields=%s", player.id, list(updated.keys()))
-        # serialize a minimal player object for response
-        player_json = {k: getattr(player, k, None) for k in ['id', 'name', 'Singles', 'Doubles', 'Triples', 'Dimes', 'HRs', 'GP', 'AtBats', 'Avg']}
+        current_app.logger.info("update_player updated id=%s hits=%s atbats=%s", player.id, player.hits, player.AtBats)
+        player_json = {
+            'id': player.id,
+            'name': player.name,
+            'Singles': player.Singles,
+            'Doubles': player.Doubles,
+            'Triples': player.Triples,
+            'Dimes': player.Dimes,
+            'HRs': player.HRs,
+            'GP': getattr(player, 'GP', None),
+            'AtBats': player.AtBats,
+            'Avg': player.Avg,
+            'hits': player.hits
+        }
         return jsonify({'message': 'Player updated', 'player': player_json}), 200
 
     except Exception as ex:
