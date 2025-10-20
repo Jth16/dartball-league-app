@@ -12,23 +12,26 @@ app = Flask(__name__)
 ALLOWED_ORIGINS = os.environ.get("ALLOWED_ORIGINS", "http://localhost:3000,https://dartball-backend-654879525708.us-central1.run.app")
 _origins = [o.strip() for o in ALLOWED_ORIGINS.split(",") if o.strip()]
 CORS(app, resources={r"/*": {"origins": _origins}}, supports_credentials=True)
-app.logger.info("CORS configured for origins: %s", _origins)
 
-# Cloud SQL configuration (required)
-CLOUD_SQL_CONNECTION_NAME = os.environ.get("CLOUD_SQL_CONNECTION_NAME") or os.environ.get("CLOUDSQL_INSTANCE")
-DB_USER = os.environ.get("DB_USER")
-DB_PASS = os.environ.get("DB_PASS")
-DB_NAME = os.environ.get("DB_NAME")
+# Prefer explicit URI for local dev
+env_uri = os.environ.get("SQLALCHEMY_DATABASE_URI")
+if env_uri:
+    app.config["SQLALCHEMY_DATABASE_URI"] = env_uri
+else:
+    CLOUD_SQL_CONNECTION_NAME = os.environ.get("CLOUD_SQL_CONNECTION_NAME") or os.environ.get("CLOUDSQL_INSTANCE")
+    DB_USER = os.environ.get("DB_USER")
+    DB_PASS = os.environ.get("DB_PASS")
+    DB_NAME = os.environ.get("DB_NAME")
 
-if not (CLOUD_SQL_CONNECTION_NAME and DB_USER and DB_PASS and DB_NAME):
-    app.logger.error("Cloud SQL configuration is missing. Set CLOUD_SQL_CONNECTION_NAME, DB_USER, DB_PASS, DB_NAME.")
-    raise RuntimeError("Cloud SQL configuration missing")
+    if not (CLOUD_SQL_CONNECTION_NAME and DB_USER and DB_PASS and DB_NAME):
+        app.logger.error("Cloud SQL configuration is missing. Set CLOUD_SQL_CONNECTION_NAME, DB_USER, DB_PASS, DB_NAME or set SQLALCHEMY_DATABASE_URI")
+        raise RuntimeError("Cloud SQL configuration missing")
 
-# Use unix socket for Cloud Run + Cloud SQL
-app.config["SQLALCHEMY_DATABASE_URI"] = (
-    f"postgresql+psycopg2://{DB_USER}:{DB_PASS}@/{DB_NAME}"
-    f"?host=/cloudsql/{CLOUD_SQL_CONNECTION_NAME}"
-)
+    app.config["SQLALCHEMY_DATABASE_URI"] = (
+        f"postgresql+psycopg2://{DB_USER}:{DB_PASS}@/{DB_NAME}"
+        f"?host=/cloudsql/{CLOUD_SQL_CONNECTION_NAME}"
+    )
+
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.logger.info("Using Cloud SQL %s (db=%s user=%s)", CLOUD_SQL_CONNECTION_NAME, DB_NAME, DB_USER)
 
