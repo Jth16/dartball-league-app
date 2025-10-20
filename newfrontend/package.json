@@ -1,4 +1,5 @@
 {
+<<<<<<< HEAD
   "name": "newfrontend",
   "version": "0.1.0",
   "private": true,
@@ -40,6 +41,8 @@
     ]
   },
   "homepage": "https://Jth16.github.io/dartball-league-app",
+=======
+>>>>>>> 85091405e347019d15ef63c0a6c280396b4f717d
   "devDependencies": {
     "gh-pages": "^6.3.0"
   }

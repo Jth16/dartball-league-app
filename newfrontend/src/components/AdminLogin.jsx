@@ -20,7 +20,7 @@ const AdminLogin = () => {
         e.preventDefault();
         setError('');
 
-        const response = await fetch('/api/login', {
+        const response = await fetch('https://dartball-backend-669423444851.us-central1.run.app/routes/admin/login', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -29,7 +29,8 @@ const AdminLogin = () => {
         });
 
         if (response.ok) {
-            // Handle successful login (e.g., redirect to admin dashboard)
+            // Example: Redirect to admin dashboard or set authenticated state
+            window.location.href = "/admin-dashboard"; // Change to your actual admin dashboard route
         } else {
             setError('Invalid username or password');
         }
