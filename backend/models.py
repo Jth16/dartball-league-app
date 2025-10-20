@@ -1,12 +1,12 @@
 from flask_sqlalchemy import SQLAlchemy
 
+# single SQLAlchemy instance for the whole app — do NOT pass app here
 db = SQLAlchemy()
 
 class Team(db.Model):
-    __tablename__ = 'teams'
-
+    __tablename__ = "teams"
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), nullable=False)
+    name = db.Column(db.String, nullable=False)
     wins = db.Column(db.Integer, default=0)
     losses = db.Column(db.Integer, default=0)
     win_pct = db.Column(db.Float, default=0.0)
@@ -17,10 +17,9 @@ class Team(db.Model):
         return f"<Team {self.name}: W-{self.wins} L-{self.losses} GB-{self.games_behind}> GP-{self.games_played}"
 
 class Player(db.Model):
-    __tablename__ = 'players'
-
+    __tablename__ = "players"
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), nullable=False)
+    name = db.Column(db.String, nullable=False)
     team_id = db.Column(db.Integer, db.ForeignKey('teams.id'))
     Singles = db.Column(db.Integer, default=0)
     Doubles = db.Column(db.Integer, default=0)

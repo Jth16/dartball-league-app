@@ -12,7 +12,7 @@ function App() {
   const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
-    fetch("http://dartball-backend-669423444851.us-central1.run.app/routes/teams")
+    fetch(`${process.env.REACT_APP_API_URL || "http://localhost:5000"}/routes/teams`)
       .then((res) => res.json())
       .then(setTeams);
   }, []);

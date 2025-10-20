@@ -21,3 +21,7 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# ignore sqlite DB
+/backend/*.db
+/backend/db.sqlite3

@@ -4,8 +4,9 @@ WORKDIR /app
 
 COPY . /app
 
+COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 ENV PORT=8080
 
-CMD ["python", "app.py"]
+CMD ["gunicorn", "--bind", "0.0.0.0:8080", "--timeout", "300", "app:app"]
