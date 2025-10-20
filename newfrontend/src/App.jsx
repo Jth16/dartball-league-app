@@ -1,14 +1,10 @@
 import React, { useState, useEffect } from "react";
 import TeamsTable from "./components/TeamsTable";
 import PlayersPage from "./components/PlayersTable";
-<<<<<<< HEAD
 import AdminLogin from "./components/AdminLogin";
 import HeaderImage from "./components/HeaderImage";
 import AdminPwdPage from "./components/AdminPwd";
 import Schedule from "./components/Schedule";
-=======
-import HeaderImage from "./components/HeaderImage"; // Import the header
->>>>>>> 85091405e347019d15ef63c0a6c280396b4f717d
 
 function App() {
  const [page, setPage] = useState("teams");
@@ -20,7 +16,6 @@ function App() {
       .then((res) => res.json())
       .then(setTeams);
   }, []);
-<<<<<<< HEAD
 
   // Reset admin flag whenever user navigates away from the admin page
   useEffect(() => {
@@ -29,8 +24,6 @@ function App() {
     }
   }, [page]);
 
-=======
->>>>>>> 85091405e347019d15ef63c0a6c280396b4f717d
   return (
     <div
       style={{
@@ -118,7 +111,6 @@ function App() {
           ) : (
             <AdminPwdPage setIsAdmin={setIsAdmin} />
           ))}
-<<<<<<< HEAD
       </div>
       <div
         style={{
@@ -153,9 +145,6 @@ function App() {
           Admin Login
         </a>
       </div>
-=======
-    </div>
->>>>>>> 85091405e347019d15ef63c0a6c280396b4f717d
     </div>
   );
 }
