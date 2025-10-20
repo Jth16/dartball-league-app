@@ -114,7 +114,7 @@ const Schedule = () => {
         }
       `}</style>
 
-      <h1>7-Team Round Robin Schedule (5 Repetitions)</h1>
+      <center><h1>7-Team Round Robin Schedule (5 Rounds)</h1></center>
 
       <div className="sb-table-wrap">
         <table>
