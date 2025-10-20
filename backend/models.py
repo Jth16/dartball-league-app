@@ -34,4 +34,4 @@ class Player(db.Model):
     team = db.relationship('Team', backref=db.backref('players', lazy=True))
 
     def __repr__(self):
-        return f"<Player {self.name}: T-{self.team_id} S-{self.Singles} D-{self.Doubles} T-{self.Triples} HR-{self.HRs} Avg-{self.Avg:.3f}>"
+        return f"<Player {self.name}: T-{self.team_id} S-{self.Singles} D-{self.Doubles} T-{self.Triples} HR-{self.HRs} Hits-{self.hits} Avg-{self.Avg:.3f}>"

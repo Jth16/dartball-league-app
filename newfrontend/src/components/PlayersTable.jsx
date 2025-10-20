@@ -57,6 +57,7 @@ const PlayersTable = () => {
                             <th style={{ padding: "12px" }}>Triples</th>
                             <th style={{ padding: "12px" }}>Dimes</th>
                             <th style={{ padding: "12px" }}>HRs</th>
+                            <th style={{ padding: "12px" }}>Hits</th>         {/* added column */}
                             <th style={{ padding: "12px" }}>Avg</th>
                             <th style={{ padding: "12px" }}>GP</th>
                             <th style={{ padding: "12px" }}>At Bats</th>
@@ -71,6 +72,7 @@ const PlayersTable = () => {
                                 <td style={{ padding: "12px", textAlign: "center" }}>{player.Triples}</td>
                                 <td style={{ padding: "12px", textAlign: "center" }}>{player.Dimes}</td>
                                 <td style={{ padding: "12px", textAlign: "center" }}>{player.HRs}</td>
+                                <td style={{ padding: "12px", textAlign: "center" }}>{player.hits ?? 0}</td>  {/* render hits */}
                                 <td style={{ padding: "12px", textAlign: "center" }}>
                                     {typeof player.Avg === 'number'
                                         ? player.Avg.toFixed(3).replace(/^0\./, ".")
