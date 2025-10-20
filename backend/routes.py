@@ -1,4 +1,5 @@
 from flask import Blueprint, jsonify, request, current_app, abort
+from flask_cors import cross_origin
 from models import Player, Team, db
 import os, re, time
 from sqlalchemy import text
@@ -25,8 +26,11 @@ def get_teams():
         current_app.logger.exception("get_teams failed")
         return jsonify({"error": "internal"}), 500
 
-@routes.route('/routes/admin/add_team', methods=['POST'])
+@routes.route('/routes/admin/add_team', methods=['POST', 'OPTIONS'])
+@cross_origin(headers=['Content-Type','X-Download-Token'])
 def add_team():
+    if request.method == 'OPTIONS':
+        return ('', 200)
     data = request.json or {}
     current_app.logger.info("add_team called payload=%s remote=%s", data, request.remote_addr)
     name = data.get('name')
@@ -44,8 +48,11 @@ def add_team():
         db.session.rollback()
         return jsonify({'message': 'Internal server error'}), 500
 
-@routes.route('/routes/admin/add_player', methods=['POST'])
+@routes.route('/routes/admin/add_player', methods=['POST', 'OPTIONS'])
+@cross_origin(headers=['Content-Type','X-Download-Token'])
 def add_player():
+    if request.method == 'OPTIONS':
+        return ('', 200)
     data = request.json or {}
     current_app.logger.info("add_player called payload=%s remote=%s", data, request.remote_addr)
     name = data.get('name')
