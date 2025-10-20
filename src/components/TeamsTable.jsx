@@ -5,7 +5,7 @@ const TeamsTable = () => {
 
     useEffect(() => {
         const fetchTeams = async () => {
-            const response = await fetch('http://localhost:5000/routes/teams');
+        const response = await fetch('http://https://dartball-backend-654879525708.us-central1.run.app/routes/teams');
             const data = await response.json();
 
             const teamsWithPct = data.map(team => {
