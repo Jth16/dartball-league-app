@@ -173,7 +173,7 @@ def update_player():
         allowed_fields = [
             'name',
             'Singles', 'Doubles', 'Triples', 'Dimes', 'HRs',
-            'GP', 'AtBats', 'Avg'
+            'GP', 'AtBats', 'Avg', 'hits'
         ]
 
         updated = {}
@@ -208,10 +208,6 @@ def update_player():
         db.session.rollback()
         return jsonify({'message': 'Internal server error', 'error': str(ex)}), 500
 
-from flask import request, jsonify, current_app
-from flask_cors import cross_origin
-from models import db, Player
-
 @routes.route('/routes/players', methods=['GET', 'OPTIONS'])
 @cross_origin(headers=['Content-Type', 'X-Download-Token'])
 def get_players():
@@ -243,7 +239,8 @@ def get_players():
                 'HRs': getattr(p, 'HRs', None),
                 'GP': getattr(p, 'GP', None),
                 'AtBats': getattr(p, 'AtBats', None),
-                'Avg': getattr(p, 'Avg', None)
+                'Avg': getattr(p, 'Avg', None),
+                'hits': getattr(p, 'hits', 0)
             })
 
         return jsonify(players_list), 200

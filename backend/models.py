@@ -29,8 +29,9 @@ class Player(db.Model):
     Avg = db.Column(db.Float, default=0.0)
     GP = db.Column(db.Integer, default=0)
     AtBats = db.Column(db.Integer, default=0)
+    hits = db.Column(db.Integer, nullable=False, default=0)
 
     team = db.relationship('Team', backref=db.backref('players', lazy=True))
 
     def __repr__(self):
-        return f"<Player {self.name}: T-{self.team_id} S-{self.Singles} D-{self.Doubles} T-{self.Triples} HR-{self.HRs} Avg-{self.Avg:.300}>"
+        return f"<Player {self.name}: T-{self.team_id} S-{self.Singles} D-{self.Doubles} T-{self.Triples} HR-{self.HRs} Avg-{self.Avg:.3f}>"

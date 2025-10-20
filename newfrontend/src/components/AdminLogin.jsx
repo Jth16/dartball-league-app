@@ -303,170 +303,178 @@ const AdminLogin = () => {
     };
 
     return (
-        <div style={{ maxWidth: 600, margin: '2rem auto' }}>
-
-            <h2>Record Admin</h2>
-            <form onSubmit={handleRecordSubmit}>
-                <div>
-                    <label>Team:</label>
-                    <select
-                        value={teamId}
-                        onChange={(e) => setTeamId(e.target.value)}
-                        required
-                    >
-                        <option value="">Select a team</option>
-                        {teams.map((team) => (
-                            <option key={team.id} value={team.id}>
-                                {team.name}
-                            </option>
-                        ))}
-                    </select>
-                </div>
-                <div>
-                    <label>Wins:</label>
-                    <input
-                        type="number"
-                        value={wins}
-                        onChange={(e) => setWins(e.target.value)}
-                        required
-                    />
-                </div>
-                <div>
-                    <label>Losses:</label>
-                    <input
-                        type="number"
-                        value={losses}
-                        onChange={(e) => setLosses(e.target.value)}
-                        required
-                    />
-                </div>
-                <div>
-                    <label>Games Behind:</label>
-                    <input
-                        type="number"
-                        value={calculateGamesBehind(Number(wins), Number(losses))}
-                        readOnly
-                        style={{ background: "#eee", color: "#333" }}
-                    />
-                </div>
-                <button type="submit">Submit Record</button>
-            </form>
-
-            <h2>Team Admin</h2>
-            <form onSubmit={handleAddTeam}>
-                <div>
-                    <label>New Team Name:</label>
-                    <input
-                        type="text"
-                        value={newTeamName}
-                        onChange={(e) => setNewTeamName(e.target.value)}
-                        required
-                    />
-                </div>
-                <button type="submit">Add Team</button>
-                {newTeamMessage && <p>{newTeamMessage}</p>}
-            </form>
-
-            <h2>Add New Player</h2>
-            <form onSubmit={handleAddPlayer}>
-                <div>
-                    <label>Player Name:</label>
-                    <input
-                        type="text"
-                        value={newPlayerName}
-                        onChange={(e) => setNewPlayerName(e.target.value)}
-                        required
-                    />
-                </div>
-                <div>
-                    <label>Team:</label>
-                    <select
-                        value={newPlayerTeamId}
-                        onChange={(e) => setNewPlayerTeamId(e.target.value)}
-                        required
-                    >
-                        <option value="">Select a team</option>
-                        {teams.map((team) => (
-                            <option key={team.id} value={team.id}>
-                                {team.name}
-                            </option>
-                        ))}
-                    </select>
-                </div>
-                <button type="submit">Add Player</button>
-                {newPlayerMessage && <p>{newPlayerMessage}</p>}
-            </form>
-
-            <h2>Delete Team</h2>
-            <form onSubmit={handleDeleteTeam}>
-                <div>
-                    <label>Team to delete:</label>
-                    <select value={deleteTeamId} onChange={(e) => setDeleteTeamId(e.target.value)}>
-                        <option value="">Select a team</option>
-                        {teams.map((team) => (
-                            <option key={team.id} value={team.id}>{team.name} (id: {team.id})</option>
-                        ))}
-                    </select>
-                </div>
-                <button type="submit" style={{ marginTop: 8, background: '#c33', color: '#fff' }}>Delete Team</button>
-                {deleteTeamMessage && <p>{deleteTeamMessage}</p>}
-            </form>
-
-            <h2>Update Player Record</h2>
-            <div>
-                <label>Team:</label>
-                <select onChange={(e) => handleTeamForPlayersChange(e.target.value)} defaultValue="">
-                    <option value="">Select team</option>
-                    {teams.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
-                </select>
-            </div>
-
-            <div style={{ marginTop: 8 }}>
-                <label>Player:</label>
-                <select value={selectedPlayerId} onChange={(e) => handlePlayerSelect(e.target.value)}>
-                    <option value="">Select player</option>
-                    {playersForTeam.map(p => <option key={p.id} value={p.id}>{p.name} (id:{p.id})</option>)}
-                </select>
-            </div>
-
-            {selectedPlayerId && (
-                <form onSubmit={handleUpdatePlayer} style={{ marginTop: 12 }}>
+        <div style={{
+            minHeight: '100vh',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '2rem',
+            boxSizing: 'border-box'
+        }}>
+            <div style={{ maxWidth: 600, width: '100%', margin: 0 }}>
+                <h2>Record Admin</h2>
+                <form onSubmit={handleRecordSubmit}>
                     <div>
-                        <label>Singles</label>
-                        <input type="number" value={playerStats.Singles} onChange={e => handlePlayerStatChange('Singles', e.target.value)} />
+                        <label>Team:</label>
+                        <select
+                            value={teamId}
+                            onChange={(e) => setTeamId(e.target.value)}
+                            required
+                        >
+                            <option value="">Select a team</option>
+                            {teams.map((team) => (
+                                <option key={team.id} value={team.id}>
+                                    {team.name}
+                                </option>
+                            ))}
+                        </select>
                     </div>
                     <div>
-                        <label>Doubles</label>
-                        <input type="number" value={playerStats.Doubles} onChange={e => handlePlayerStatChange('Doubles', e.target.value)} />
+                        <label>Wins:</label>
+                        <input
+                            type="number"
+                            value={wins}
+                            onChange={(e) => setWins(e.target.value)}
+                            required
+                        />
                     </div>
                     <div>
-                        <label>Triples</label>
-                        <input type="number" value={playerStats.Triples} onChange={e => handlePlayerStatChange('Triples', e.target.value)} />
+                        <label>Losses:</label>
+                        <input
+                            type="number"
+                            value={losses}
+                            onChange={(e) => setLosses(e.target.value)}
+                            required
+                        />
                     </div>
                     <div>
-                        <label>Dimes</label>
-                        <input type="number" value={playerStats.Dimes} onChange={e => handlePlayerStatChange('Dimes', e.target.value)} />
+                        <label>Games Behind:</label>
+                        <input
+                            type="number"
+                            value={calculateGamesBehind(Number(wins), Number(losses))}
+                            readOnly
+                            style={{ background: "#eee", color: "#333" }}
+                        />
                     </div>
-                    <div>
-                        <label>HRs</label>
-                        <input type="number" value={playerStats.HRs} onChange={e => handlePlayerStatChange('HRs', e.target.value)} />
-                    </div>
-                    <div>
-                        <label>GP</label>
-                        <input type="number" value={playerStats.GP} onChange={e => handlePlayerStatChange('GP', e.target.value)} />
-                    </div>
-                    <div>
-                        <label>AtBats</label>
-                        <input type="number" value={playerStats.AtBats} onChange={e => handlePlayerStatChange('AtBats', e.target.value)} />
-                    </div>
-                    <div>
-                        <label>Avg</label>
-                        <input type="number" step="0.001" value={playerStats.Avg} onChange={e => handlePlayerStatChange('Avg', e.target.value)} />
-                    </div>
-                    <button type="submit" style={{ marginTop: 8 }}>Update Player</button>
-                    {updateMessage && <p>{updateMessage}</p>}
+                    <button type="submit">Submit Record</button>
                 </form>
-            )}
+
+                <h2>Team Admin</h2>
+                <form onSubmit={handleAddTeam}>
+                    <div>
+                        <label>New Team Name:</label>
+                        <input
+                            type="text"
+                            value={newTeamName}
+                            onChange={(e) => setNewTeamName(e.target.value)}
+                            required
+                        />
+                    </div>
+                    <button type="submit">Add Team</button>
+                    {newTeamMessage && <p>{newTeamMessage}</p>}
+                </form>
+
+                <h2>Add New Player</h2>
+                <form onSubmit={handleAddPlayer}>
+                    <div>
+                        <label>Player Name:</label>
+                        <input
+                            type="text"
+                            value={newPlayerName}
+                            onChange={(e) => setNewPlayerName(e.target.value)}
+                            required
+                        />
+                    </div>
+                    <div>
+                        <label>Team:</label>
+                        <select
+                            value={newPlayerTeamId}
+                            onChange={(e) => setNewPlayerTeamId(e.target.value)}
+                            required
+                        >
+                            <option value="">Select a team</option>
+                            {teams.map((team) => (
+                                <option key={team.id} value={team.id}>
+                                    {team.name}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+                    <button type="submit">Add Player</button>
+                    {newPlayerMessage && <p>{newPlayerMessage}</p>}
+                </form>
+
+                <h2>Delete Team</h2>
+                <form onSubmit={handleDeleteTeam}>
+                    <div>
+                        <label>Team to delete:</label>
+                        <select value={deleteTeamId} onChange={(e) => setDeleteTeamId(e.target.value)}>
+                            <option value="">Select a team</option>
+                            {teams.map((team) => (
+                                <option key={team.id} value={team.id}>{team.name} (id: {team.id})</option>
+                            ))}
+                        </select>
+                    </div>
+                    <button type="submit" style={{ marginTop: 8, background: '#c33', color: '#fff' }}>Delete Team</button>
+                    {deleteTeamMessage && <p>{deleteTeamMessage}</p>}
+                </form>
+
+                <h2>Update Player Record</h2>
+                <div>
+                    <label>Team:</label>
+                    <select onChange={(e) => handleTeamForPlayersChange(e.target.value)} defaultValue="">
+                        <option value="">Select team</option>
+                        {teams.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
+                    </select>
+                </div>
+
+                <div style={{ marginTop: 8 }}>
+                    <label>Player:</label>
+                    <select value={selectedPlayerId} onChange={(e) => handlePlayerSelect(e.target.value)}>
+                        <option value="">Select player</option>
+                        {playersForTeam.map(p => <option key={p.id} value={p.id}>{p.name} (id:{p.id})</option>)}
+                    </select>
+                </div>
+
+                {selectedPlayerId && (
+                    <form onSubmit={handleUpdatePlayer} style={{ marginTop: 12 }}>
+                        <div>
+                            <label>Singles</label>
+                            <input type="number" value={playerStats.Singles} onChange={e => handlePlayerStatChange('Singles', e.target.value)} />
+                        </div>
+                        <div>
+                            <label>Doubles</label>
+                            <input type="number" value={playerStats.Doubles} onChange={e => handlePlayerStatChange('Doubles', e.target.value)} />
+                        </div>
+                        <div>
+                            <label>Triples</label>
+                            <input type="number" value={playerStats.Triples} onChange={e => handlePlayerStatChange('Triples', e.target.value)} />
+                        </div>
+                        <div>
+                            <label>Dimes</label>
+                            <input type="number" value={playerStats.Dimes} onChange={e => handlePlayerStatChange('Dimes', e.target.value)} />
+                        </div>
+                        <div>
+                            <label>HRs</label>
+                            <input type="number" value={playerStats.HRs} onChange={e => handlePlayerStatChange('HRs', e.target.value)} />
+                        </div>
+                        <div>
+                            <label>GP</label>
+                            <input type="number" value={playerStats.GP} onChange={e => handlePlayerStatChange('GP', e.target.value)} />
+                        </div>
+                        <div>
+                            <label>AtBats</label>
+                            <input type="number" value={playerStats.AtBats} onChange={e => handlePlayerStatChange('AtBats', e.target.value)} />
+                        </div>
+                        <div>
+                            <label>Avg</label>
+                            <input type="number" step="0.001" value={playerStats.Avg} onChange={e => handlePlayerStatChange('Avg', e.target.value)} />
+                        </div>
+                        <button type="submit" style={{ marginTop: 8 }}>Update Player</button>
+                        {updateMessage && <p>{updateMessage}</p>}
+                    </form>
+                )}
+            </div>
         </div>
     );
 };
