@@ -32,11 +32,11 @@ const TeamsTable = () => {
     }, []);
 
     return (
-        <div style={{ overflowX: "auto" }}>
-            <h1 style={{ marginBottom: "2rem" }}>Dartball League Teams</h1>
-            <table style={{
+        <div>
+           <h1 style={{ marginBottom: "2rem" }}>Team Standings</h1>
+           <table style={{
                 width: "100%",
-                minWidth: "600px",
+                minWidth: "300px",
                 borderCollapse: "separate",
                 borderSpacing: "0 12px",
                 fontSize: "0.95rem"
@@ -44,8 +44,8 @@ const TeamsTable = () => {
                 <thead>
                     <tr style={{ background: "#222", color: "#fff" }}>
                         <th style={{ padding: "2px" }}>Team Name</th>
-                        <th style={{ padding: "2px" }}>Wins</th>
-                        <th style={{ padding: "2px" }}>Losses</th>
+                        <th style={{ padding: "2px" }}>W</th>
+                        <th style={{ padding: "2px" }}>L</th>
                         <th style={{ padding: "2px" }}>Win Pct.</th>
                         <th style={{ padding: "2px" }}>Games Behind</th>
                         <th style={{ padding: "2px" }}>Games Played</th>
