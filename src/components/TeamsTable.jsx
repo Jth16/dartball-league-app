@@ -2,34 +2,42 @@ import React, { useEffect, useState } from 'react';
 
 const TeamsTable = () => {
     const [teams, setTeams] = useState([]);
+    // Use env var or fall back to deployed backend
+    const API_BASE = process.env.REACT_APP_API_URL || 'https://dartball-backend-654879525708.us-central1.run.app';
 
     useEffect(() => {
         const fetchTeams = async () => {
-        const response = await fetch('http://https://dartball-backend-654879525708.us-central1.run.app/routes/teams');
-            const data = await response.json();
+            try {
+                const response = await fetch(`${API_BASE}/routes/teams`);
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                const data = await response.json();
 
-            const teamsWithPct = data.map(team => {
-                const winPct = team.games_played > 0 ? (team.wins / team.games_played) : 0;
-                return { ...team, win_pct: winPct };
-            });
+                const teamsWithPct = data.map(team => {
+                    const winPct = team.games_played > 0 ? (team.wins / team.games_played) : 0;
+                    return { ...team, win_pct: winPct };
+                });
 
-            const leader = teamsWithPct.reduce((best, t) => {
-                if (t.win_pct > best.win_pct) return t;
-                if (t.win_pct === best.win_pct && t.wins > best.wins) return t;
-                return best;
-            }, teamsWithPct[0] || { wins: 0, losses: 0, win_pct: 0 });
+                const leader = teamsWithPct.reduce((best, t) => {
+                    if (t.win_pct > best.win_pct) return t;
+                    if (t.win_pct === best.win_pct && t.wins > best.wins) return t;
+                    return best;
+                }, teamsWithPct[0] || { wins: 0, losses: 0, win_pct: 0 });
 
-            const teamsWithGB = teamsWithPct.map(team => {
-                const gb = ((leader.wins - team.wins) + (team.losses - leader.losses)) / 2;
-                return { ...team, games_behind: gb };
-            });
+                const teamsWithGB = teamsWithPct.map(team => {
+                    const gb = ((leader.wins - team.wins) + (team.losses - leader.losses)) / 2;
+                    return { ...team, games_behind: gb };
+                });
 
-            const sortedTeams = teamsWithGB.sort((a, b) => b.win_pct - a.win_pct);
-            setTeams(sortedTeams);
+                const sortedTeams = teamsWithGB.sort((a, b) => b.win_pct - a.win_pct);
+                setTeams(sortedTeams);
+            } catch (err) {
+                console.error('fetchTeams failed', err);
+                setTeams([]);
+            }
         };
 
         fetchTeams();
-    }, []);
+    }, [API_BASE]);
 
     return (
         <div>
