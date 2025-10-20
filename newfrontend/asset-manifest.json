@@ -1,0 +1,16 @@
+{
+  "files": {
+    "main.css": "/dartball-league-app/static/css/main.e6c13ad2.css",
+    "main.js": "/dartball-league-app/static/js/main.d62abba6.js",
+    "static/js/453.d35fa294.chunk.js": "/dartball-league-app/static/js/453.d35fa294.chunk.js",
+    "static/media/HeaderImg.png": "/dartball-league-app/static/media/HeaderImg.1853e5027d05d5d4fdb3.png",
+    "index.html": "/dartball-league-app/index.html",
+    "main.e6c13ad2.css.map": "/dartball-league-app/static/css/main.e6c13ad2.css.map",
+    "main.d62abba6.js.map": "/dartball-league-app/static/js/main.d62abba6.js.map",
+    "453.d35fa294.chunk.js.map": "/dartball-league-app/static/js/453.d35fa294.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.e6c13ad2.css",
+    "static/js/main.d62abba6.js"
+  ]
+}

@@ -1,5 +1,0 @@
-# do not include DB file in image
-db.sqlite3
-*.db
-tmp/*.db
-instance/*.db
