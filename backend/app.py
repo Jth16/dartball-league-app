@@ -9,12 +9,17 @@ import os
 app = Flask(__name__)
 
 # Configure CORS: allow localhost during development and your production frontend
-ALLOWED_ORIGINS = os.environ.get("ALLOWED_ORIGINS", "http://localhost:3000,https://dartball-backend-654879525708.us-central1.run.app")
+ALLOWED_ORIGINS = os.environ.get(
+    "ALLOWED_ORIGINS",
+    "http://localhost:3000,https://dartball-backend-654879525708.us-central1.run.app,https://jth16.github.io"
+)
 _origins = [o.strip() for o in ALLOWED_ORIGINS.split(",") if o.strip()]
+
+from flask_cors import CORS
 CORS(app, resources={r"/*": {
     "origins": _origins,
-    "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    "allow_headers": ["Content-Type", "X-Download-Token", "Authorization", "X-Requested-With"]
+    "methods": ["GET","POST","PUT","DELETE","OPTIONS","PATCH","HEAD"],
+    "allow_headers": ["Content-Type","X-Download-Token","Authorization","X-Requested-With"]
 }}, supports_credentials=True)
 app.logger.info("CORS configured for origins: %s", _origins)
 
