@@ -7,7 +7,7 @@ import AdminPwdPage from "./components/AdminPwd";
 import Schedule from "./components/Schedule";
 
 function App() {
-  const [page, setPage] = useState("teams");
+ const [page, setPage] = useState("teams");
   const [teams, setTeams] = useState([]);
   const [isAdmin, setIsAdmin] = useState(false);
 
@@ -107,7 +107,7 @@ function App() {
         {page === "schedule" && <Schedule />}
         {page === "admin" &&
           (isAdmin ? (
-            <AdminLogin setIsAdmin={setIsAdmin} setTeams={setTeams} teams={teams} />
+            <AdminLogin setIsAdmin={setIsAdmin} />
           ) : (
             <AdminPwdPage setIsAdmin={setIsAdmin} />
           ))}
