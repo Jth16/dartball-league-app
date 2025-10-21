@@ -5,11 +5,12 @@ import AdminLogin from "./components/AdminLogin";
 import HeaderImage from "./components/HeaderImage";
 import AdminPwdPage from "./components/AdminPwd";
 import Schedule from "./components/Schedule";
+import Leaders from "./components/Leaders"; // added
 
 const API_BASE = process.env.REACT_APP_API_URL || "https://dartball-backend-654879525708.us-central1.run.app";
 
 function App() {
- const [page, setPage] = useState("teams");
+  const [page, setPage] = useState("teams");
   const [teams, setTeams] = useState([]);
   const [isAdmin, setIsAdmin] = useState(false);
 
@@ -110,11 +111,31 @@ function App() {
         >
           Schedule
         </button>
+
+        <button
+          onClick={() => setPage("leaders")}
+          style={{
+            background: page === "leaders" ? "#ff9800" : "#222",
+            color: "#fff",
+            border: "none",
+            borderRadius: "25px",
+            padding: "0.75rem 2rem",
+            margin: "0 1rem",
+            fontSize: "1.1rem",
+            fontWeight: "bold",
+            cursor: "pointer",
+            boxShadow: page === "leaders" ? "0 0 10px #ff9800" : "none",
+            transition: "all 0.2s",
+          }}
+        >
+          Leaders
+        </button>
       </nav>
       <div style={{ maxWidth: 900, height: "100%", margin: "auto", background: "#111", padding: "2rem", borderRadius: 16, boxShadow: "0 4px 24px rgba(0,0,0,0.8)" }}>
         {page === "teams" && <TeamsTable teams={teams} />}
         {page === "players" && <PlayersPage />}
         {page === "schedule" && <Schedule />}
+        {page === "leaders" && <Leaders />}
         {page === "admin" &&
           (isAdmin ? (
             <AdminLogin setIsAdmin={setIsAdmin} />
@@ -133,27 +154,29 @@ function App() {
           boxShadow: "0 -2px 8px rgba(0,0,0,0.7)",
         }}
       >
-        <a
-          href="#"
-          onClick={e => {
-            e.preventDefault();
-            setPage("admin");
-          }}
-          style={{
-            color: "#ff9800",
-            fontWeight: "bold",
-            fontSize: "1.1rem",
-            textDecoration: "none",
-            padding: "0.75rem 2rem",
-            borderRadius: "25px",
-            background: "#222",
-            boxShadow: "0 0 10px #ff9800",
-            cursor: "pointer",
-            transition: "all 0.2s",
-          }}
-        >
-          Admin Login
-        </a>
+        {page !== "admin" && (
+          <a
+            href="#"
+            onClick={e => {
+              e.preventDefault();
+              setPage("admin");
+            }}
+            style={{
+              color: "#ff9800",
+              fontWeight: "bold",
+              fontSize: "1.1rem",
+              textDecoration: "none",
+              padding: "0.75rem 2rem",
+              borderRadius: "25px",
+              background: "#222",
+              boxShadow: "0 0 10px #ff9800",
+              cursor: "pointer",
+              transition: "all 0.2s",
+            }}
+          >
+            Admin Login
+          </a>
+        )}
       </div>
     </div>
   );

@@ -148,12 +148,13 @@ const UpdatePlayerRecord = ({ teams }) => {
     padding: '0 14px',
     borderRadius: 8,
     border: 'none',
-    background: 'linear-gradient(90deg,#0ea5a4,#06b6d4)',
-    color: '#042027',
+    background: 'linear-gradient(90deg, rgb(124 68 32), rgb(212 109 6))',
+    color: '#000000ff',
     fontWeight: 700,
-    boxShadow: '0 6px 18px rgba(6,182,212,0.18)',
+    boxShadow: '0 6px 18px rgba(112, 83, 27, 0.18)',
     cursor: 'pointer',
-    transition: 'transform 120ms ease'
+    transition: 'transform 120ms ease',
+    marginTop: 18
   };
 
   const msgStyle = {
@@ -191,7 +192,7 @@ const UpdatePlayerRecord = ({ teams }) => {
       <h2 style={{ color: '#fff' }}>Update Player Record</h2>
 
       <div style={{ marginBottom: 8 }}>
-        <label style={labelStyle}>Team</label>
+        <label style={{ ...labelStyle, textAlign: 'left' }}>Team</label>
         <select
           value={selectedTeam}
           onChange={e => { setSelectedTeam(e.target.value); loadPlayers(e.target.value, false); }}
@@ -203,7 +204,7 @@ const UpdatePlayerRecord = ({ teams }) => {
       </div>
 
       <div style={{ marginBottom: 8 }}>
-        <label style={labelStyle}>Player</label>
+        <label style={{ ...labelStyle, textAlign: 'left' }}>Player</label>
         <select
           value={selectedPlayerId}
           onChange={e => handlePlayerSelect(e.target.value)}
@@ -217,6 +218,19 @@ const UpdatePlayerRecord = ({ teams }) => {
       {/* inputs remain visible even if no player selected; disabled until a player is chosen */}
       <form onSubmit={handleUpdate} style={{ marginTop: 6 }}>
         <div style={rowStyle}>
+             <div style={fieldWrapStyle}>
+            <label style={labelStyle}>AtBats</label>
+            <input
+              type="number"
+              inputMode="numeric"
+              min="0"
+              step="1"
+              value={stats.AtBats}
+              onChange={e => handleChange('AtBats', e.target.value)}
+              style={inputStyle}
+              disabled={!selectedPlayerId}
+            />
+          </div>
           <div style={fieldWrapStyle}>
             <label style={labelStyle}>Singles</label>
             <input
@@ -260,20 +274,6 @@ const UpdatePlayerRecord = ({ teams }) => {
           </div>
 
           <div style={fieldWrapStyle}>
-            <label style={labelStyle}>Dimes</label>
-            <input
-              type="number"
-              inputMode="numeric"
-              min="0"
-              step="1"
-              value={stats.Dimes}
-              onChange={e => handleChange('Dimes', e.target.value)}
-              style={inputStyle}
-              disabled={!selectedPlayerId}
-            />
-          </div>
-
-          <div style={fieldWrapStyle}>
             <label style={labelStyle}>HRs</label>
             <input
               type="number"
@@ -287,19 +287,19 @@ const UpdatePlayerRecord = ({ teams }) => {
             />
           </div>
 
-          <div style={fieldWrapStyle}>
-            <label style={labelStyle}>AtBats</label>
+  <div style={fieldWrapStyle}>
+            <label style={labelStyle}>Dimes</label>
             <input
               type="number"
               inputMode="numeric"
               min="0"
               step="1"
-              value={stats.AtBats}
-              onChange={e => handleChange('AtBats', e.target.value)}
+              value={stats.Dimes}
+              onChange={e => handleChange('Dimes', e.target.value)}
               style={inputStyle}
               disabled={!selectedPlayerId}
             />
-          </div>
+          </div>       
 
           <div style={fieldWrapStyle}>
             <button
@@ -335,13 +335,13 @@ const UpdatePlayerRecord = ({ teams }) => {
           <tbody>
             <tr>
               <td style={tdStyle}>{selectedPlayer.name}</td>
+                <td style={tdStyle}>{selectedPlayer.AtBats ?? 0}</td>
               <td style={tdStyle}>{selectedPlayer.Singles ?? 0}</td>
               <td style={tdStyle}>{selectedPlayer.Doubles ?? 0}</td>
               <td style={tdStyle}>{selectedPlayer.Triples ?? 0}</td>
-              <td style={tdStyle}>{selectedPlayer.Dimes ?? 0}</td>
               <td style={tdStyle}>{selectedPlayer.HRs ?? 0}</td>
-              <td style={tdStyle}>{selectedPlayer.AtBats ?? 0}</td>
-              <td style={tdStyle}>{selectedPlayer.hits ?? 0}</td>
+            <td style={tdStyle}>{selectedPlayer.Dimes ?? 0}</td>
+              <td style={tdStyle}>{selectedPlayer.hits ?? 0}</td> 
               <td style={tdStyle}>{selectedPlayer.GP ?? 0}</td>
               <td style={tdStyle}>{typeof selectedPlayer.Avg === 'number' ? selectedPlayer.Avg.toFixed(3).replace(/^0\./, '.') : (selectedPlayer.Avg ?? '0')}</td>
             </tr>

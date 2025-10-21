@@ -26,8 +26,7 @@ const AdminLogin = () => {
 
   return (
     <div style={{ padding: 24 }}>
-      <LoginForm apiBase={API_BASE} />
-      <hr />
+
       <RecordAdmin teams={teams} setTeams={setTeams} apiBase={API_BASE} downloadToken={DOWNLOAD_TOKEN} />
       <hr />
       <TeamAdmin apiBase={API_BASE} downloadToken={DOWNLOAD_TOKEN} />

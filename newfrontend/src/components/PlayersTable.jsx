@@ -44,14 +44,14 @@ const PlayersTable = () => {
 
     return (
         <div style={{ maxWidth: 1100, margin: "2rem auto", background: "#0b1220", color: "#fff", padding: "2rem", borderRadius: 16 }}>
-            <h1 style={{ marginBottom: "1rem" }}>Players by Team</h1>
+          <h1 style={{ marginBottom: "1rem" }}>All Players</h1>
 
             {groupedPlayers.length === 0 ? (
                 <p>Loading teams and players…</p>
             ) : (
                 groupedPlayers.map(group => (
                     <section key={group.teamId} style={{ marginBottom: 28 }}>
-                        <h2 style={{ margin: "8px 0 12px", color: "#a8d8ff" }}>{group.teamName}</h2>
+                        <h2 style={{ margin: "8px 0 12px", color: "#284964ff" }}>{group.teamName}</h2>
 
                         {group.players && group.players.length > 0 ? (
                             <table style={{ width: "100%", borderCollapse: "separate", borderSpacing: "0 10px" }}>
