@@ -197,6 +197,9 @@ def update_player():
         hits_inc = singles_inc + doubles_inc + triples_inc + hrs_inc
         player.hits = (getattr(player, 'hits', 0) or 0) + hits_inc
 
+        # Increment games played by 1 for every update (do not accept GP from payload)
+        player.GP = (getattr(player, 'GP', 0) or 0) + 1
+
         # Recompute Avg = hits / atbats (safe divide)
         total_atbats = getattr(player, 'AtBats', 0) or 0
         total_hits = getattr(player, 'hits', 0) or 0
@@ -209,7 +212,7 @@ def update_player():
         db.session.add(player)
         db.session.commit()
 
-        current_app.logger.info("update_player updated id=%s hits=%s atbats=%s", player.id, player.hits, player.AtBats)
+        current_app.logger.info("update_player updated id=%s hits=%s atbats=%s gp=%s", player.id, player.hits, player.AtBats, player.GP)
         player_json = {
             'id': player.id,
             'name': player.name,

@@ -43,7 +43,7 @@ const Schedule = () => {
           width: 100%;
           border-collapse: collapse;
           margin-top: 6px;
-          min-width: 820px;
+          min-width: 620px;
         }
 
         thead th{

@@ -3,90 +3,101 @@ import { fetchWithToken } from '../api';
 
 const PlayersTable = () => {
     const [teams, setTeams] = useState([]);
-    const [selectedTeamId, setSelectedTeamId] = useState("");
-    const [players, setPlayers] = useState([]);
+    const [groupedPlayers, setGroupedPlayers] = useState([]);
 
     useEffect(() => {
-        fetchWithToken('/routes/teams', { method: 'GET' })
-            .then(res => res.ok ? res.json() : Promise.reject(res.status))
-            .then(setTeams)
-            .catch(err => {
-                console.error('fetch teams failed', err);
-                setTeams([]);
-            });
+        let mounted = true;
+
+        const load = async () => {
+            try {
+                const teamsRes = await fetchWithToken('/routes/teams', { method: 'GET' });
+                if (!teamsRes.ok) throw new Error(`teams fetch ${teamsRes.status}`);
+                const teamsData = await teamsRes.json();
+                if (!mounted) return;
+                setTeams(teamsData);
+
+                // fetch players for each team in parallel
+                const groups = await Promise.all(teamsData.map(async (t) => {
+                    try {
+                        const res = await fetchWithToken(`/routes/players?team_id=${t.id}`, { method: 'GET' });
+                        const players = res.ok ? await res.json() : [];
+                        return { teamId: t.id, teamName: t.name, players };
+                    } catch (err) {
+                        console.error('fetch players for team failed', t.id, err);
+                        return { teamId: t.id, teamName: t.name, players: [] };
+                    }
+                }));
+
+                if (mounted) setGroupedPlayers(groups);
+            } catch (err) {
+                console.error('load teams/players failed', err);
+                if (mounted) {
+                    setTeams([]);
+                    setGroupedPlayers([]);
+                }
+            }
+        };
+
+        load();
+        return () => { mounted = false; };
     }, []);
 
-    useEffect(() => {
-        if (selectedTeamId) {
-            fetchWithToken(`/routes/players?team_id=${selectedTeamId}`, { method: 'GET' })
-                .then(res => res.ok ? res.json() : Promise.reject(res.status))
-                .then(setPlayers)
-                .catch(err => {
-                    console.error('fetch players failed', err);
-                    setPlayers([]);
-                });
-        } else {
-            setPlayers([]);
-        }
-    }, [selectedTeamId]);
-
     return (
-        <div style={{ maxWidth: 900, margin: "2rem auto", background: "#111", color: "#fff", padding: "2rem", borderRadius: 16 }}>
-            <h1 style={{ marginBottom: "2rem" }}>Players</h1>
-            <div style={{ marginBottom: "2rem" }}>
-                <label htmlFor="team-select" style={{ marginRight: "1rem" }}>Select Team:</label>
-                <select
-                    id="team-select"
-                    value={selectedTeamId}
-                    onChange={e => setSelectedTeamId(e.target.value)}
-                    style={{ padding: "0.5rem 1rem", borderRadius: 8, fontSize: "1rem" }}
-                >
-                    <option value="">-- Choose a Team --</option>
-                    {teams.map(team => (
-                        <option key={team.id} value={team.id}>{team.name}</option>
-                    ))}
-                </select>
-            </div>
-            {players.length > 0 ? (
-                <table style={{ width: "100%", borderCollapse: "separate", borderSpacing: "0 12px" }}>
-                    <thead>
-                        <tr style={{ background: "#222", color: "#fff" }}>
-                            <th style={{ padding: "12px" }}>Name</th>
-                            <th style={{ padding: "12px" }}>Singles</th>
-                            <th style={{ padding: "12px" }}>Doubles</th>
-                            <th style={{ padding: "12px" }}>Triples</th>
-                            <th style={{ padding: "12px" }}>Dimes</th>
-                            <th style={{ padding: "12px" }}>HRs</th>
-                            <th style={{ padding: "12px" }}>Hits</th>         {/* added column */}
-                            <th style={{ padding: "12px" }}>Avg</th>
-                            <th style={{ padding: "12px" }}>GP</th>
-                            <th style={{ padding: "12px" }}>At Bats</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {players.map(player => (
-                            <tr key={player.id} style={{ background: "#191919" }}>
-                                <td style={{ padding: "12px" }}>{player.name}</td>
-                                <td style={{ padding: "12px", textAlign: "center" }}>{player.Singles}</td>
-                                <td style={{ padding: "12px", textAlign: "center" }}>{player.Doubles}</td>
-                                <td style={{ padding: "12px", textAlign: "center" }}>{player.Triples}</td>
-                                <td style={{ padding: "12px", textAlign: "center" }}>{player.Dimes}</td>
-                                <td style={{ padding: "12px", textAlign: "center" }}>{player.HRs}</td>
-                                <td style={{ padding: "12px", textAlign: "center" }}>{player.hits ?? 0}</td>  {/* render hits */}
-                                <td style={{ padding: "12px", textAlign: "center" }}>
-                                    {typeof player.Avg === 'number'
-                                        ? player.Avg.toFixed(3).replace(/^0\./, ".")
-                                        : 'N/A'}
-                                </td>
-                                <td style={{ padding: "12px", textAlign: "center" }}>{player.GP}</td>
-                                <td style={{ padding: "12px", textAlign: "center" }}>{player.AtBats}</td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            ) : selectedTeamId ? (
-                <p>No players found for this team.</p>
-            ) : null}
+        <div style={{ maxWidth: 1100, margin: "2rem auto", background: "#0b1220", color: "#fff", padding: "2rem", borderRadius: 16 }}>
+            <h1 style={{ marginBottom: "1rem" }}>Players by Team</h1>
+
+            {groupedPlayers.length === 0 ? (
+                <p>Loading teams and players…</p>
+            ) : (
+                groupedPlayers.map(group => (
+                    <section key={group.teamId} style={{ marginBottom: 28 }}>
+                        <h2 style={{ margin: "8px 0 12px", color: "#a8d8ff" }}>{group.teamName}</h2>
+
+                        {group.players && group.players.length > 0 ? (
+                            <table style={{ width: "100%", borderCollapse: "separate", borderSpacing: "0 10px" }}>
+                                <thead>
+                                    <tr style={{ background: "#102231", color: "#e6f7ff" }}>
+                                        <th style={{ padding: "10px", textAlign: "left" }}>Name</th>
+                                        <th style={{ padding: "10px" }}>At Bats</th>
+                                        <th style={{ padding: "10px" }}>Hits</th>
+                                        <th style={{ padding: "10px" }}>Avg</th>
+                                        <th style={{ padding: "10px" }}>Singles</th>
+                                        <th style={{ padding: "10px" }}>Doubles</th>
+                                        <th style={{ padding: "10px" }}>Triples</th>
+                                        <th style={{ padding: "10px" }}>Dimes</th>
+                                        <th style={{ padding: "10px" }}>HRs</th>
+                                        <th style={{ padding: "10px" }}>GP</th>
+                                        
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {group.players.map(player => (
+                                        <tr key={player.id} style={{ background: "#07101a", borderRadius: 6 }}>   
+                                            <td style={{ padding: "10px" }}>{player.name}</td>
+                                            <td style={{ padding: "10px", textAlign: "center" }}>{player.AtBats ?? 0}</td>
+                                              <td style={{ padding: "10px", textAlign: "center" }}>{player.hits ?? 0}</td>
+                                              <td style={{ padding: "10px", textAlign: "center" }}>
+                                                {typeof player.Avg === 'number'
+                                                    ? player.Avg.toFixed(3).replace(/^0\./, ".")
+                                                    : 'N/A'}
+                                            </td>
+                                            <td style={{ padding: "10px", textAlign: "center" }}>{player.Singles ?? 0}</td>
+                                            <td style={{ padding: "10px", textAlign: "center" }}>{player.Doubles ?? 0}</td>
+                                            <td style={{ padding: "10px", textAlign: "center" }}>{player.Triples ?? 0}</td>     
+                                            <td style={{ padding: "10px", textAlign: "center" }}>{player.HRs ?? 0}</td>
+                                            <td style={{ padding: "10px", textAlign: "center" }}>{player.Dimes ?? 0}</td>
+                                            <td style={{ padding: "10px", textAlign: "center" }}>{player.GP ?? 0}</td>
+                                           
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        ) : (
+                            <p style={{ margin: "8px 0 0", color: "#9fb8d6" }}>No players for this team.</p>
+                        )}
+                    </section>
+                ))
+            )}
         </div>
     );
 };
