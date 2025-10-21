@@ -131,7 +131,7 @@ function App() {
           Leaders
         </button>
       </nav>
-      <div style={{ maxWidth: 900, height: "100%", margin: "auto", background: "#111", padding: "2rem", borderRadius: 16, boxShadow: "0 4px 24px rgba(0,0,0,0.8)" }}>
+      <div style={{ maxWidth: 900, height: "100%", minHeight: "600px", margin: "auto", background: "#111", padding: "2rem", borderRadius: 16, boxShadow: "0 4px 24px rgba(0,0,0,0.8)" }}>
         {page === "teams" && <TeamsTable teams={teams} />}
         {page === "players" && <PlayersPage />}
         {page === "schedule" && <Schedule />}

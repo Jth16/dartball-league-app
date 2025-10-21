@@ -1,25 +1,31 @@
 import React from "react";
-import headerImg from "../assets/HeaderImg.png"; // Make sure HeaderImg.png is in src/assets/
+import headerImg from "../assets/newheader.jpg";
 
 const HeaderImage = () => (
   <div
     style={{
       width: "100%",
-      background: "linear-gradient(90deg, #ff9800 0%, #232526 100%)",
-      padding: "2rem 0 1.5rem 0",
+      // richer gradient tuned to the header image: deep indigo -> teal with warm accent
+      background:
+        "radial-gradient(1200px 400px at 10% 10%, rgba(255,149,0,0.06), transparent 12%), " +
+        "linear-gradient(135deg, #031323 0%, #07202a 35%, #08343a 65%, #062827 100%)",
+      padding: "4rem 0 2.5rem 0",
       textAlign: "center",
-      marginBottom: "2rem",
-      boxShadow: "0 4px 24px rgba(0,0,0,0.4)",
+      marginBottom: "2.5rem",
+      boxShadow: "0 6px 28px rgba(0,0,0,0.45)",
     }}
   >
     <img
       src={headerImg}
       alt="Labelle Dartball League"
       style={{
-        maxWidth: "400px",
+        maxWidth: "900px",
         width: "100%",
+        height: "auto",
         marginBottom: "1rem",
-        filter: "drop-shadow(2px 2px 8px #000)",
+        borderRadius: 8,
+        boxShadow: "0 10px 40px rgba(0,0,0,0.6)",
+        filter: "saturate(1.05) contrast(1.02)",
       }}
     />
     <div
@@ -27,9 +33,9 @@ const HeaderImage = () => (
         fontFamily: "'Bebas Neue', 'Segoe UI', Arial, sans-serif",
         fontSize: "3rem",
         color: "#fff",
-        letterSpacing: "0.2em",
-        textShadow: "2px 2px 8px #000, 0 0 8px #ff9800",
-        fontWeight: "bold",
+        letterSpacing: "0.12em",
+        textShadow: "2px 2px 6px rgba(0,0,0,0.7), 0 0 8px rgba(10,132,120,0.06)",
+        fontWeight: 700,
         textTransform: "uppercase",
       }}
     >

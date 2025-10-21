@@ -28,7 +28,56 @@ def allow_preflight():
 def get_teams():
     try:
         teams = Team.query.all()
-        return jsonify([{"id": t.id, "name": t.name, "wins": getattr(t, "wins", 0), "losses": getattr(t, "losses", 0)} for t in teams])
+
+        def read_gp(team):
+            # prefer common GP field names, fall back to wins+losses
+            gp = getattr(team, "games_played", None)
+            if gp is None:
+                gp = getattr(team, "GP", None)
+            if gp is None:
+                gp = getattr(team, "games", None)
+            if gp is None:
+                gp = getattr(team, "gamesPlayed", None)
+            try:
+                return int(gp) if gp is not None else int((getattr(team, "wins", 0) or 0) + (getattr(team, "losses", 0) or 0))
+            except Exception:
+                return int((getattr(team, "wins", 0) or 0) + (getattr(team, "losses", 0) or 0))
+
+        def read_win_pct(team):
+            # prefer explicit saved win_pct-like fields
+            pct = getattr(team, "win_pct", None)
+            if pct is None:
+                pct = getattr(team, "win_percentage", None)
+            if pct is None:
+                pct = getattr(team, "winning_pct", None)
+            if pct is None:
+                pct = getattr(team, "WP", None)
+            if pct is None:
+                pct = getattr(team, "pct", None)
+
+            try:
+                n = float(pct) if pct is not None else 0.0
+                # if backend stored fraction (0..1) convert to percent
+                if n <= 1:
+                    n = n * 100.0
+                return float(n)
+            except Exception:
+                return 0.0
+
+        result = []
+        for t in teams:
+            gp = read_gp(t)
+            win_pct = read_win_pct(t)
+            result.append({
+                "id": t.id,
+                "name": t.name,
+                "wins": getattr(t, "wins", 0),
+                "losses": getattr(t, "losses", 0),
+                "games_played": gp,
+                "win_pct": round(win_pct, 3)
+            })
+
+        return jsonify(result)
     except Exception:
         current_app.logger.exception("get_teams failed")
         return jsonify({"error": "internal"}), 500
@@ -230,6 +279,132 @@ def update_player():
 
     except Exception as ex:
         current_app.logger.exception("update_player failed: %s", ex)
+        db.session.rollback()
+        return jsonify({'message': 'Internal server error', 'error': str(ex)}), 500
+
+@routes.route('/routes/admin/update_team_record', methods=['POST', 'OPTIONS'])
+@cross_origin(headers=['Content-Type', 'X-Download-Token'])
+def update_team_record():
+    # allow preflight
+    if request.method == 'OPTIONS':
+        return ('', 200)
+
+    data = request.get_json(silent=True) or {}
+    current_app.logger.info("update_team_record called payload=%s remote=%s", data, request.remote_addr)
+
+    team_id = data.get('team_id') or request.args.get('team_id')
+    if not team_id:
+        current_app.logger.warning("update_team_record missing team_id")
+        return jsonify({'message': 'team_id is required'}), 400
+
+    try:
+        team = Team.query.get(int(team_id))
+        if not team:
+            current_app.logger.warning("update_team_record team not found id=%s", team_id)
+            return jsonify({'message': 'team not found'}), 404
+
+        # parse numeric fields (treat incoming wins/losses as increments)
+        def to_int(v):
+            try:
+                return int(v)
+            except Exception:
+                return 0
+
+        inc_wins = to_int(data.get('wins', 0))
+        inc_losses = to_int(data.get('losses', 0))
+        games_behind = data.get('games_behind')
+
+        # add increments to existing fields
+        try:
+            existing_wins = int(getattr(team, 'wins', 0) or 0)
+            existing_losses = int(getattr(team, 'losses', 0) or 0)
+        except Exception:
+            existing_wins = existing_losses = 0
+
+        team.wins = existing_wins + inc_wins
+        team.losses = existing_losses + inc_losses
+
+        # calculate & update games played: add the input wins+losses to existing GP
+        try:
+            existing_gp = 0
+            if hasattr(team, 'games_played'):
+                existing_gp = int(getattr(team, 'games_played') or 0)
+            elif hasattr(team, 'GP'):
+                existing_gp = int(getattr(team, 'GP') or 0)
+            elif hasattr(team, 'games'):
+                existing_gp = int(getattr(team, 'games') or 0)
+
+            new_gp = existing_gp + inc_wins + inc_losses
+
+            if hasattr(team, 'games_played'):
+                team.games_played = new_gp
+            elif hasattr(team, 'GP'):
+                team.GP = new_gp
+            elif hasattr(team, 'games'):
+                team.games = new_gp
+            else:
+                current_app.logger.info("update_team_record: Team model has no GP field, computed gp=%s (not stored)", new_gp)
+        except Exception:
+            current_app.logger.exception("update_team_record failed calculating games played")
+            new_gp = int((getattr(team, 'wins', 0) or 0) + (getattr(team, 'losses', 0) or 0))
+
+        # compute winning percentage as wins / games_played * 100 and update win_pct field
+        try:
+            final_wins = int(getattr(team, 'wins', 0) or 0)
+            final_gp = int(new_gp if 'new_gp' in locals() else (getattr(team, 'games_played', None) or getattr(team, 'GP', None) or getattr(team, 'games', None) or (final_wins + int(getattr(team, 'losses', 0) or 0))))
+            win_pct = (float(final_wins) / final_gp * 100.0) if final_gp > 0 else 0.0
+
+            # update the win_pct column explicitly
+            try:
+                team.win_pct = win_pct
+            except Exception:
+                # fallback: try other common names and log
+                if hasattr(team, 'win_percentage'):
+                    team.win_percentage = win_pct
+                elif hasattr(team, 'winning_pct'):
+                    team.winning_pct = win_pct
+                elif hasattr(team, 'WP'):
+                    team.WP = win_pct
+                elif hasattr(team, 'pct'):
+                    team.pct = win_pct
+                else:
+                    current_app.logger.info("update_team_record: no win_pct field on Team model, computed win_pct=%s (not stored)", win_pct)
+        except Exception:
+            current_app.logger.exception("update_team_record failed calculating win percentage")
+
+        # allow float or int for games_behind
+        try:
+            if games_behind is not None:
+                team.games_behind = float(games_behind)
+        except Exception:
+            current_app.logger.warning("update_team_record invalid games_behind value=%s", games_behind)
+
+        db.session.add(team)
+        db.session.commit()
+
+        current_app.logger.info("update_team_record updated id=%s wins=%s losses=%s gp=%s win_pct=%s gb=%s",
+                                team.id,
+                                getattr(team, 'wins', None),
+                                getattr(team, 'losses', None),
+                                (getattr(team, 'games_played', None) or getattr(team, 'GP', None) or getattr(team, 'games', None)),
+                                getattr(team, 'win_pct', None),
+                                getattr(team, 'games_behind', None))
+
+        return jsonify({
+            'message': 'Team record updated',
+            'team': {
+                'id': team.id,
+                'name': team.name,
+                'wins': getattr(team, 'wins', 0),
+                'losses': getattr(team, 'losses', 0),
+                'games_behind': getattr(team, 'games_behind', 0),
+                'games_played': (getattr(team, 'games_played', None) or getattr(team, 'GP', None) or getattr(team, 'games', None)),
+                'win_pct': getattr(team, 'win_pct', 0.0)
+            }
+        }), 200
+
+    except Exception as ex:
+        current_app.logger.exception("update_team_record failed: %s", ex)
         db.session.rollback()
         return jsonify({'message': 'Internal server error', 'error': str(ex)}), 500
 
