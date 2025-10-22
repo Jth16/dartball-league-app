@@ -71,12 +71,12 @@ const TeamsTable = () => {
             }}>
                 <thead>
                     <tr style={{ background: "#222", color: "#fff" }}>
-                        <th style={{ padding: "2px" }}>Team Name</th>
-                        <th style={{ padding: "2px" }}>W</th>
-                        <th style={{ padding: "2px" }}>L</th>
-                        <th style={{ padding: "2px" }}>Win Pct.</th>
-                        <th style={{ padding: "2px" }}>Games Behind</th>
-                        <th style={{ padding: "2px" }}>Games Played</th>
+                        <th style={{ padding: "10px" }}>Team Name</th>
+                        <th style={{ padding: "10px" }}>W</th>
+                        <th style={{ padding: "10px" }}>L</th>
+                        <th style={{ padding: "10px" }}>Win Pct.</th>
+                        <th style={{ padding: "10px" }}>Games Behind</th>
+                        <th style={{ padding: "10px" }}>Games Played</th>
                     </tr>
                 </thead>
                 <tbody>

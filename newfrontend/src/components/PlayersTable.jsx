@@ -44,7 +44,7 @@ const PlayersTable = () => {
 
     return (
         // make container full width like TeamsTable and allow table scrolling on small screens
-        <div style={{ width: "100%", margin: "1rem 0", background: "#0b1220", color: "#fff", padding: "1rem", boxSizing: "border-box", borderRadius: 16 }}>
+        <div style={{ width: "100%", margin: "1rem 0", background: "rgba(17, 17, 17, 1)", color: "#fff", padding: "1rem", boxSizing: "border-box", borderRadius: 16 }}>
           <div style={{ maxWidth: 1100, margin: "0 auto" }}>
             <h1 style={{ marginBottom: "1rem" }}>All Players</h1>
 
@@ -53,29 +53,29 @@ const PlayersTable = () => {
             ) : (
                 groupedPlayers.map(group => (
                     <section key={group.teamId} style={{ marginBottom: 28 }}>
-                        <h2 style={{ margin: "8px 0 12px", color: "#284964ff" }}>{group.teamName}</h2>
+                        <h2 style={{ margin: "8px 0 12px", color: "#fff" }}>{group.teamName}</h2>
 
                         {group.players && group.players.length > 0 ? (
                             // horizontal scroll wrapper to fit on mobile
                             <div style={{ overflowX: "auto" }}>
-                              <table style={{ width: "100%", minWidth: 720, borderCollapse: "separate", borderSpacing: "0 10px" }}>
+                              <table style={{ width: "100%", minWidth: 300, borderCollapse: "separate", borderSpacing: "0 10px" }}>
                                 <thead>
-                                    <tr style={{ background: "#102231", color: "#e6f7ff" }}>
-                                        <th style={{ padding: "10px", textAlign: "left" }}>Name</th>
-                                        <th style={{ padding: "10px" }}>At Bats</th>
-                                        <th style={{ padding: "10px" }}>Hits</th>
-                                        <th style={{ padding: "10px" }}>Avg</th>
-                                        <th style={{ padding: "10px" }}>Singles</th>
-                                        <th style={{ padding: "10px" }}>Doubles</th>
-                                        <th style={{ padding: "10px" }}>Triples</th>
-                                        <th style={{ padding: "10px" }}>Dimes</th>
-                                        <th style={{ padding: "10px" }}>HRs</th>
-                                        <th style={{ padding: "10px" }}>GP</th>
+                                    <tr style={{ background: "rgba(34, 34, 34, 1)", color: "#e6f7ff" }}>
+                                        <th style={{ padding: "5px", textAlign: "left" }}>Name</th>
+                                        <th style={{ padding: "5px" }}>At Bats</th>
+                                        <th style={{ padding: "5px" }}>Hits</th>
+                                        <th style={{ padding: "5px" }}>Avg</th>
+                                        <th style={{ padding: "5px" }}>Singles</th>
+                                        <th style={{ padding: "5px" }}>Doubles</th>
+                                        <th style={{ padding: "5px" }}>Triples</th>
+                                        <th style={{ padding: "5px" }}>Dimes</th>
+                                        <th style={{ padding: "5px" }}>HRs</th>
+                                        <th style={{ padding: "5px" }}>GP</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {group.players.map(player => (
-                                        <tr key={player.id} style={{ background: "#07101a", borderRadius: 6 }}>   
+                                        <tr key={player.id} style={{ background: "rgba(17, 17, 17, 1)", borderRadius: 6 }}>   
                                             <td style={{ padding: "10px" }}>{player.name}</td>
                                             <td style={{ padding: "10px", textAlign: "center" }}>{player.AtBats ?? 0}</td>
                                               <td style={{ padding: "10px", textAlign: "center" }}>{player.hits ?? 0}</td>
