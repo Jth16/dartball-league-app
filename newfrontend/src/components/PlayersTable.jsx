@@ -43,8 +43,10 @@ const PlayersTable = () => {
     }, []);
 
     return (
-        <div style={{ maxWidth: 1100, margin: "2rem auto", background: "#0b1220", color: "#fff", padding: "2rem", borderRadius: 16 }}>
-          <h1 style={{ marginBottom: "1rem" }}>All Players</h1>
+        // make container full width like TeamsTable and allow table scrolling on small screens
+        <div style={{ width: "100%", margin: "1rem 0", background: "#0b1220", color: "#fff", padding: "1rem", boxSizing: "border-box", borderRadius: 16 }}>
+          <div style={{ maxWidth: 1100, margin: "0 auto" }}>
+            <h1 style={{ marginBottom: "1rem" }}>All Players</h1>
 
             {groupedPlayers.length === 0 ? (
                 <p>Loading teams and players…</p>
@@ -54,7 +56,9 @@ const PlayersTable = () => {
                         <h2 style={{ margin: "8px 0 12px", color: "#284964ff" }}>{group.teamName}</h2>
 
                         {group.players && group.players.length > 0 ? (
-                            <table style={{ width: "100%", borderCollapse: "separate", borderSpacing: "0 10px" }}>
+                            // horizontal scroll wrapper to fit on mobile
+                            <div style={{ overflowX: "auto" }}>
+                              <table style={{ width: "100%", minWidth: 720, borderCollapse: "separate", borderSpacing: "0 10px" }}>
                                 <thead>
                                     <tr style={{ background: "#102231", color: "#e6f7ff" }}>
                                         <th style={{ padding: "10px", textAlign: "left" }}>Name</th>
@@ -67,7 +71,6 @@ const PlayersTable = () => {
                                         <th style={{ padding: "10px" }}>Dimes</th>
                                         <th style={{ padding: "10px" }}>HRs</th>
                                         <th style={{ padding: "10px" }}>GP</th>
-                                        
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -87,17 +90,18 @@ const PlayersTable = () => {
                                             <td style={{ padding: "10px", textAlign: "center" }}>{player.HRs ?? 0}</td>
                                             <td style={{ padding: "10px", textAlign: "center" }}>{player.Dimes ?? 0}</td>
                                             <td style={{ padding: "10px", textAlign: "center" }}>{player.GP ?? 0}</td>
-                                           
                                         </tr>
                                     ))}
                                 </tbody>
-                            </table>
+                              </table>
+                            </div>
                         ) : (
                             <p style={{ margin: "8px 0 0", color: "#9fb8d6" }}>No players for this team.</p>
                         )}
                     </section>
                 ))
             )}
+          </div>
         </div>
     );
 };

@@ -11,7 +11,7 @@ app = Flask(__name__)
 # Configure CORS: allow localhost during development and your production frontend
 ALLOWED_ORIGINS = os.environ.get(
     "ALLOWED_ORIGINS",
-    "http://localhost:3000,https://dartball-backend-654879525708.us-central1.run.app,https://jth16.github.io"
+    "http://localhost:3000,https://dartball-backend-654879525708.us-central1.run.app,https://jth16.github.io,https://ltvfdartball.com"
 )
 _origins = [o.strip() for o in ALLOWED_ORIGINS.split(",") if o.strip()]
 
