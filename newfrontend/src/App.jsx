@@ -38,7 +38,7 @@ function App() {
   return (
     <div
       style={{
-        minWidth: "600px",
+        minWidth: "660px",
         background: "#000",
         minHeight: "100vh",
         color: "#fff",

@@ -81,7 +81,7 @@ const Leaders = () => {
   const containerStyle = {
     maxWidth: 1100,
     margin: "2rem auto",
-    background: "#0b1220",
+    background: "rgba(17, 17, 17, 1)",
     color: "#fff",
     padding: "2rem",
     borderRadius: 16
@@ -94,27 +94,29 @@ const Leaders = () => {
     marginTop: 12
   };
 
+  // styled like TeamsTable: spaced rows, header dark, rows darker, responsive scroll
   const smallTableStyle = {
     width: '100%',
     borderCollapse: 'separate',
-    borderSpacing: '0 10px',
+    borderSpacing: '0 12px',
+    minWidth: 320
   };
 
   const thStyle = {
     padding: '10px',
     textAlign: 'left',
-    background: '#102231',
-    color: '#e6f7ff',
+    background: '#222',
+    color: '#fff',
     fontWeight: 700
   };
 
   const tdStyle = {
     padding: '10px',
-    color: '#e6f7ff'
+    color: '#fff'
   };
 
   const rowStyle = {
-    background: '#07101a',
+    background: '#111',
     borderRadius: 6
   };
 
@@ -145,28 +147,30 @@ const Leaders = () => {
                 <div style={{ ...tableLabelStyle, textAlign: 'center' }}>{tbl.title}</div>
               </div>
 
-              <table style={smallTableStyle}>
-                <thead>
-                  <tr>
-                    <th style={{ ...thStyle, width: 36, textAlign: 'center' }}>#</th>
-                    <th style={thStyle}>Name</th>
-                    <th style={thStyle}>Team</th>
-                    <th style={{ ...thStyle, textAlign: 'center', width: 80 }}>{tbl.title.includes('Avg') ? 'Avg' : 'Total'}</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {rows.length === 0 ? (
-                    <tr><td colSpan="4" style={{ padding: 12, textAlign: 'center', color: '#cbd5e1' }}>—</td></tr>
-                  ) : rows.map((p, idx) => (
-                    <tr key={p.id} style={rowStyle}>
-                      <td style={{ ...tdStyle, textAlign: 'center' }}>{idx + 1}</td>
-                      <td style={tdStyle}>{p.name}</td>
-                      <td style={tdStyle}>{teamsMap[p.team_id] ?? p.team_id}</td>
-                      <td style={{ ...tdStyle, textAlign: 'center' }}>{tbl.format(p[tbl.key] ?? 0)}</td>
+              <div style={{ overflowX: 'auto' }}>
+                <table style={smallTableStyle}>
+                  <thead>
+                    <tr>
+                      <th style={{ ...thStyle, width: 36, textAlign: 'center' }}>#</th>
+                      <th style={thStyle}>Name</th>
+                      <th style={thStyle}>Team</th>
+                      <th style={{ ...thStyle, textAlign: 'center', width: 80 }}>{tbl.title.includes('Avg') ? 'Avg' : 'Total'}</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {rows.length === 0 ? (
+                      <tr><td colSpan="4" style={{ padding: 12, textAlign: 'center', color: '#cbd5e1' }}>—</td></tr>
+                    ) : rows.map((p, idx) => (
+                      <tr key={p.id} style={rowStyle}>
+                        <td style={{ ...tdStyle, textAlign: 'center' }}>{idx + 1}</td>
+                        <td style={tdStyle}>{p.name}</td>
+                        <td style={tdStyle}>{teamsMap[p.team_id] ?? p.team_id}</td>
+                        <td style={{ ...tdStyle, textAlign: 'center' }}>{tbl.format(p[tbl.key] ?? 0)}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
           );
         })}
