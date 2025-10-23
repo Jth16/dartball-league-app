@@ -1,9 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { fetchWithToken } from '../api';
+import { printElement } from '../utils/print';
 
 const PlayersTable = () => {
     const [teams, setTeams] = useState([]);
     const [groupedPlayers, setGroupedPlayers] = useState([]);
+    const containerRef = useRef(null);
 
     useEffect(() => {
         let mounted = true;
@@ -111,11 +113,19 @@ const PlayersTable = () => {
     };
 
     return (
-      <div style={containerStyle}>
-        <h1 style={{ margin: "0 0 12px 0", color: "#fff" }}>All Players</h1>
+      <div ref={containerRef} data-printable style={containerStyle}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <h1 style={{ margin: "0 0 12px 0", color: "#fff" }}>All Players</h1>
+          <button
+            className="no-print"
+            onClick={() => printElement(containerRef.current)}
+            style={{ padding: '6px 10px', cursor: 'pointer', borderRadius: 6, border: 'none', background: '#c2410c', color: '#fff' }}
+          >
+            Print
+          </button>
+        </div>
 
         <div style={accentBar} />
-
         <div style={{ height: 12 }} />
 
         {groupedPlayers.length === 0 ? (

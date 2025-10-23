@@ -1,8 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { fetchWithToken } from '../api';
+import { printElement } from '../utils/print';
 
 const TeamsTable = () => {
     const [teams, setTeams] = useState([]);
+    const containerRef = useRef(null);
 
     useEffect(() => {
         const fetchTeams = async () => {
@@ -139,10 +141,20 @@ const TeamsTable = () => {
     });
 
     return (
-         <div style={containerStyle}>
+         // attach ref and data-printable so print helper can capture the whole component
+         <div ref={containerRef} data-printable style={containerStyle}>
            <div style={headerStyle}>
              <h1 style={titleStyle}>Team Standings</h1>
-             <div style={{ color: "#9fb8d6", fontSize: 14 }}>Season standings</div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+              <div style={{ color: "#9fb8d6", fontSize: 14 }}>Season standings</div>
+              <button
+                className="no-print"
+                onClick={() => printElement(containerRef.current)}
+                style={{ padding: '6px 10px', cursor: 'pointer', borderRadius: 6, border: 'none', background: '#c2410c', color: '#fff' }}
+              >
+                Print
+              </button>
+            </div>
            </div>
 
            <div style={accentBar} />

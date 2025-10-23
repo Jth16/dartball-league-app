@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
+import { printElement } from '../utils/print';
 
 const API_BASE = process.env.REACT_APP_API_URL || 'https://dartball-backend-654879525708.us-central1.run.app';
-
-const TOP_N = 5; // changed to top 5
+const TOP_N = 5;
 
 const normalizeNum = (v) => {
   const n = Number(v);
@@ -12,6 +12,7 @@ const normalizeNum = (v) => {
 const Leaders = () => {
   const [players, setPlayers] = useState([]);
   const [teamsMap, setTeamsMap] = useState({});
+  const containerRef = useRef(null);
 
   useEffect(() => {
     let mounted = true;
@@ -49,15 +50,6 @@ const Leaders = () => {
     return () => { mounted = false; };
   }, []);
 
-  if (!players.length) {
-    return (
-      <div style={{ maxWidth: 1100, margin: "2rem auto", background: "#161008ff", color: "#fff", padding: "2rem", borderRadius: 16 }}>
-        <h2 style={{ color: '#fff', marginBottom: 12 }}>Leaders</h2>
-        <p style={{ color: '#cbd5e1' }}>Loading…</p>
-      </div>
-    );
-  }
-
   const topBy = (key, n = TOP_N) => {
     const sorted = [...players].sort((a, b) => {
       const av = normalizeNum(b[key]) - normalizeNum(a[key]);
@@ -78,28 +70,58 @@ const Leaders = () => {
     { title: 'Most Dimes', key: 'Dimes', label: 'Most Dimes', format: (v) => v },
   ];
 
+  // Styles matched to TeamsTable theme (dark + dark-orange accent)
   const containerStyle = {
     maxWidth: 1100,
     margin: "2rem auto",
-    background: "rgba(17, 17, 17, 1)",
+    background: "linear-gradient(180deg, rgba(8,18,24,0.95) 0%, rgba(6,30,36,0.95) 100%)",
+    color: "#e6f7ff",
+    padding: "1.75rem",
+    borderRadius: 14,
+    boxShadow: "0 10px 30px rgba(2,6,8,0.6)",
+    boxSizing: "border-box"
+  };
+
+  const headerStyle = {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: "0.5rem"
+  };
+
+  const titleStyle = {
+    margin: 0,
     color: "#fff",
-    padding: "2rem",
-    borderRadius: 16
+    fontSize: "1.5rem",
+    letterSpacing: "0.02em"
+  };
+
+  const descStyle = {
+    color: "#cbd5e1",
+    fontSize: 13
+  };
+
+  const accentBar = {
+    height: 6,
+    borderRadius: 6,
+    background: "linear-gradient(90deg,#7a2b00,#c2410c,#ff8a00)",
+    marginTop: 12,
+    boxShadow: "0 6px 18px rgba(194,65,12,0.08)"
   };
 
   const tableWrapperStyle = {
     display: 'grid',
-    gridTemplateColumns: 'repeat(2, minmax(280px, 1fr))', // two per row
+    gridTemplateColumns: 'repeat(2, minmax(280px, 1fr))',
     gap: 16,
-    marginTop: 12
+    marginTop: 14
   };
 
-  // styled like TeamsTable: spaced rows, header dark, rows darker, responsive scroll
   const smallTableStyle = {
     width: '100%',
     borderCollapse: 'separate',
     borderSpacing: '0 12px',
-    minWidth: 280
+    minWidth: 310,
+    fontSize: "0.95rem"
   };
 
   const thStyle = {
@@ -116,61 +138,57 @@ const Leaders = () => {
   };
 
   const rowStyle = {
-    background: '#111',
+    background: 'linear-gradient(180deg,#07101a 0%, #0b1520 100%)',
     borderRadius: 6
   };
 
-  const tableLabelStyle = {
-    color: '#fff',
-    fontSize: 14,
-    fontWeight: 700,
-    marginBottom: 4
-  };
-
-  const tableDescStyle = {
-    color: '#cbd5e1',
-    fontSize: 12,
-    marginBottom: 8
-  };
-
   return (
-    <div style={containerStyle}>
-      <h1 style={{ color: '#fff', marginBottom: 6 ,textAlign: 'center'}}>League Leaders</h1>
-      <p style={{ color: '#cbd5e1', marginTop: 0, marginBottom: 12,textAlign: 'center' }}>Top players by category</p>
+    <div ref={containerRef} data-printable style={containerStyle}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+        <div>
+          <h1 style={titleStyle}>League Leaders</h1>
+          <div style={descStyle}>Top players by category</div>
+        </div>
+        <button
+          className="no-print"
+          onClick={() => printElement(containerRef.current)}
+          style={{ padding: '6px 10px', cursor: 'pointer', borderRadius: 6, border: 'none', background: '#c2410c', color: '#fff' }}
+        >
+          Print
+        </button>
+      </div>
+
+      <div style={accentBar} />
 
       <div style={tableWrapperStyle}>
         {tables.map(tbl => {
           const rows = topBy(tbl.key);
           return (
-            <div key={tbl.key}>
-              <div style={{ marginBottom: 8 }}>
-                <div style={{ ...tableLabelStyle, textAlign: 'center' }}>{tbl.title}</div>
-              </div>
+            <div key={tbl.key} style={{ overflowX: 'auto' }}>
+              <div style={{ marginBottom: 8, textAlign: 'center', color: '#fff', fontWeight: 700 }}>{tbl.title}</div>
 
-              <div style={{ overflowX: 'auto' }}>
-                <table style={smallTableStyle}>
-                  <thead>
-                    <tr>
-                      <th style={{ ...thStyle, width: 36, textAlign: 'center' }}>#</th>
-                      <th style={thStyle}>Name</th>
-                      <th style={thStyle}>Team</th>
-                      <th style={{ ...thStyle, textAlign: 'center', width: 80 }}>{tbl.title.includes('Avg') ? 'Avg' : 'Total'}</th>
+              <table style={smallTableStyle}>
+                <thead>
+                  <tr>
+                    <th style={{ ...thStyle, width: 36, textAlign: 'center' }}>#</th>
+                    <th style={thStyle}>Name</th>
+                    <th style={thStyle}>Team</th>
+                    <th style={{ ...thStyle, textAlign: 'center', width: 80 }}>{tbl.title.includes('Avg') ? 'Avg' : 'Total'}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {rows.length === 0 ? (
+                    <tr><td colSpan="4" style={{ padding: 12, textAlign: 'center', color: '#cbd5e1' }}>—</td></tr>
+                  ) : rows.map((p, idx) => (
+                    <tr key={p.id || idx} style={rowStyle}>
+                      <td style={{ ...tdStyle, textAlign: 'center' }}>{idx + 1}</td>
+                      <td style={tdStyle}>{p.name}</td>
+                      <td style={tdStyle}>{teamsMap[p.team_id] ?? p.team_id}</td>
+                      <td style={{ ...tdStyle, textAlign: 'center' }}>{tbl.format(p[tbl.key] ?? 0)}</td>
                     </tr>
-                  </thead>
-                  <tbody>
-                    {rows.length === 0 ? (
-                      <tr><td colSpan="4" style={{ padding: 12, textAlign: 'center', color: '#cbd5e1' }}>—</td></tr>
-                    ) : rows.map((p, idx) => (
-                      <tr key={p.id} style={rowStyle}>
-                        <td style={{ ...tdStyle, textAlign: 'center' }}>{idx + 1}</td>
-                        <td style={tdStyle}>{p.name}</td>
-                        <td style={tdStyle}>{teamsMap[p.team_id] ?? p.team_id}</td>
-                        <td style={{ ...tdStyle, textAlign: 'center' }}>{tbl.format(p[tbl.key] ?? 0)}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+                  ))}
+                </tbody>
+              </table>
             </div>
           );
         })}
