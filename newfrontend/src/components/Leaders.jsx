@@ -112,15 +112,15 @@ const Leaders = () => {
   const tableWrapperStyle = {
     display: 'grid',
     gridTemplateColumns: 'repeat(2, minmax(280px, 1fr))',
-    gap: 16,
+    gap: 8,
     marginTop: 14
   };
 
   const smallTableStyle = {
-    width: '100%',
+    width: '95%',
     borderCollapse: 'separate',
     borderSpacing: '0 12px',
-    minWidth: 310,
+    minWidth: 280,
     fontSize: "0.95rem"
   };
 

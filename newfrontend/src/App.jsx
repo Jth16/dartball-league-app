@@ -186,7 +186,7 @@ function App() {
               transition: "all 0.2s",
             }}
           >
-            Admin Login
+            Admin
           </a>
         )}
       </div>
