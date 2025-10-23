@@ -80,7 +80,7 @@ const TeamsTable = () => {
                 fontSize: "0.95rem"
             }}>
                 <thead>
-                    <tr style={{ background: "#222", color: "#fff" }}>
+                    <tr style={{ background: "rgba(29, 30, 31, 1)", color: "#fff" }}>
                         <th style={{ padding: "10px" }}>Team Name</th>
                         <th style={{ padding: "10px" }}>W</th>
                         <th style={{ padding: "10px" }}>L</th>

@@ -105,9 +105,9 @@ const Schedule = () => {
   };
 
   const thStyle = {
-    padding: '10px',
-    textAlign: 'left',
-    background: '#222',
+    padding: '5px',
+    textAlign: 'center',
+    background: 'rgba(29, 30, 31, 1)',
     color: '#fff',
     fontWeight: 700
   };
