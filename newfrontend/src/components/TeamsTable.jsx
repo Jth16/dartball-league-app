@@ -59,8 +59,18 @@ const TeamsTable = () => {
         return s.replace(/^0\./, '.');   // display like .750
     };
 
+    // styles matching TeamsTable
+  const containerStyle = {
+    maxWidth: 1100,
+    margin: "2rem auto",
+    background: "rgba(29, 30, 31, 1)",
+    color: "#fff",
+    padding: "2rem",
+    borderRadius: 16
+  };
+
     return (
-        <div>
+         <div style={containerStyle}>
            <h1 style={{ marginBottom: "2rem" }}>Team Standings</h1>
            <table style={{
                 width: "100%",
