@@ -112,7 +112,7 @@ const Schedule = () => {
   const titleStyle = {
     margin: 0,
     color: "#fff",
-    fontSize: "1.25rem",
+    fontSize: "2rem",
     fontWeight: 700
   };
 
@@ -190,7 +190,7 @@ const Schedule = () => {
         <h1 style={titleStyle}>Labelle Dartball 2025 Schedule</h1>
         <button
           className="no-print"
-          onClick={() => printElement(containerRef.current)}
+           onClick={() => printElement(containerRef.current, { fontSize: '11px', cellPadding: '4px' })}
           style={{
             padding: '6px 10px',
             cursor: 'pointer',

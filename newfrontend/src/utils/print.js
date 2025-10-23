@@ -48,7 +48,10 @@ export function printElement(el, options = {}) {
     clone.querySelectorAll && clone.querySelectorAll('.no-print, [data-print-exclude]').forEach(n => n.remove());
   } catch (err) { /* ignore */ }
 
-  // additional small print-styles to ensure controls (if any) stay hidden
+  // build extra print styles; allow caller to specify a smaller font size via options.fontSize
+  const fontSizeRule = options.fontSize ? `body, body * { font-size: ${options.fontSize} !important; }` : '';
+  const cellPaddingRule = options.cellPadding ? `td, th { padding: ${options.cellPadding} !important; }` : '';
+
   const extraPrintStyles = `<style>
     @media print {
       /* hide UI controls */
@@ -81,6 +84,11 @@ export function printElement(el, options = {}) {
 
       /* safety: hide anything explicitly marked no-print again */
       .no-print, [data-print-exclude] { display: none !important; }
+
+      /* optional font-size override injected from options */
+      ${fontSizeRule}
+      /* optional cell padding override */
+      ${cellPaddingRule}
     }
   </style>`;
 
