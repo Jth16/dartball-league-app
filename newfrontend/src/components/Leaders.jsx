@@ -51,7 +51,7 @@ const Leaders = () => {
 
   if (!players.length) {
     return (
-      <div style={{ maxWidth: 1100, margin: "2rem auto", background: "#0b1220", color: "#fff", padding: "2rem", borderRadius: 16 }}>
+      <div style={{ maxWidth: 1100, margin: "2rem auto", background: "#161008ff", color: "#fff", padding: "2rem", borderRadius: 16 }}>
         <h2 style={{ color: '#fff', marginBottom: 12 }}>Leaders</h2>
         <p style={{ color: '#cbd5e1' }}>Loading…</p>
       </div>

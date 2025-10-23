@@ -190,7 +190,7 @@ const UpdatePlayerRecord = ({ teams }) => {
   return (
     <section>
       <h2 style={{ color: '#fff' }}>Update Player Record</h2>
-
+      <p>Update the statistics for a specific player in the selected team.</p>
       <div style={{ marginBottom: 8 }}>
         <label style={{ ...labelStyle, textAlign: 'left' }}>Team</label>
         <select
