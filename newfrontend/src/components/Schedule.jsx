@@ -55,7 +55,7 @@ const Schedule = () => {
     const load = async () => {
       try {
         // Prefer a filename with no spaces; encodeURI keeps spaces safe if you keep them.
-        const url = encodeURI('/newest-darts-schedule.csv'); // <- put this file into public/
+        const url = encodeURI('/Newest-Darts-Schedule.csv'); // <- put this file into public/
         const res = await fetch(url, { cache: 'no-cache' });
 
         let text = '';
