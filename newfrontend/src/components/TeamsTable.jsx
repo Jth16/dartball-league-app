@@ -11,15 +11,10 @@ const TeamsTable = () => {
                 if (!response.ok) throw new Error(`HTTP ${response.status}`);
                 const data = await response.json();
 
-                // helper to read games played from any field name
-                const getGP = (t) => {
-                    return Number(t.games_played ?? t.GP ?? t.games ?? t.gamesPlayed ?? 0) || 0;
-                };
+                const getGP = (t) => Number(t.games_played ?? t.GP ?? t.games ?? t.gamesPlayed ?? 0) || 0;
 
-                // Use win_pct returned from the route (do not compute from wins/gp)
                 const normalizeWinPct = (t) => {
                     const raw = Number(t.win_pct ?? t.win_percentage ?? t.WP ?? 0) || 0;
-                    // if backend returned fraction (<= 1) convert to percent, otherwise assume percent already
                     return raw <= 1 ? raw * 100 : raw;
                 };
 
@@ -54,62 +49,138 @@ const TeamsTable = () => {
 
     const formatPct = (pct) => {
         const n = Number(pct) || 0;
-        const v = n / 100;               // divide win percentage by 100
-        const s = v.toFixed(3);          // show 3 decimal places
-        return s.replace(/^0\./, '.');   // display like .750
+        const v = n / 100;
+        const s = v.toFixed(3);
+        return s.replace(/^0\./, '.');
     };
 
-    // styles matching TeamsTable
-  const containerStyle = {
-    maxWidth: 1100,
-    margin: "2rem auto",
-    background: "rgba(29, 30, 31, 1)",
-    color: "#fff",
-    padding: "2rem",
-    borderRadius: 16
-  };
+    // themed styles (blue accents changed to dark orange)
+    const containerStyle = {
+      maxWidth: 1100,
+      margin: "2rem auto",
+      background: "linear-gradient(180deg, rgba(8,18,24,0.95) 0%, rgba(6,30,36,0.95) 100%)",
+      color: "#e6f7ff",
+      padding: "1.5rem",
+      borderRadius: 14,
+      boxShadow: "0 10px 30px rgba(2,6,8,0.6)",
+      boxSizing: "border-box",
+    };
+
+    const headerStyle = {
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "space-between",
+      marginBottom: "1rem"
+    };
+
+    const titleStyle = {
+      margin: 0,
+      color: "#fff",
+      fontSize: "1.5rem",
+      letterSpacing: "0.02em"
+    };
+
+    const accentBar = {
+      height: 6,
+      borderRadius: 6,
+      // replaced teal/cyan with dark orange gradient
+      background: "linear-gradient(90deg,#7a2b00,#c2410c,#ff8a00)",
+      marginTop: 12,
+      // boxShadow tint changed to match dark orange
+      boxShadow: "0 6px 18px rgba(194,65,12,0.08)"
+    };
+
+    const tableWrap = { overflowX: "auto", borderRadius: 10 };
+
+    const tableStyle = {
+      width: "100%",
+      minWidth: 520,
+      borderCollapse: "separate",
+      borderSpacing: "0 10px",
+      fontSize: "0.95rem"
+    };
+
+    const theadStyle = {
+      background: "transparent",
+      color: "#cdeef2"
+    };
+
+    const thStyle = {
+      padding: "12px 14px",
+      textAlign: "left",
+      // header text warmed slightly to match orange theme
+      color: "#ffe8d0",
+      fontWeight: 700,
+      fontSize: "0.95rem"
+    };
+
+    const rowStyle = {
+      background: "linear-gradient(180deg,#07101a 0%, #0b1520 100%)",
+      color: "#fff",
+      borderRadius: 8,
+      boxShadow: "inset 0 -1px 0 rgba(255,255,255,0.02)"
+    };
+
+    const cellStyle = {
+      padding: "10px 12px",
+      verticalAlign: "middle"
+    };
+
+    const pctBadge = (pct) => ({
+      display: "inline-block",
+      minWidth: 64,
+      padding: "6px 8px",
+      borderRadius: 8,
+      // badge background and text updated to dark orange tones
+      background: "rgba(194,65,12,0.12)",
+      color: "#ffd7b0",
+      fontWeight: 700,
+      textAlign: "center"
+    });
 
     return (
          <div style={containerStyle}>
-           <h1 style={{ marginBottom: "2rem" }}>Team Standings</h1>
-           <table style={{
-                width: "100%",
-                minWidth: "300px",
-                borderCollapse: "separate",
-                borderSpacing: "0 12px",
-                fontSize: "0.95rem"
-            }}>
-                <thead>
-                    <tr style={{ background: "rgba(29, 30, 31, 1)", color: "#fff" }}>
-                        <th style={{ padding: "10px" }}>Team Name</th>
-                        <th style={{ padding: "10px" }}>W</th>
-                        <th style={{ padding: "10px" }}>L</th>
-                        <th style={{ padding: "10px" }}>Win Pct.</th>
-                        <th style={{ padding: "10px" }}>Games Behind</th>
-                        <th style={{ padding: "10px" }}>Games Played</th>
-                    </tr>
-                </thead>
-                <tbody>
+           <div style={headerStyle}>
+             <h1 style={titleStyle}>Team Standings</h1>
+             <div style={{ color: "#9fb8d6", fontSize: 14 }}>Season standings</div>
+           </div>
+
+           <div style={accentBar} />
+
+           <div style={{ height: 12 }} />
+
+           <div style={tableWrap}>
+             <table style={tableStyle}>
+               <thead style={theadStyle}>
+                <tr>
+                  <th style={thStyle}>Team Name</th>
+                  <th style={{ ...thStyle, textAlign: "center", width: 64 }}>W</th>
+                  <th style={{ ...thStyle, textAlign: "center", width: 64 }}>L</th>
+                  <th style={{ ...thStyle, textAlign: "center", width: 120 }}>Win Pct.</th>
+                  <th style={{ ...thStyle, textAlign: "center", width: 90 }}>Games Behind</th>
+                  <th style={{ ...thStyle, textAlign: "center", width: 90 }}>Games Played</th>
+                </tr>
+               </thead>
+               <tbody>
                     {teams.map((team) => (
-                        <tr key={team.id} style={{ background: "#111", color: "#fff" }}>
-                            <td style={{ padding: "2px 8px" }}>{team.name}</td>
-                            <td style={{ padding: "2px 8px", textAlign: "center" }}>{team.wins}</td>
-                            <td style={{ padding: "2px 8px", textAlign: "center" }}>{team.losses}</td>
-                            <td style={{ padding: "2px 8px", textAlign: "center" }}>
+                        <tr key={team.id} style={rowStyle}>
+                            <td style={{ ...cellStyle, paddingLeft: 18 }}>{team.name}</td>
+                            <td style={{ ...cellStyle, textAlign: "center" }}>{team.wins}</td>
+                            <td style={{ ...cellStyle, textAlign: "center" }}>{team.losses}</td>
+                            <td style={{ ...cellStyle, textAlign: "center" }}>
                                 {team.games_played > 0
-                                    ? formatPct(team.win_pct)
-                                    : '.000'}
+                                    ? <span style={pctBadge(formatPct(team.win_pct))}>{formatPct(team.win_pct)}</span>
+                                    : <span style={pctBadge('.000')}>.000</span>}
                             </td>
-                            <td style={{ padding: "2px 8px", textAlign: "center" }}>
-                                {team.games_behind === 0
-                                    ? "—"
-                                    : Number(team.games_behind).toFixed(1)}
+                            <td style={{ ...cellStyle, textAlign: "center" }}>
+                                {team.games_behind === 0 ? "—" : Number(team.games_behind).toFixed(1)}
                             </td>
-                            <td style={{ padding: "2px 8px", textAlign: "center" }}>{team.games_played}</td>
+                            <td style={{ ...cellStyle, textAlign: "center" }}>{team.games_played}</td>
                         </tr>
                     ))}
-                </tbody>
-            </table>
+               </tbody>
+             </table>
+           </div>
         </div>
     );
 };

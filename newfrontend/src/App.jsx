@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import TeamsTable from "./components/TeamsTable";
 import PlayersPage from "./components/PlayersTable";
 import AdminLogin from "./components/AdminLogin";
@@ -6,13 +6,20 @@ import HeaderImage from "./components/HeaderImage";
 import AdminPwdPage from "./components/AdminPwd";
 import Schedule from "./components/Schedule";
 import Leaders from "./components/Leaders"; // added
+import { initGA, pageview } from "./utils/analytics";
 
 const API_BASE = process.env.REACT_APP_API_URL || "https://dartball-backend-654879525708.us-central1.run.app";
 
 function App() {
-  const [page, setPage] = useState("teams");
-  const [teams, setTeams] = useState([]);
-  const [isAdmin, setIsAdmin] = useState(false);
+  const [page, setPage] = React.useState("teams");
+  const [teams, setTeams] = React.useState([]);
+  const [isAdmin, setIsAdmin] = React.useState(false);
+
+  useEffect(() => {
+    initGA();
+    // send first pageview
+    pageview(window.location.pathname + window.location.search);
+  }, []);
 
   useEffect(() => {
     async function load() {

@@ -16,7 +16,6 @@ const PlayersTable = () => {
                 if (!mounted) return;
                 setTeams(teamsData);
 
-                // fetch players for each team in parallel
                 const groups = await Promise.all(teamsData.map(async (t) => {
                     try {
                         const res = await fetchWithToken(`/routes/players?team_id=${t.id}`, { method: 'GET' });
@@ -42,67 +41,131 @@ const PlayersTable = () => {
         return () => { mounted = false; };
     }, []);
 
+    const fmtAvg = (v) => {
+      if (typeof v === 'number') return v.toFixed(3).replace(/^0\./, '.');
+      const n = Number(v);
+      return Number.isFinite(n) ? n.toFixed(3).replace(/^0\./, '.') : 'N/A';
+    };
+
+    // reuse TeamsTable theme (dark + dark-orange accent)
+    const containerStyle = {
+      maxWidth: 1100,
+      margin: "1.5rem auto",
+      background: "linear-gradient(180deg, rgba(8,18,24,0.95) 0%, rgba(6,30,36,0.95) 100%)",
+      color: "#e6f7ff",
+      padding: "1.25rem",
+      borderRadius: 14,
+      boxShadow: "0 10px 30px rgba(2,6,8,0.6)",
+      boxSizing: "border-box",
+    };
+
+    const teamHeaderStyle = {
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "space-between",
+      marginBottom: 10
+    };
+
+    const teamTitleStyle = {
+      margin: 0,
+      color: "#fff",
+      fontSize: "1.15rem",
+      letterSpacing: "0.01em"
+    };
+
+    const accentBar = {
+      height: 6,
+      borderRadius: 6,
+      background: "linear-gradient(90deg,#7a2b00,#c2410c,#ff8a00)",
+      marginTop: 10,
+      boxShadow: "0 6px 18px rgba(194,65,12,0.08)"
+    };
+
+    const tableWrap = { overflowX: "auto", borderRadius: 10 };
+
+    const tableStyle = {
+      width: "100%",
+      minWidth: 520,
+      borderCollapse: "separate",
+      borderSpacing: "0 10px",
+      fontSize: "0.95rem"
+    };
+
+    const thStyle = {
+      padding: "8px 8px",
+      textAlign: "left",
+      background: "#222",
+      color: "#fff",
+      fontWeight: 700
+    };
+
+    const rowStyle = {
+      background: "linear-gradient(180deg,#07101a 0%, #0b1520 100%)",
+      color: "#fff",
+      borderRadius: 8
+    };
+
+    const cellStyle = {
+      padding: "10px 12px",
+      verticalAlign: "middle"
+    };
+
     return (
-        // make container full width like TeamsTable and allow table scrolling on small screens
-        <div style={{ width: "100%", margin: "1rem 0", background: "rgba(17, 17, 17, 1)", color: "#fff", padding: "1rem", boxSizing: "border-box", borderRadius: 16 }}>
-          <div style={{ maxWidth: 1100, margin: "0 auto" }}>
-            <h1 style={{ marginBottom: "1rem" }}>All Players</h1>
+      <div style={containerStyle}>
+        <h1 style={{ margin: "0 0 12px 0", color: "#fff" }}>All Players</h1>
 
-            {groupedPlayers.length === 0 ? (
-                <p>Loading teams and players…</p>
-            ) : (
-                groupedPlayers.map(group => (
-                    <section key={group.teamId} style={{ marginBottom: 28 }}>
-                        <h2 style={{ margin: "8px 0 12px", color: "#fff" }}>{group.teamName}</h2>
+        <div style={accentBar} />
 
-                        {group.players && group.players.length > 0 ? (
-                            // horizontal scroll wrapper to fit on mobile
-                            <div style={{ overflowX: "auto" }}>
-                              <table style={{ width: "100%", minWidth: 300, borderCollapse: "separate", borderSpacing: "0 10px" }}>
-                                <thead>
-                                    <tr style={{ background: "rgba(34, 34, 34, 1)", color: "#e6f7ff" }}>
-                                        <th style={{ padding: "5px", textAlign: "left" }}>Name</th>
-                                        <th style={{ padding: "5px" }}>At Bats</th>
-                                        <th style={{ padding: "5px" }}>Hits</th>
-                                        <th style={{ padding: "5px" }}>Avg</th>
-                                        <th style={{ padding: "5px" }}>Singles</th>
-                                        <th style={{ padding: "5px" }}>Doubles</th>
-                                        <th style={{ padding: "5px" }}>Triples</th>
-                                        <th style={{ padding: "5px" }}>Dimes</th>
-                                        <th style={{ padding: "5px" }}>HRs</th>
-                                        <th style={{ padding: "5px" }}>GP</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {group.players.map(player => (
-                                        <tr key={player.id} style={{ background: "rgba(17, 17, 17, 1)", borderRadius: 6 }}>   
-                                            <td style={{ padding: "10px" }}>{player.name}</td>
-                                            <td style={{ padding: "10px", textAlign: "center" }}>{player.AtBats ?? 0}</td>
-                                              <td style={{ padding: "10px", textAlign: "center" }}>{player.hits ?? 0}</td>
-                                              <td style={{ padding: "10px", textAlign: "center" }}>
-                                                {typeof player.Avg === 'number'
-                                                    ? player.Avg.toFixed(3).replace(/^0\./, ".")
-                                                    : 'N/A'}
-                                            </td>
-                                            <td style={{ padding: "10px", textAlign: "center" }}>{player.Singles ?? 0}</td>
-                                            <td style={{ padding: "10px", textAlign: "center" }}>{player.Doubles ?? 0}</td>
-                                            <td style={{ padding: "10px", textAlign: "center" }}>{player.Triples ?? 0}</td>     
-                                            <td style={{ padding: "10px", textAlign: "center" }}>{player.HRs ?? 0}</td>
-                                            <td style={{ padding: "10px", textAlign: "center" }}>{player.Dimes ?? 0}</td>
-                                            <td style={{ padding: "10px", textAlign: "center" }}>{player.GP ?? 0}</td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                              </table>
-                            </div>
-                        ) : (
-                            <p style={{ margin: "8px 0 0", color: "#9fb8d6" }}>No players for this team.</p>
-                        )}
-                    </section>
-                ))
-            )}
-          </div>
-        </div>
+        <div style={{ height: 12 }} />
+
+        {groupedPlayers.length === 0 ? (
+            <p style={{ color: "#cbd5e1" }}>Loading teams and players…</p>
+        ) : (
+          groupedPlayers.map(group => (
+            <section key={group.teamId} style={{ marginBottom: 28 }}>
+              <div style={teamHeaderStyle}>
+                <h2 style={teamTitleStyle}>{group.teamName}</h2>
+                <div style={{ color: "#ffd7b0", fontSize: 13 }}>{group.players.length} players</div>
+              </div>
+
+              <div style={tableWrap}>
+                <table style={tableStyle}>
+                  <thead>
+                    <tr>
+                      <th style={{ ...thStyle, width: '40%' }}>Name</th>
+                      <th style={{ ...thStyle, textAlign: 'center' }}>ABs</th>
+                      <th style={{ ...thStyle, textAlign: 'center' }}>Hits</th>
+                      <th style={{ ...thStyle, textAlign: 'center' }}>Avg</th>
+                      <th style={{ ...thStyle, textAlign: 'center' }}>Singles</th>
+                      <th style={{ ...thStyle, textAlign: 'center' }}>Doubles</th>
+                      <th style={{ ...thStyle, textAlign: 'center' }}>Triples</th>
+                      <th style={{ ...thStyle, textAlign: 'center' }}>Dimes</th>
+                      <th style={{ ...thStyle, textAlign: 'center' }}>HRs</th>
+                      <th style={{ ...thStyle, textAlign: 'center' }}>GP</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {group.players.map(player => (
+                      <tr key={player.id} style={rowStyle}>
+                        <td style={{ ...cellStyle, paddingLeft: 18 }}>{player.name}</td>
+                        <td style={{ ...cellStyle, textAlign: 'center' }}>{player.AtBats ?? 0}</td>
+                        <td style={{ ...cellStyle, textAlign: 'center' }}>{player.hits ?? 0}</td>
+                        <td style={{ ...cellStyle, textAlign: 'center' }}>{player.Avg != null ? fmtAvg(player.Avg) : 'N/A'}</td>
+                        <td style={{ ...cellStyle, textAlign: 'center' }}>{player.Singles ?? 0}</td>
+                        <td style={{ ...cellStyle, textAlign: 'center' }}>{player.Doubles ?? 0}</td>
+                        <td style={{ ...cellStyle, textAlign: 'center' }}>{player.Triples ?? 0}</td>
+                        <td style={{ ...cellStyle, textAlign: 'center' }}>{player.Dimes ?? 0}</td>
+                        <td style={{ ...cellStyle, textAlign: 'center' }}>{player.HRs ?? 0}</td>
+                        <td style={{ ...cellStyle, textAlign: 'center' }}>{player.GP ?? 0}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </section>
+          ))
+        )}
+      </div>
     );
 };
 
