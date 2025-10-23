@@ -99,7 +99,7 @@ const Leaders = () => {
     width: '100%',
     borderCollapse: 'separate',
     borderSpacing: '0 12px',
-    minWidth: 320
+    minWidth: 280
   };
 
   const thStyle = {

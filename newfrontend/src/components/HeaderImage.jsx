@@ -1,5 +1,5 @@
 import React from "react";
-import headerImg from "../assets/newheader.jpg";
+import headerImg from "../assets/Header2.png";
 
 const HeaderImage = () => (
   <div
@@ -11,7 +11,7 @@ const HeaderImage = () => (
         "radial-gradient(1200px 400px at 10% 10%, rgba(255,149,0,0.06), transparent 12%), " +
         "linear-gradient(135deg, #031323 0%, #07202a 35%, #08343a 65%, #062827 100%)",
       textAlign: "center",
-      marginBottom: "2.5rem",
+      
       boxShadow: "0 6px 28px rgba(0,0,0,0.45)",
     }}
   >

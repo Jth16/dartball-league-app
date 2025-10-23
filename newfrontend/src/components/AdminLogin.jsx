@@ -29,13 +29,15 @@ const AdminLogin = () => {
 
       <RecordAdmin teams={teams} setTeams={setTeams} apiBase={API_BASE} downloadToken={DOWNLOAD_TOKEN} />
       <hr />
-      <TeamAdmin apiBase={API_BASE} downloadToken={DOWNLOAD_TOKEN} />
+      <UpdatePlayerRecord teams={teams} />
       <hr />
       <AddPlayer teams={teams} />
       <hr />
+      <TeamAdmin apiBase={API_BASE} downloadToken={DOWNLOAD_TOKEN} />
+      <hr />
       <DeleteTeam teams={teams} setTeams={setTeams} />
       <hr />
-      <UpdatePlayerRecord teams={teams} />
+      
     </div>
   );
 };

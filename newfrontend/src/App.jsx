@@ -53,7 +53,12 @@ function App() {
           justifyContent: "center",
           alignItems: "center",
           padding: "1.5rem 0",
-          background: "linear-gradient(90deg, #232526 0%, #000000 100%)",
+          /* main nav background (keeps existing look) */
+          backgroundImage: "linear-gradient(90deg, #232526 0%, #000000 100%) , linear-gradient(90deg, #663e01ff, #663e01ff)",
+          /* create a stylish gradient bottom border using a second background + transparent border */
+          borderBottom: "6px solid transparent",
+          backgroundOrigin: "padding-box, border-box",
+          backgroundClip: "padding-box, border-box",
           boxShadow: "0 2px 8px rgba(0,0,0,0.7)",
         }}
       >
@@ -91,7 +96,7 @@ function App() {
             transition: "all 0.2s",
           }}
         >
-          Player Stats
+          Players
         </button>
         <button
           onClick={() => setPage("schedule")}
@@ -131,7 +136,7 @@ function App() {
           Leaders
         </button>
       </nav>
-      <div style={{ maxWidth: 900, height: "100%", minHeight: "600px", margin: "auto", background: "#111", padding: "2rem", borderRadius: 16, boxShadow: "0 4px 24px rgba(0,0,0,0.8)" }}>
+      <div style={{ maxWidth: 900, height: "100%", minHeight: "700px", margin: "auto", background: "#111", padding: "2rem", borderRadius: 16, boxShadow: "0 4px 24px rgba(0,0,0,0.8)" }}>
         {page === "teams" && <TeamsTable teams={teams} />}
         {page === "players" && <PlayersPage />}
         {page === "schedule" && <Schedule />}

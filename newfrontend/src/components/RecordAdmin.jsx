@@ -168,6 +168,7 @@ const RecordAdmin = ({ teams, setTeams, apiBase, downloadToken }) => {
   return (
     <section>
       <h2 style={{ color: '#fff' }}>Update Team Record</h2>
+      <p>Update a single team's win/loss record. The games played will be recalculated accordingly.</p>
       <form onSubmit={handleRecordSubmit} style={{ maxWidth: 560 }}>
         <div style={fieldWrapStyle}>
           <label style={labelStyle}>Team</label>
