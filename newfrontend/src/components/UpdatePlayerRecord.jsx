@@ -321,12 +321,13 @@ const UpdatePlayerRecord = ({ teams }) => {
           <thead>
             <tr>
               <th style={thStyle}>Name</th>
+               <th style={thStyle}>AtBats</th>
               <th style={thStyle}>Singles</th>
               <th style={thStyle}>Doubles</th>
               <th style={thStyle}>Triples</th>
-              <th style={thStyle}>Dimes</th>
+              
               <th style={thStyle}>HRs</th>
-              <th style={thStyle}>AtBats</th>
+             <th style={thStyle}>Dimes</th>
               <th style={thStyle}>Hits</th>
               <th style={thStyle}>GP</th>
               <th style={thStyle}>Avg</th>

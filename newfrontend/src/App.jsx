@@ -177,6 +177,9 @@ function App() {
             <AdminPwdPage setIsAdmin={setIsAdmin} />
           ))}
         </div>
+        <footer style={{ textAlign: "center", padding: "1rem 0", color: "#666", fontSize: "0.9rem" }}>
+        &copy; {new Date().getFullYear()} Labelle Dartball League
+      </footer>
         <div
           style={{
             left: 0,
@@ -213,6 +216,7 @@ function App() {
           )}
         </div>
       </div>
+      
     </Router>
   );
 }
