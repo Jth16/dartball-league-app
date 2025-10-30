@@ -1,6 +1,20 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 const Home = () => {
+  const [isMobile, setIsMobile] = useState(typeof window !== 'undefined' && window.matchMedia ? window.matchMedia('(max-width:600px)').matches : false);
+  const fbRef = useRef(null);
+
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width:600px)');
+    const handler = (e) => setIsMobile(e.matches);
+    if (mq.addEventListener) mq.addEventListener('change', handler);
+    else mq.addListener(handler);
+    return () => {
+      if (mq.removeEventListener) mq.removeEventListener('change', handler);
+      else mq.removeListener(handler);
+    };
+  }, []);
+
   const container = {
     maxWidth: 1100,
     margin: '2rem auto',
@@ -12,8 +26,8 @@ const Home = () => {
     boxSizing: 'border-box'
   };
 
-  const title = { margin: 0, fontSize: '1.6rem', color: '#fff' };
-  const lead = { color: '#ffd7b0', marginTop: 8, marginBottom: 16 };
+  const title = { margin: 0, fontSize: isMobile ? '1.4rem' : '1.6rem', color: '#fff' };
+  const lead = { color: '#ffd7b0', marginTop: 8, marginBottom: 16, fontSize: isMobile ? '1.05rem' : undefined };
   const blurb = {
     background: 'linear-gradient(180deg,#07101a 0%, #0b1520 100%)',
     padding: 12,
@@ -30,9 +44,7 @@ const Home = () => {
     margin: '14px 0'
   };
 
-  const small = { color: '#cbd5e1', fontSize: 14, lineHeight: 1.45 };
-
-  const fbRef = useRef(null);
+  const small = { color: '#cbd5e1', fontSize: isMobile ? 16 : 14, lineHeight: 1.45 };
 
   useEffect(() => {
     // load SDK once
@@ -46,14 +58,12 @@ const Home = () => {
       document.body.appendChild(script);
       script.onload = () => {
         try {
-          // parse only the container when SDK first loads
           if (window.FB && fbRef.current) window.FB.XFBML.parse(fbRef.current);
         } catch (e) { /* ignore */ }
       };
       return;
     }
 
-    // If SDK already present, parse when this component mounts
     if (window.FB && fbRef.current) {
       try { window.FB.XFBML.parse(fbRef.current); } catch (e) { /* ignore */ }
     }
@@ -74,13 +84,12 @@ const Home = () => {
         <div style={blurb}>
           <h3 style={{ margin: '0 0 8px 0' }}>Latest News</h3>
           <p style={small}><strong>Season kickoff:</strong> Opening night is Oct 29 — check the schedule for times and boards.</p>
-         
-           <p style={small}>Entry to the Firehall will be either through the Truck Room or the Bar. The Main Hall doors will be closed on Dartball Night.</p>
-           <p style={small}>Please plan accordingly and arrive early to avoid any issues.</p>
-           <p style={small}><strong>Reminder:</strong>There is NO smoking/vaping in the hall. Smoking/Vaping is permitted in the Bar area only</p>
+
+          <p style={small}>Entry to the Firehall will be either through the Truck Room or the Bar. The Main Hall doors will be closed on Dartball Night.</p>
+          <p style={small}>Please plan accordingly and arrive early to avoid any issues.</p>
+          <p style={small}><strong>Reminder:</strong>There is NO smoking/vaping in the hall. Smoking/Vaping is permitted in the Bar area only</p>
         </div>
 
-        {/* Facebook page plugin - centered and wider */}
         <div style={blurb}>
           <h3 style={{ margin: '0 0 8px 0' }}>Follow Us on Facebook</h3>
           <p style={small}>Stay updated with the latest news, events, and highlights by following our official Facebook page.</p>

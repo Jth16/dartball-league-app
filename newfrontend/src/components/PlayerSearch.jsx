@@ -118,6 +118,12 @@ const PlayerSearch = () => {
     setShowResults(false);
   };
 
+  const fmtAvg = (v) => {
+      if (typeof v === 'number') return v.toFixed(3).replace(/^0\./, '.');
+      const n = Number(v);
+      return Number.isFinite(n) ? n.toFixed(3).replace(/^0\./, '.') : 'N/A';
+    };
+
   const fmt = (v) => (v === null || v === undefined ? '—' : v);
 
   return (
@@ -188,6 +194,12 @@ const PlayerSearch = () => {
                   <th style={{ textAlign: 'left', padding: '8px 10px', color: '#ffd7b0' }}>At Bats</th>
                   <th style={{ textAlign: 'left', padding: '8px 10px', color: '#ffd7b0' }}>Hits</th>
                   <th style={{ textAlign: 'left', padding: '8px 10px', color: '#ffd7b0' }}>Avg</th>
+                   <th style={{ textAlign: 'left', padding: '8px 10px', color: '#ffd7b0' }}>Singles</th>
+                    <th style={{ textAlign: 'left', padding: '8px 10px', color: '#ffd7b0' }}>Doubles</th>
+                     <th style={{ textAlign: 'left', padding: '8px 10px', color: '#ffd7b0' }}>Triples</th>
+                     <th style={{ textAlign: 'left', padding: '8px 10px', color: '#ffd7b0' }}>HRs</th>
+                      <th style={{ textAlign: 'left', padding: '8px 10px', color: '#ffd7b0' }}>Dimes</th>
+                       
                   <th style={{ textAlign: 'left', padding: '8px 10px', color: '#ffd7b0' }}>GP</th>
                 </tr>
               </thead>
@@ -198,7 +210,13 @@ const PlayerSearch = () => {
                     <td style={{ padding: '8px 10px' }} data-label="Team">{p.team || p.team_name || ''}</td>
                     <td style={{ padding: '8px 10px' }} data-label="At Bats">{fmt(p.AtBats ?? p.atBats ?? p.ab)}</td>
                     <td style={{ padding: '8px 10px' }} data-label="Hits">{fmt(p.hits ?? p.Hits)}</td>
-                    <td style={{ padding: '8px 10px' }} data-label="Avg">{fmt(p.Avg ?? p.avg)}</td>
+                    <td style={{ padding: '8px 10px' }} data-label="Avg">{p.Avg != null ? fmtAvg(p.Avg) : 'N/A'}</td>
+                     <td style={{ padding: '8px 10px' }} data-label="Singles">{fmt(p.Singles ?? p.singles)}</td>
+                    <td style={{ padding: '8px 10px' }} data-label="Doubles">{fmt(p.Doubles ?? p.doubles)}</td>
+                    <td style={{ padding: '8px 10px' }} data-label="Triples">{fmt(p.Triples ?? p.triples)}</td>
+                   <td style={{ padding: '8px 10px' }} data-label="HRs">{fmt(p.HRs ?? p.hrs)}</td>
+                    <td style={{ padding: '8px 10px' }} data-label="Dimes">{fmt(p.Dimes ?? p.dimes)}</td>
+                    
                     <td style={{ padding: '8px 10px' }} data-label="GP">{fmt(p.GP ?? p.gp)}</td>
                   </tr>
                 ))}

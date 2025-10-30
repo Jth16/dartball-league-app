@@ -130,7 +130,7 @@ const PlayersTable = () => {
         <div style={{ height: 12 }} />
 
         {/* Player search / quick stats shown at top of players page */}
-        <PlayerSearch players={null} />
+       { <PlayerSearch players={null} /> }
 
         {groupedPlayers.length === 0 ? (
             <p style={{ color: "#cbd5e1" }}>Loading teams and players…</p>
@@ -153,8 +153,9 @@ const PlayersTable = () => {
                       <th style={{ ...thStyle, textAlign: 'center' }}>Singles</th>
                       <th style={{ ...thStyle, textAlign: 'center' }}>Doubles</th>
                       <th style={{ ...thStyle, textAlign: 'center' }}>Triples</th>
-                      <th style={{ ...thStyle, textAlign: 'center' }}>Dimes</th>
                       <th style={{ ...thStyle, textAlign: 'center' }}>HRs</th>
+                      <th style={{ ...thStyle, textAlign: 'center' }}>Dimes</th>
+                      
                       <th style={{ ...thStyle, textAlign: 'center' }}>GP</th>
                     </tr>
                   </thead>
@@ -168,8 +169,9 @@ const PlayersTable = () => {
                         <td style={{ ...cellStyle, textAlign: 'center' }}>{player.Singles ?? 0}</td>
                         <td style={{ ...cellStyle, textAlign: 'center' }}>{player.Doubles ?? 0}</td>
                         <td style={{ ...cellStyle, textAlign: 'center' }}>{player.Triples ?? 0}</td>
-                        <td style={{ ...cellStyle, textAlign: 'center' }}>{player.Dimes ?? 0}</td>
+                        
                         <td style={{ ...cellStyle, textAlign: 'center' }}>{player.HRs ?? 0}</td>
+                        <td style={{ ...cellStyle, textAlign: 'center' }}>{player.Dimes ?? 0}</td>
                         <td style={{ ...cellStyle, textAlign: 'center' }}>{player.GP ?? 0}</td>
                       </tr>
                     ))}
