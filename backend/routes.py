@@ -449,3 +449,79 @@ def get_players():
         current_app.logger.exception("get_players failed: %s", ex)
         return jsonify({'message': 'Internal server error', 'error': str(ex)}), 500
 
+@routes.route('/routes/players/search', methods=['GET', 'OPTIONS'])
+@cross_origin(headers=['Content-Type', 'X-Download-Token'])
+def search_players():
+    # short-circuit preflight
+    if request.method == 'OPTIONS':
+        return ('', 200)
+
+    try:
+        q = (request.args.get('q') or '').strip()
+        team_id = request.args.get('team_id', None)
+        limit_param = request.args.get('limit', None)
+        try:
+            limit = int(limit_param) if limit_param else 200
+        except Exception:
+            limit = 200
+
+        query = Player.query
+        if team_id:
+            try:
+                query = query.filter_by(team_id=int(team_id))
+            except ValueError:
+                return jsonify({'message': 'invalid team_id'}), 400
+
+        if q:
+            # case-insensitive partial match on name (uses SQLAlchemy ilike)
+            like = f"%{q}%"
+            try:
+                query = query.filter(Player.name.ilike(like))
+            except Exception:
+                # fallback: simple Python-side filter if ilike not supported for some reason
+                all_players = query.order_by(Player.id).all()
+                filtered = [p for p in all_players if q.lower() in (getattr(p, 'name', '') or '').lower()]
+                players = filtered[:limit]
+                players_list = []
+                for p in players:
+                    players_list.append({
+                        'id': p.id,
+                        'name': getattr(p, 'name', None),
+                        'team_id': getattr(p, 'team_id', None),
+                        'Singles': getattr(p, 'Singles', None),
+                        'Doubles': getattr(p, 'Doubles', None),
+                        'Triples': getattr(p, 'Triples', None),
+                        'Dimes': getattr(p, 'Dimes', None),
+                        'HRs': getattr(p, 'HRs', None),
+                        'GP': getattr(p, 'GP', None),
+                        'AtBats': getattr(p, 'AtBats', None),
+                        'Avg': getattr(p, 'Avg', None),
+                        'hits': getattr(p, 'hits', 0)
+                    })
+                return jsonify(players_list), 200
+
+        players = query.order_by(Player.id).limit(limit).all()
+
+        players_list = []
+        for p in players:
+            players_list.append({
+                'id': p.id,
+                'name': getattr(p, 'name', None),
+                'team_id': getattr(p, 'team_id', None),
+                'Singles': getattr(p, 'Singles', None),
+                'Doubles': getattr(p, 'Doubles', None),
+                'Triples': getattr(p, 'Triples', None),
+                'Dimes': getattr(p, 'Dimes', None),
+                'HRs': getattr(p, 'HRs', None),
+                'GP': getattr(p, 'GP', None),
+                'AtBats': getattr(p, 'AtBats', None),
+                'Avg': getattr(p, 'Avg', None),
+                'hits': getattr(p, 'hits', 0)
+            })
+
+        return jsonify(players_list), 200
+
+    except Exception as ex:
+        current_app.logger.exception("search_players failed: %s", ex)
+        return jsonify({'message': 'Internal server error', 'error': str(ex)}), 500
+

@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { fetchWithToken } from '../api';
 import { printElement } from '../utils/print';
+import PlayerSearch from './PlayerSearch';
 
 const PlayersTable = () => {
     const [teams, setTeams] = useState([]);
@@ -127,6 +128,9 @@ const PlayersTable = () => {
 
         <div style={accentBar} />
         <div style={{ height: 12 }} />
+
+        {/* Player search / quick stats shown at top of players page */}
+        <PlayerSearch players={null} />
 
         {groupedPlayers.length === 0 ? (
             <p style={{ color: "#cbd5e1" }}>Loading teams and players…</p>

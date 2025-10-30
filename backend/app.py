@@ -6,7 +6,7 @@ from flask import Flask
 from flask_cors import CORS
 import os
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static', template_folder='templates')
 
 # Configure CORS: allow localhost during development and your production frontend
 ALLOWED_ORIGINS = os.environ.get(

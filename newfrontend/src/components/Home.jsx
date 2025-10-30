@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 
 const Home = () => {
   const container = {
@@ -32,28 +32,31 @@ const Home = () => {
 
   const small = { color: '#cbd5e1', fontSize: 14, lineHeight: 1.45 };
 
+  const fbRef = useRef(null);
+
   useEffect(() => {
-    // avoid injecting SDK multiple times
-    if (window.FB) {
-      window.FB.XFBML && window.FB.XFBML.parse();
+    // load SDK once
+    const id = 'facebook-jssdk';
+    if (!document.getElementById(id)) {
+      const script = document.createElement('script');
+      script.id = id;
+      script.src = 'https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v17.0';
+      script.async = true;
+      script.defer = true;
+      document.body.appendChild(script);
+      script.onload = () => {
+        try {
+          // parse only the container when SDK first loads
+          if (window.FB && fbRef.current) window.FB.XFBML.parse(fbRef.current);
+        } catch (e) { /* ignore */ }
+      };
       return;
     }
 
-    // insert Facebook SDK
-    const id = 'facebook-jssdk';
-    if (document.getElementById(id)) return;
-
-    const script = document.createElement('script');
-    script.id = id;
-    script.src = 'https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v17.0';
-    script.async = true;
-    script.defer = true;
-    document.body.appendChild(script);
-
-    // when SDK loads, parse XFBML
-    script.onload = () => {
-      try { window.FB && window.FB.XFBML && window.FB.XFBML.parse(); } catch (e) { /* ignore */ }
-    };
+    // If SDK already present, parse when this component mounts
+    if (window.FB && fbRef.current) {
+      try { window.FB.XFBML.parse(fbRef.current); } catch (e) { /* ignore */ }
+    }
   }, []);
 
   return (
@@ -83,7 +86,7 @@ const Home = () => {
           <p style={small}>Stay updated with the latest news, events, and highlights by following our official Facebook page.</p>
         </div>
         <div style={{ marginTop: 12, display: 'flex', justifyContent: 'center' }}>
-          <div style={{ width: '100%', maxWidth: 720, textAlign: 'center', borderRadius: 10, overflow: 'hidden', boxShadow: '0 4px 24px rgba(0,0,0,0.8)' }}>
+          <div ref={fbRef} style={{ width: '100%', maxWidth: 720 }}>
             <div
               className="fb-page"
               data-href="https://www.facebook.com/LTVFC23"
