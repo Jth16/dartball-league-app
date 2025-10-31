@@ -5,9 +5,15 @@ const PlayerSearch = () => {
   const [query, setQuery] = useState('');
   const [matches, setMatches] = useState([]);
   const [selected, setSelected] = useState(null);
-  const [showResults, setShowResults] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [allPlayers, setAllPlayers] = useState([]);
+  const rankMapsRef = useRef(null);
+  // map of teamId -> teamName
+  const teamsMapRef = useRef(null);
   const debounceRef = useRef(null);
+
+  // used to skip the immediate suggestion fetch caused by programmatic setQuery (when picking)
+  const skipSuggestRef = useRef(false);
 
   // normalize a player's display name (use returned "name" if present)
   const normalizeName = (p = {}) => {
@@ -37,13 +43,82 @@ const PlayerSearch = () => {
     return [];
   };
 
+  // build rank maps for global players list (higher value => better rank)
+  const buildRankMaps = (players = []) => {
+    const metrics = [
+      { key: 'avg', getter: p => parseFloat(p.Avg ?? p.avg ?? 0) },
+      { key: 'singles', getter: p => Number(p.Singles ?? p.singles ?? 0) },
+      { key: 'doubles', getter: p => Number(p.Doubles ?? p.doubles ?? 0) },
+      { key: 'triples', getter: p => Number(p.Triples ?? p.triples ?? 0) },
+      { key: 'hrs', getter: p => Number(p.HRs ?? p.hrs ?? 0) },
+      { key: 'dimes', getter: p => Number(p.Dimes ?? p.dimes ?? 0) }
+    ];
+
+    const idFor = (p) => p.id ?? p.player_id ?? p.name;
+    const maps = {};
+    metrics.forEach(m => {
+      const sorted = [...players].sort((a, b) => (m.getter(b) || 0) - (m.getter(a) || 0));
+      let lastVal = null;
+      let lastRank = 0;
+      const map = new Map();
+      for (let i = 0; i < sorted.length; i++) {
+        const val = m.getter(sorted[i]);
+        const rank = (i === 0 || val !== lastVal) ? (i + 1) : lastRank;
+        map.set(idFor(sorted[i]), Number.isFinite(val) ? rank : null);
+        lastVal = val;
+        lastRank = rank;
+      }
+      maps[m.key] = map;
+    });
+    return maps;
+  };
+
+  // load full player list on mount so ranks are computed relative to all players
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      try {
+        const res = await fetchWithToken('/routes/players?limit=10000');
+        let payload = res;
+        if (res && typeof res === 'object' && typeof res.json === 'function') {
+          try { payload = await res.json(); } catch { try { payload = JSON.parse(await res.text()); } catch { payload = res; } }
+        }
+        const arr = Array.isArray(payload) ? payload : (payload && Array.isArray(payload.players) ? payload.players : []);
+        if (!mounted) return;
+        setAllPlayers(arr);
+        rankMapsRef.current = buildRankMaps(arr);
+
+        // fetch teams once and build id->name map
+        try {
+          const tRes = await fetchWithToken('/routes/teams?limit=1000');
+          let tPayload = tRes;
+          if (tRes && typeof tRes === 'object' && typeof tRes.json === 'function') {
+            try { tPayload = await tRes.json(); } catch { try { tPayload = JSON.parse(await tRes.text()); } catch { tPayload = tRes; } }
+          }
+          const tArr = Array.isArray(tPayload) ? tPayload : (tPayload && Array.isArray(tPayload.teams) ? tPayload.teams : []);
+          const map = new Map();
+          tArr.forEach(t => {
+            const id = t.id ?? t.team_id ?? t.teamId;
+            const name = t.name ?? t.team_name ?? t.teamName ?? t.displayName;
+            if (id != null) map.set(String(id), name ?? '');
+          });
+          teamsMapRef.current = map;
+        } catch (e) {
+          teamsMapRef.current = new Map();
+        }
+      } catch (e) {
+        // ignore
+      }
+    })();
+    return () => { mounted = false; };
+  }, []);
+
   // fetch from server and return normalized array (no extra client-side filtering)
   const fetchPlayers = async (q) => {
     const qtrim = (q || '').trim();
     if (!qtrim) return [];
     setLoading(true);
     try {
-      // use the correct backend path
       const path = `/routes/players/search?q=${encodeURIComponent(qtrim)}`;
       const res = await fetchWithToken(path);
 
@@ -53,7 +128,6 @@ const PlayerSearch = () => {
         try {
           payload = await res.json();
         } catch (errJson) {
-          // fallback to text -> try parse JSON
           let txt = null;
           try {
             txt = await res.text();
@@ -65,9 +139,29 @@ const PlayerSearch = () => {
       }
 
       const arr = coerceResponseToArray(payload);
+      const normalized = arr.map(p => {
+        const teamId = p.team_id ?? p.teamId ?? p.team ?? p.team_name;
+        const mapped = teamsMapRef.current && teamId != null ? teamsMapRef.current.get(String(teamId)) : null;
+        return {
+          ...p,
+          name: normalizeName(p),
+          teamName: mapped ?? p.team_name ?? p.team ?? (p.team_id ? String(p.team_id) : '')
+        };
+      });
 
-      // ensure each item has a usable "name" for display
-      const normalized = arr.map(p => ({ ...p, name: normalizeName(p) }));
+      // if we have global rank maps, annotate each returned player with global ranks
+      const maps = rankMapsRef.current;
+      if (maps) {
+        normalized.forEach(p => {
+          const id = p.id ?? p.player_id ?? p.name;
+          p.avgRank = maps.avg.get(id) ?? null;
+          p.singlesRank = maps.singles.get(id) ?? null;
+          p.doublesRank = maps.doubles.get(id) ?? null;
+          p.triplesRank = maps.triples.get(id) ?? null;
+          p.hrsRank = maps.hrs.get(id) ?? null;
+          p.dimesRank = maps.dimes.get(id) ?? null;
+        });
+      }
 
       return normalized;
     } catch (err) {
@@ -82,7 +176,15 @@ const PlayerSearch = () => {
   // suggestions (debounced) call fetchPlayers and use first 12 results
   useEffect(() => {
     if (debounceRef.current) clearTimeout(debounceRef.current);
+
+    // if we just picked a suggestion, skip one suggestion fetch caused by programmatic setQuery
+    if (skipSuggestRef.current) {
+      skipSuggestRef.current = false;
+      return;
+    }
+
     if (!query || query.trim() === '') { setMatches([]); return; }
+
     debounceRef.current = setTimeout(async () => {
       const list = await fetchPlayers(query);
       setMatches(list.slice(0, 12));
@@ -93,29 +195,103 @@ const PlayerSearch = () => {
   // "Search" button -> fetch server results and display them directly
   const onSubmit = async (e) => {
     if (e) e.preventDefault();
-    setShowResults(true);
     const list = await fetchPlayers(query);
-
-    // DEBUG: inspect what we're about to render
-    // eslint-disable-next-line no-console
-    console.log('PlayerSearch.onSubmit: server list =', list);
 
     // show exactly what server returned (with normalized name)
     setMatches(Array.isArray(list) ? list : []);
   };
 
-  const pick = (p) => {
-    setSelected(p);
-    setQuery(p.name);
-    setMatches([]);
-    setShowResults(false);
+  // helper: try to load full player record by id, fallback to search by name, finally return original
+  const loadFullPlayer = async (p) => {
+    if (!p) return p;
+    const id = p.id ?? p.player_id;
+    // if no id available, nothing to fetch
+    if (!id) return p;
+
+    // try direct player endpoint first
+    const tryFetch = async (path) => {
+      try {
+        const res = await fetchWithToken(path);
+        // if fetchWithToken returned a Response, parse it
+        let payload = res;
+        if (res && typeof res === 'object' && typeof res.json === 'function') {
+          try { payload = await res.json(); } catch (e) {
+            try { const txt = await res.text(); payload = JSON.parse(txt); } catch { payload = null; }
+          }
+        }
+        // coerce to object
+        let found = null;
+        if (Array.isArray(payload)) found = payload.find(x => (x.id ?? x.player_id ?? x.name) === (id));
+        if (!found && payload && typeof payload === 'object' && (payload.id || payload.player_id || payload.name)) found = payload;
+        return found || null;
+      } catch {
+        return null;
+      }
+    };
+
+    // 1) /routes/players/<id>
+    let full = await tryFetch(`/routes/players/${id}`);
+    if (full) return full;
+
+    // 2) search endpoint by name (narrow down by id if possible)
+    const nameQuery = encodeURIComponent(p.name || p.fullName || '');
+    if (nameQuery) {
+      const searchRes = await tryFetch(`/routes/players/search?q=${nameQuery}`);
+      if (searchRes) return searchRes;
+    }
+
+    // annotate with global ranks if available
+    const maps = rankMapsRef.current;
+    if (maps && p) {
+      const idk = p.id ?? p.player_id ?? p.name;
+      p.avgRank = maps.avg.get(idk) ?? p.avgRank ?? null;
+      p.singlesRank = maps.singles.get(idk) ?? p.singlesRank ?? null;
+      p.doublesRank = maps.doubles.get(idk) ?? p.doublesRank ?? null;
+      p.triplesRank = maps.triples.get(idk) ?? p.triplesRank ?? null;
+      p.hrsRank = maps.hrs.get(idk) ?? p.hrsRank ?? null;
+      p.dimesRank = maps.dimes.get(idk) ?? p.dimesRank ?? null;
+    }
+
+    return p;
+  };
+
+  // when a suggestion is clicked, load the entire record (from backend if possible)
+  const pick = async (p) => {
+    // prevent the suggestion effect from firing due to the programmatic setQuery
+    skipSuggestRef.current = true;
+    setQuery(p.name || p.fullName || '');
+    setMatches([]); // close suggestions immediately
+
+    // load full record and set as selected
+    const full = await loadFullPlayer(p);
+    // ensure name exists
+    const withName = { ...full, name: (full && (full.name || full.fullName)) ? (full.name || full.fullName) : (p.name || '') };
+
+    // prefer explicit teamName, then try teams map by id
+    if (!withName.teamName) {
+      const teamId = withName.team_id ?? withName.teamId ?? withName.team ?? withName.team_name;
+      const mapped = teamsMapRef.current && teamId != null ? teamsMapRef.current.get(String(teamId)) : null;
+      withName.teamName = mapped ?? withName.teamName ?? withName.team ?? withName.team_name ?? '';
+    }
+    
+    // annotate with global ranks (if available)
+    const maps = rankMapsRef.current;
+    if (maps) {
+      const idk = withName.id ?? withName.player_id ?? withName.name;
+      withName.avgRank = maps.avg.get(idk) ?? withName.avgRank ?? null;
+      withName.singlesRank = maps.singles.get(idk) ?? withName.singlesRank ?? null;
+      withName.doublesRank = maps.doubles.get(idk) ?? withName.doublesRank ?? null;
+      withName.triplesRank = maps.triples.get(idk) ?? withName.triplesRank ?? null;
+      withName.hrsRank = maps.hrs.get(idk) ?? withName.hrsRank ?? null;
+      withName.dimesRank = maps.dimes.get(idk) ?? withName.dimesRank ?? null;
+    }
+    setSelected(withName);
   };
 
   const clear = () => {
     setSelected(null);
     setQuery('');
     setMatches([]);
-    setShowResults(false);
   };
 
   const fmtAvg = (v) => {
@@ -126,106 +302,164 @@ const PlayerSearch = () => {
 
   const fmt = (v) => (v === null || v === undefined ? '—' : v);
 
-  return (
-    <div style={{ marginBottom: 18 }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8 }}>
-        <label style={{ color: '#cbd5e1', fontWeight: 700 }}>Find player</label>
+  // container with thin rounded border
+  const container = {
+    marginBottom: 18,
+    border: '1px solid rgba(255,255,255,0.06)',
+    borderRadius: 10,
+    padding: 12,
+    boxSizing: 'border-box',
+    background: 'transparent'
+  };
+
+return (
+    <>
+      {/* hide this component when printing */}
+      <style>{`@media print { .no-print { display: none !important; } }`}</style>
+      <div className="no-print" style={container}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8 }}>
+            <label style={{ color: '#cbd5e1', fontWeight: 700 }}>Player Lookup</label>
+            <button
+                onClick={clear}
+                disabled={!selected && !query}
+                aria-disabled={!selected && !query}
+                style={{
+                    background: 'transparent',
+                    color: '#ffd7b0',
+                    border: 'none',
+                    cursor: (!selected && !query) ? 'default' : 'pointer',
+                    opacity: (!selected && !query) ? 0.5 : 1,
+                    padding: 0
+                }}
+            >
+                Clear
+            </button>
+        </div>
+
+        {/* Instructions: shown above the search input */}
+        <ol style={{ marginTop: 12, marginBottom: 8, paddingLeft: 18, color: '#cbd5e1', fontSize: 13 }}>
+            <li>Start typing to see suggested player list</li>
+            <li>Click on a player to see their stats</li>
+            <li>Use the "Clear" button to reset the search</li>
+        </ol>
+
+        <div>
+            <input
+                aria-label="Search players"
+                placeholder="Type player name..."
+                value={query}
+                onChange={(e) => {
+                    // user typed -> drop any selected player and allow suggestions
+                    skipSuggestRef.current = false;
+                    setQuery(e.target.value);
+                    setSelected(null);
+                }}
+                style={{
+                    width: '100%',
+                    padding: '10px 12px',
+                    borderRadius: 8,
+                    border: '1px solid rgba(255,255,255,0.06)',
+                    background: '#061018',
+                    color: '#fff',
+                }}
+            />
+        </div>
+
+        {/* suggestion list - shown while typing (matches present) */}
+        {matches.length > 0 && !selected && (
+            <div style={{ background: '#07101a', borderRadius: 8, marginTop: 8, padding: 8 }}>
+                {matches.map((p) => (
+                    <div
+                        key={p.id || p.name}
+                        style={{ padding: '8px 10px', borderRadius: 6, cursor: 'pointer', color: '#e6f7ff' }}
+                        onClick={() => pick(p)}
+                    >
+                        <div style={{ fontWeight: 800, textAlign: 'left' }}>{p.name}</div>
+                    </div>
+                ))}
+            </div>
+        )}
+
+        {/* selected full player record - only shown after a suggestion is picked */}
         {selected && (
-          <button onClick={clear} style={{ background: 'transparent', color: '#ffd7b0', border: 'none', cursor: 'pointer' }}>
-            Clear
-          </button>
+            <div style={{ marginTop: 16, padding: 12, borderRadius: 8, border: '1px solid rgba(255, 255, 255, 0.62)', background: '#07101a', textAlign: 'center' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: 8 }}>
+                    <div>
+                        <div style={{ fontSize: 18, fontWeight: 800, color: '#fff', textAlign: 'center' }}>{selected.name}</div>
+                        <div style={{ fontSize: 13, color: '#cbd5e1', textAlign: 'center' }}>{selected.teamName || selected.team || selected.team_name || ''}</div>
+                    </div>
+                    <div style={{ color: '#ffd7b0', fontWeight: 700, marginTop: 8 }}>Player Stats</div>
+                </div>
+
+                <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                    <thead>
+                        <tr>
+                            <th style={{ textAlign: 'center', padding: '8px 10px', color: '#ffd7b0' }}>At Bats</th>
+                            <th style={{ textAlign: 'center', padding: '8px 10px', color: '#ffd7b0' }}>Hits</th>
+                            <th style={{ textAlign: 'center', padding: '8px 10px', color: '#ffd7b0' }}>Avg</th>
+                            <th style={{ textAlign: 'center', padding: '8px 10px', color: '#ffd7b0' }}>Singles</th>
+                            <th style={{ textAlign: 'center', padding: '8px 10px', color: '#ffd7b0' }}>Doubles</th>
+                            <th style={{ textAlign: 'center', padding: '8px 10px', color: '#ffd7b0' }}>Triples</th>
+                            <th style={{ textAlign: 'center', padding: '8px 10px', color: '#ffd7b0' }}>Dimes</th>
+                            <th style={{ textAlign: 'center', padding: '8px 10px', color: '#ffd7b0' }}>HRs</th>
+                            <th style={{ textAlign: 'center', padding: '8px 10px', color: '#ffd7b0' }}>GP</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style={{ background: 'transparent' }}>
+                            <td style={{ textAlign: 'center', padding: '8px 10px' }}>{fmt(selected.AtBats ?? selected.atBats ?? selected.ab)}</td>
+                            <td style={{ textAlign: 'center', padding: '8px 10px' }}>{fmt(selected.hits ?? selected.Hits)}</td>
+                            <td style={{ textAlign: 'center', padding: '8px 10px' }}>{selected.Avg != null ? fmtAvg(selected.Avg) : 'N/A'}</td>
+                            <td style={{ textAlign: 'center', padding: '8px 10px' }}>{fmt(selected.Singles ?? selected.singles)}</td>
+                            <td style={{ textAlign: 'center', padding: '8px 10px' }}>{fmt(selected.Doubles ?? selected.doubles)}</td>
+                            <td style={{ textAlign: 'center', padding: '8px 10px' }}>{fmt(selected.Triples ?? selected.triples)}</td>
+                            <td style={{ textAlign: 'center', padding: '8px 10px' }}>{fmt(selected.Dimes ?? selected.dimes)}</td>
+                            <td style={{ textAlign: 'center', padding: '8px 10px' }}>{fmt(selected.HRs ?? selected.hrs)}</td>
+                            <td style={{ textAlign: 'center', padding: '8px 10px' }}>{fmt(selected.GP ?? selected.gp)}</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                {/* Team name + current global ranks */}
+                <div style={{ marginTop: 12, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
+                    <div style={{ color: '#cbd5e1', fontWeight: 700 }}>League Ranks:</div>
+
+                    <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center' }}>
+                        <div style={{ textAlign: 'center' }}>
+                            <div style={{ color: '#cbd5e1' }}>Avg Rank</div>
+                            <div style={{ color: '#ffd7b0', fontWeight: 700 }}>{selected.avgRank ?? '—'}</div>
+                        </div>
+
+                        <div style={{ textAlign: 'center' }}>
+                            <div style={{ color: '#cbd5e1' }}>Singles Rank</div>
+                            <div style={{ color: '#ffd7b0', fontWeight: 700 }}>{selected.singlesRank ?? '—'}</div>
+                        </div>
+
+                        <div style={{ textAlign: 'center' }}>
+                            <div style={{ color: '#cbd5e1' }}>Doubles Rank</div>
+                            <div style={{ color: '#ffd7b0', fontWeight: 700 }}>{selected.doublesRank ?? '—'}</div>
+                        </div>
+
+                        <div style={{ textAlign: 'center' }}>
+                            <div style={{ color: '#cbd5e1' }}>Triples Rank</div>
+                            <div style={{ color: '#ffd7b0', fontWeight: 700 }}>{selected.triplesRank ?? '—'}</div>
+                        </div>
+
+                        <div style={{ textAlign: 'center' }}>
+                            <div style={{ color: '#cbd5e1' }}>HRs Rank</div>
+                            <div style={{ color: '#ffd7b0', fontWeight: 700 }}>{selected.hrsRank ?? '—'}</div>
+                        </div>
+
+                        <div style={{ textAlign: 'center' }}>
+                            <div style={{ color: '#cbd5e1' }}>Dimes Rank</div>
+                            <div style={{ color: '#ffd7b0', fontWeight: 700 }}>{selected.dimesRank ?? '—'}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         )}
       </div>
-
-      <form onSubmit={onSubmit}>
-        <input
-          aria-label="Search players"
-          placeholder="Type player name..."
-          value={query}
-          onChange={(e) => {
-            setQuery(e.target.value);
-            setSelected(null);
-          }}
-          style={{
-            width: '100%',
-            padding: '10px 12px',
-            borderRadius: 8,
-            border: '1px solid rgba(255,255,255,0.06)',
-            background: '#061018',
-            color: '#fff',
-          }}
-        />
-
-        <div style={{ display: 'flex', gap: 8, marginTop: 8, alignItems: 'center' }}>
-          <button type="submit" style={{ padding: '8px 12px', borderRadius: 8, background: '#c2410c', color: '#fff', border: 'none' }}>
-            Search
-          </button>
-          <button type="button" onClick={clear} style={{ padding: '8px 12px', borderRadius: 8, background: 'transparent', color: '#ffd7b0', border: '1px solid rgba(255,215,176,0.08)' }}>
-            Clear
-          </button>
-        </div>
-      </form>
-
-      {/* suggestion list */}
-      {!showResults && matches.length > 0 && (
-        <div style={{ background: '#07101a', borderRadius: 8, marginTop: 8, padding: 8 }}>
-          {matches.map((p) => (
-            <div key={p.id || p.name} style={{ padding: '8px 10px', borderRadius: 6, cursor: 'pointer', color: '#e6f7ff' }} onClick={() => pick(p)}>
-              <div style={{ fontWeight: 800 }}>{p.name}</div>
-              <div style={{ fontSize: 12, color: '#9fb8d6' }}>{p.team || p.team_name || ''}</div>
-            </div>
-          ))}
-        </div>
-      )}
-
-      {/* results table */}
-      {showResults && (
-        <div style={{ marginTop: 12 }}>
-          {loading ? (
-            <div style={{ color: '#cbd5e1', padding: 12 }}>Loading…</div>
-          ) : matches.length === 0 ? (
-            <div style={{ color: '#cbd5e1', padding: 12 }}>No players found.</div>
-          ) : (
-            <table className="responsive" style={{ width: '100%', borderCollapse: 'collapse' }}>
-              <thead>
-                <tr>
-                  <th style={{ textAlign: 'left', padding: '8px 10px', color: '#ffd7b0' }}>Name</th>
-                  <th style={{ textAlign: 'left', padding: '8px 10px', color: '#ffd7b0' }}>Team</th>
-                  <th style={{ textAlign: 'left', padding: '8px 10px', color: '#ffd7b0' }}>At Bats</th>
-                  <th style={{ textAlign: 'left', padding: '8px 10px', color: '#ffd7b0' }}>Hits</th>
-                  <th style={{ textAlign: 'left', padding: '8px 10px', color: '#ffd7b0' }}>Avg</th>
-                   <th style={{ textAlign: 'left', padding: '8px 10px', color: '#ffd7b0' }}>Singles</th>
-                    <th style={{ textAlign: 'left', padding: '8px 10px', color: '#ffd7b0' }}>Doubles</th>
-                     <th style={{ textAlign: 'left', padding: '8px 10px', color: '#ffd7b0' }}>Triples</th>
-                     <th style={{ textAlign: 'left', padding: '8px 10px', color: '#ffd7b0' }}>HRs</th>
-                      <th style={{ textAlign: 'left', padding: '8px 10px', color: '#ffd7b0' }}>Dimes</th>
-                       
-                  <th style={{ textAlign: 'left', padding: '8px 10px', color: '#ffd7b0' }}>GP</th>
-                </tr>
-              </thead>
-              <tbody>
-                {matches.map((p, idx) => (
-                  <tr key={p.id || `${p.name}-${idx}`} style={{ background: idx % 2 ? 'transparent' : 'rgba(255,255,255,0.01)' }}>
-                    <td style={{ padding: '8px 10px' }} data-label="Name">{p.name}</td>
-                    <td style={{ padding: '8px 10px' }} data-label="Team">{p.team || p.team_name || ''}</td>
-                    <td style={{ padding: '8px 10px' }} data-label="At Bats">{fmt(p.AtBats ?? p.atBats ?? p.ab)}</td>
-                    <td style={{ padding: '8px 10px' }} data-label="Hits">{fmt(p.hits ?? p.Hits)}</td>
-                    <td style={{ padding: '8px 10px' }} data-label="Avg">{p.Avg != null ? fmtAvg(p.Avg) : 'N/A'}</td>
-                     <td style={{ padding: '8px 10px' }} data-label="Singles">{fmt(p.Singles ?? p.singles)}</td>
-                    <td style={{ padding: '8px 10px' }} data-label="Doubles">{fmt(p.Doubles ?? p.doubles)}</td>
-                    <td style={{ padding: '8px 10px' }} data-label="Triples">{fmt(p.Triples ?? p.triples)}</td>
-                   <td style={{ padding: '8px 10px' }} data-label="HRs">{fmt(p.HRs ?? p.hrs)}</td>
-                    <td style={{ padding: '8px 10px' }} data-label="Dimes">{fmt(p.Dimes ?? p.dimes)}</td>
-                    
-                    <td style={{ padding: '8px 10px' }} data-label="GP">{fmt(p.GP ?? p.gp)}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          )}
-        </div>
-      )}
-    </div>
+    </>
   );
 };
 

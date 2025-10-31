@@ -111,13 +111,14 @@ const Leaders = () => {
 
   const tableWrapperStyle = {
     display: 'grid',
-    gridTemplateColumns: 'repeat(2, minmax(280px, 1fr))',
-    gap: 8,
+    /* auto-fit makes the blocks stack on narrow viewports and fill available columns on wide screens */
+    gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+    gap: 12,
     marginTop: 14
   };
 
   const smallTableStyle = {
-    width: '95%',
+    width: '100%',
     borderCollapse: 'separate',
     borderSpacing: '0 12px',
     minWidth: 280,
