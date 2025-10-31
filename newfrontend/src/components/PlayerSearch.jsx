@@ -302,6 +302,24 @@ const PlayerSearch = () => {
 
   const fmt = (v) => (v === null || v === undefined ? '—' : v);
 
+const formatRank = (rank, tied) => {
+    if (rank === null || rank === undefined) return '—';
+    const n = Number(rank);
+    if (!Number.isFinite(n)) return '—';
+    const absInt = Math.abs(Math.floor(n));
+    const rem100 = absInt % 100;
+    let suffix = 'th';
+    // 11,12,13 are special -> always 'th'
+    if (rem100 < 11 || rem100 > 13) {
+        const rem10 = absInt % 10;
+        if (rem10 === 1) suffix = 'st';
+        else if (rem10 === 2) suffix = 'nd';
+        else if (rem10 === 3) suffix = 'rd';
+    }
+    const suffixed = `${n}${suffix}`;
+    return tied ? `T-${suffixed}` : suffixed;
+};
+
   // container with thin rounded border
   const container = {
     marginBottom: 18,
@@ -394,7 +412,7 @@ return (
                 <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                     <thead>
                         <tr>
-                            <th style={{ textAlign: 'center', padding: '8px 10px', color: '#ffd7b0' }}>At Bats</th>
+                            <th style={{ textAlign: 'center', padding: '8px 10px', color: '#ffd7b0' }}>ABs</th>
                             <th style={{ textAlign: 'center', padding: '8px 10px', color: '#ffd7b0' }}>Hits</th>
                             <th style={{ textAlign: 'center', padding: '8px 10px', color: '#ffd7b0' }}>Avg</th>
                             <th style={{ textAlign: 'center', padding: '8px 10px', color: '#ffd7b0' }}>Singles</th>
@@ -427,32 +445,32 @@ return (
                     <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center' }}>
                         <div style={{ textAlign: 'center' }}>
                             <div style={{ color: '#cbd5e1' }}>Avg Rank</div>
-                            <div style={{ color: '#ffd7b0', fontWeight: 700 }}>{selected.avgRank ?? '—'}</div>
+                            <div style={{ color: '#ffd7b0', fontWeight: 700 }}>{formatRank(selected.avgRank, selected.avgTied)}</div>
                         </div>
 
                         <div style={{ textAlign: 'center' }}>
                             <div style={{ color: '#cbd5e1' }}>Singles Rank</div>
-                            <div style={{ color: '#ffd7b0', fontWeight: 700 }}>{selected.singlesRank ?? '—'}</div>
+                            <div style={{ color: '#ffd7b0', fontWeight: 700 }}>{formatRank(selected.singlesRank, selected.singlesTied)}</div>
                         </div>
 
                         <div style={{ textAlign: 'center' }}>
                             <div style={{ color: '#cbd5e1' }}>Doubles Rank</div>
-                            <div style={{ color: '#ffd7b0', fontWeight: 700 }}>{selected.doublesRank ?? '—'}</div>
+                            <div style={{ color: '#ffd7b0', fontWeight: 700 }}>{formatRank(selected.doublesRank, selected.doublesTied)}</div>
                         </div>
 
                         <div style={{ textAlign: 'center' }}>
                             <div style={{ color: '#cbd5e1' }}>Triples Rank</div>
-                            <div style={{ color: '#ffd7b0', fontWeight: 700 }}>{selected.triplesRank ?? '—'}</div>
+                            <div style={{ color: '#ffd7b0', fontWeight: 700 }}>{formatRank(selected.triplesRank, selected.triplesTied)}</div>
                         </div>
 
                         <div style={{ textAlign: 'center' }}>
                             <div style={{ color: '#cbd5e1' }}>HRs Rank</div>
-                            <div style={{ color: '#ffd7b0', fontWeight: 700 }}>{selected.hrsRank ?? '—'}</div>
+                            <div style={{ color: '#ffd7b0', fontWeight: 700 }}>{formatRank(selected.hrsRank, selected.hrsTied)}</div>
                         </div>
 
                         <div style={{ textAlign: 'center' }}>
                             <div style={{ color: '#cbd5e1' }}>Dimes Rank</div>
-                            <div style={{ color: '#ffd7b0', fontWeight: 700 }}>{selected.dimesRank ?? '—'}</div>
+                            <div style={{ color: '#ffd7b0', fontWeight: 700 }}>{formatRank(selected.dimesRank, selected.dimesTied)}</div>
                         </div>
                     </div>
                 </div>
