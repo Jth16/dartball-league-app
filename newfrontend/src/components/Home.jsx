@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 
-const Home = () => {
+const Home = (props) => {
   const [isMobile, setIsMobile] = useState(typeof window !== 'undefined' && window.matchMedia ? window.matchMedia('(max-width:600px)').matches : false);
   const fbRef = useRef(null);
 
@@ -69,6 +69,16 @@ const Home = () => {
     }
   }, []);
 
+  const handleRulesClick = (e) => {
+    if (e && e.preventDefault) e.preventDefault();
+    if (typeof props?.onNavigate === 'function') {
+      props.onNavigate('rules');
+    } else {
+      // fallback to event if prop not provided
+      window.dispatchEvent(new CustomEvent('navigate', { detail: { page: 'rules' } }));
+    }
+  };
+
   return (
     <main style={container} data-page="home">
       <header style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -83,11 +93,30 @@ const Home = () => {
       <section style={{ marginTop: 6 }}>
         <div style={blurb}>
           <h3 style={{ margin: '0 0 8px 0' }}>Latest News</h3>
-          <p style={small}><strong>Season kickoff:</strong> Opening night is Oct 29 — check the schedule for times and boards.</p>
+          <p style={small}><strong>Season kickoff:</strong> Opening night was a big success! Thank you to all who attended.</p>
 
+         
+          
           <p style={small}>Entry to the Firehall will be either through the Truck Room or the Bar. The Main Hall doors will be closed on Dartball Night.</p>
           <p style={small}>Please plan accordingly and arrive early to avoid any issues.</p>
-          <p style={small}><strong>Reminder:</strong>There is NO smoking/vaping in the hall. Smoking/Vaping is permitted in the Bar area only</p>
+          <p style={small}><strong>Reminder:</strong> There is NO smoking/vaping in the hall. Smoking/Vaping is permitted in the Bar area only</p>
+          <div style={{ marginTop: 10 }}>
+            <a
+              href="/rules"
+              onClick={handleRulesClick}
+              style={{
+                display: 'inline-block',
+                padding: '8px 12px',
+                borderRadius: 8,
+                background: 'linear-gradient(90deg,#7a2b00,#c2410c)',
+                color: '#fff',
+                textDecoration: 'none',
+                fontWeight: 700
+              }}
+            >
+              View League Rules
+            </a>
+          </div>
         </div>
 
         <div style={blurb}>
@@ -95,7 +124,7 @@ const Home = () => {
           <p style={small}>Stay updated with the latest news, events, and highlights by following our official Facebook page.</p>
         </div>
         <div style={{ marginTop: 12, display: 'flex', justifyContent: 'center' }}>
-          <div ref={fbRef} style={{ width: '100%', maxWidth: 720 }}>
+          <div ref={fbRef} style={{ width: '100%', maxWidth: 720,textAlign: 'center' }}>
             <div
               className="fb-page"
               data-href="https://www.facebook.com/LTVFC23"

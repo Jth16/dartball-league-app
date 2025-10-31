@@ -7,6 +7,7 @@ import HeaderImage from "./components/HeaderImage";
 import AdminPwdPage from "./components/AdminPwd";
 import Schedule from "./components/Schedule";
 import Leaders from "./components/Leaders"; // added
+import Rules from "./components/Rules";
 import { initGA, pageview } from "./utils/analytics";
 import Home from "./components/Home";
 
@@ -80,7 +81,7 @@ function App() {
               border: "none",
               borderRadius: "25px",
               padding: "0.75rem 1.25rem",
-              margin: "0 .5rem",
+              margin: "0 .25rem",
               fontSize: "1.1rem",
               fontWeight: "bold",
               cursor: "pointer",
@@ -97,8 +98,8 @@ function App() {
               color: "#fff",
               border: "none",
               borderRadius: "25px",
-              padding: "0.75rem 1.25rem",
-              margin: "0 .5rem",
+              padding: "0.75rem 1rem",
+              margin: "0 .25rem",
               fontSize: "1.1rem",
               fontWeight: "bold",
               cursor: "pointer",
@@ -106,7 +107,7 @@ function App() {
               transition: "all 0.2s",
             }}
           >
-            Teams
+            Standings
           </button>
           <button
             onClick={() => setPage("players")}
@@ -116,7 +117,7 @@ function App() {
               border: "none",
               borderRadius: "25px",
               padding: "0.75rem 1.25rem",
-              margin: "0 .5rem",
+              margin: "0 .25rem",
               fontSize: "1.1rem",
               fontWeight: "bold",
               cursor: "pointer",
@@ -124,7 +125,26 @@ function App() {
               transition: "all 0.2s",
             }}
           >
-            Players
+            Stats
+          </button>
+ 
+          <button
+            onClick={() => setPage("leaders")}
+            style={{
+              background: page === "leaders" ? "#ff9800" : "#222",
+              color: "#fff",
+              border: "none",
+              borderRadius: "25px",
+              padding: "0.75rem 1.25rem",
+              margin: "0 .25rem",
+              fontSize: "1.1rem",
+              fontWeight: "bold",
+              cursor: "pointer",
+              boxShadow: page === "leaders" ? "0 0 10px #ff9800" : "none",
+              transition: "all 0.2s",
+            }}
+          >
+            Leaders
           </button>
           <button
             onClick={() => setPage("schedule")}
@@ -134,7 +154,7 @@ function App() {
               border: "none",
               borderRadius: "25px",
               padding: "0.75rem 1.25rem",
-              margin: "0 .5rem",
+              margin: "0 .25rem",
               fontSize: "1.1rem",
               fontWeight: "bold",
               cursor: "pointer",
@@ -146,30 +166,31 @@ function App() {
           </button>
 
           <button
-            onClick={() => setPage("leaders")}
+            onClick={() => setPage("rules")}
             style={{
-              background: page === "leaders" ? "#ff9800" : "#222",
+              background: page === "rules" ? "#ff9800" : "#222",
               color: "#fff",
               border: "none",
               borderRadius: "25px",
               padding: "0.75rem 1.25rem",
-              margin: "0 .5rem",
+              margin: "0 .25rem",
               fontSize: "1.1rem",
               fontWeight: "bold",
               cursor: "pointer",
-              boxShadow: page === "leaders" ? "0 0 10px #ff9800" : "none",
+              boxShadow: page === "rules" ? "0 0 10px #ff9800" : "none",
               transition: "all 0.2s",
             }}
           >
-            Leaders
+            Rules
           </button>
         </nav>
         <div style={{ maxWidth: 900, height: "100%", minHeight: "800px", margin: "auto", background: "#111", padding: "2rem", borderRadius: 16, boxShadow: "0 4px 24px rgba(0,0,0,0.8)" }}>
-         {page === "home" && <Home />}
+         {page === "home" && <Home onNavigate={setPage} />}
         {page === "teams" && <TeamsTable teams={teams} />}
         {page === "players" && <PlayersPage />}
         {page === "schedule" && <Schedule />}
         {page === "leaders" && <Leaders />}
+        {page === "rules" && <Rules />}
         {page === "admin" &&
           (isAdmin ? (
             <AdminLogin setIsAdmin={setIsAdmin} />
