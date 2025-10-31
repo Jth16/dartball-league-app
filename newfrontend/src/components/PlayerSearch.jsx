@@ -409,33 +409,60 @@ return (
                     <div style={{ color: '#ffd7b0', fontWeight: 700, marginTop: 8 }}>Player Stats</div>
                 </div>
 
-                <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                    <thead>
-                        <tr>
-                            <th style={{ textAlign: 'center', padding: '8px 10px', color: '#ffd7b0' }}>ABs</th>
-                            <th style={{ textAlign: 'center', padding: '8px 10px', color: '#ffd7b0' }}>Hits</th>
-                            <th style={{ textAlign: 'center', padding: '8px 10px', color: '#ffd7b0' }}>Avg</th>
-                            <th style={{ textAlign: 'center', padding: '8px 10px', color: '#ffd7b0' }}>Singles</th>
-                            <th style={{ textAlign: 'center', padding: '8px 10px', color: '#ffd7b0' }}>Doubles</th>
-                            <th style={{ textAlign: 'center', padding: '8px 10px', color: '#ffd7b0' }}>Triples</th>
-                            <th style={{ textAlign: 'center', padding: '8px 10px', color: '#ffd7b0' }}>Dimes</th>
-                            <th style={{ textAlign: 'center', padding: '8px 10px', color: '#ffd7b0' }}>HRs</th>
-                            <th style={{ textAlign: 'center', padding: '8px 10px', color: '#ffd7b0' }}>GP</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr style={{ background: 'transparent' }}>
-                            <td style={{ textAlign: 'center', padding: '8px 10px' }}>{fmt(selected.AtBats ?? selected.atBats ?? selected.ab)}</td>
-                            <td style={{ textAlign: 'center', padding: '8px 10px' }}>{fmt(selected.hits ?? selected.Hits)}</td>
-                            <td style={{ textAlign: 'center', padding: '8px 10px' }}>{selected.Avg != null ? fmtAvg(selected.Avg) : 'N/A'}</td>
-                            <td style={{ textAlign: 'center', padding: '8px 10px' }}>{fmt(selected.Singles ?? selected.singles)}</td>
-                            <td style={{ textAlign: 'center', padding: '8px 10px' }}>{fmt(selected.Doubles ?? selected.doubles)}</td>
-                            <td style={{ textAlign: 'center', padding: '8px 10px' }}>{fmt(selected.Triples ?? selected.triples)}</td>
-                            <td style={{ textAlign: 'center', padding: '8px 10px' }}>{fmt(selected.Dimes ?? selected.dimes)}</td>
-                            <td style={{ textAlign: 'center', padding: '8px 10px' }}>{fmt(selected.HRs ?? selected.hrs)}</td>
-                            <td style={{ textAlign: 'center', padding: '8px 10px' }}>{fmt(selected.GP ?? selected.gp)}</td>
-                        </tr>
-                    </tbody>
+                {/* Player stats table - styled similarly to Leaders tables */}
+                <table
+                  style={{
+                    width: '100%',
+                    borderCollapse: 'separate',
+                    borderSpacing: '0 10px',
+                    minWidth: 320,
+                    fontSize: '0.95rem'
+                  }}
+                >
+                  <thead>
+                    <tr>
+                      <th style={{ textAlign: 'center', padding: '6px 8px', color: '#ffd7b0', fontWeight: 700 }}>ABs</th>
+                      <th style={{ textAlign: 'center', padding: '6px 8px', color: '#ffd7b0', fontWeight: 700 }}>Hits</th>
+                      <th style={{ textAlign: 'center', padding: '6px 8px', color: '#ffd7b0', fontWeight: 700 }}>Avg</th>
+                      <th style={{ textAlign: 'center', padding: '6px 8px', color: '#ffd7b0', fontWeight: 700 }}>Singles</th>
+                      <th style={{ textAlign: 'center', padding: '6px 8px', color: '#ffd7b0', fontWeight: 700 }}>Doubles</th>
+                      <th style={{ textAlign: 'center', padding: '6px 8px', color: '#ffd7b0', fontWeight: 700 }}>Triples</th>
+                      <th style={{ textAlign: 'center', padding: '6px 8px', color: '#ffd7b0', fontWeight: 700 }}>Dimes</th>
+                      <th style={{ textAlign: 'center', padding: '6px 8px', color: '#ffd7b0', fontWeight: 700 }}>HRs</th>
+                      <th style={{ textAlign: 'center', padding: '6px 8px', color: '#ffd7b0', fontWeight: 700 }}>GP</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      { [
+                          fmt(selected.AtBats ?? selected.atBats ?? selected.ab),
+                          fmt(selected.hits ?? selected.Hits),
+                          (selected.Avg != null ? fmtAvg(selected.Avg) : 'N/A'),
+                          fmt(selected.Singles ?? selected.singles),
+                          fmt(selected.Doubles ?? selected.doubles),
+                          fmt(selected.Triples ?? selected.triples),
+                          fmt(selected.Dimes ?? selected.dimes),
+                          fmt(selected.HRs ?? selected.hrs),
+                          fmt(selected.GP ?? selected.gp)
+                        ].map((val, i) => (
+                          <td key={i} style={{ padding: 0, textAlign: 'center' }}>
+                            <div
+                              style={{
+                                display: 'inline-block',
+                                minWidth: 48,
+                                padding: '10px 8px',
+                                borderRadius: 8,
+                                background: i % 2 === 0 ? 'rgba(255,255,255,0.02)' : 'rgba(255,255,255,0.01)',
+                                color: '#e6f7ff',
+                                fontWeight: 600
+                              }}
+                            >
+                              {val}
+                            </div>
+                          </td>
+                        )) }
+                    </tr>
+                  </tbody>
                 </table>
 
                 {/* Team name + current global ranks */}
