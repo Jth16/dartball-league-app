@@ -401,12 +401,12 @@ return (
         {/* selected full player record - only shown after a suggestion is picked */}
         {selected && (
             <div style={{ marginTop: 16, padding: 12, borderRadius: 8, border: '1px solid rgba(255, 255, 255, 0.62)', background: '#07101a', textAlign: 'center' }}>
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: 8 }}>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'left', marginBottom: 2 }}>
                     <div>
-                        <div style={{ fontSize: 18, fontWeight: 800, color: '#fff', textAlign: 'center' }}>{selected.name}</div>
-                        <div style={{ fontSize: 13, color: '#cbd5e1', textAlign: 'center' }}>{selected.teamName || selected.team || selected.team_name || ''}</div>
+                        <div style={{ fontSize: 18, paddingLeft: 10, fontWeight: 800, color: '#fff', textAlign: 'left' }}>{selected.name}</div>
+                        <div style={{ fontSize: 13, paddingLeft: 10, color: '#cbd5e1', textAlign: 'left' }}>{selected.teamName || selected.team || selected.team_name || ''}</div>
                     </div>
-                    <div style={{ color: '#ffd7b0', fontWeight: 700, marginTop: 8 }}>Player Stats</div>
+                    <div style={{ color: '#ffd7b0', fontWeight: 700, marginTop: -5 }}>Player Stats:</div>
                 </div>
 
                 {/* Player stats table - styled similarly to Leaders tables */}
@@ -414,22 +414,22 @@ return (
                   style={{
                     width: '100%',
                     borderCollapse: 'separate',
-                    borderSpacing: '0 10px',
+                    borderSpacing: '0 2px',
                     minWidth: 320,
                     fontSize: '0.95rem'
                   }}
                 >
                   <thead>
                     <tr>
-                      <th style={{ textAlign: 'center', padding: '6px 8px', color: '#ffd7b0', fontWeight: 700 }}>ABs</th>
-                      <th style={{ textAlign: 'center', padding: '6px 8px', color: '#ffd7b0', fontWeight: 700 }}>Hits</th>
-                      <th style={{ textAlign: 'center', padding: '6px 8px', color: '#ffd7b0', fontWeight: 700 }}>Avg</th>
-                      <th style={{ textAlign: 'center', padding: '6px 8px', color: '#ffd7b0', fontWeight: 700 }}>Singles</th>
-                      <th style={{ textAlign: 'center', padding: '6px 8px', color: '#ffd7b0', fontWeight: 700 }}>Doubles</th>
-                      <th style={{ textAlign: 'center', padding: '6px 8px', color: '#ffd7b0', fontWeight: 700 }}>Triples</th>
-                      <th style={{ textAlign: 'center', padding: '6px 8px', color: '#ffd7b0', fontWeight: 700 }}>Dimes</th>
-                      <th style={{ textAlign: 'center', padding: '6px 8px', color: '#ffd7b0', fontWeight: 700 }}>HRs</th>
-                      <th style={{ textAlign: 'center', padding: '6px 8px', color: '#ffd7b0', fontWeight: 700 }}>GP</th>
+                      <th style={{ textAlign: 'center', padding: '4px 8px', color: '#ffd7b0', fontWeight: 700 }}>ABs</th>
+                      <th style={{ textAlign: 'center', padding: '4px 8px', color: '#ffd7b0', fontWeight: 700 }}>Hits</th>
+                      <th style={{ textAlign: 'center', padding: '4px 8px', color: '#ffd7b0', fontWeight: 700 }}>Avg</th>
+                      <th style={{ textAlign: 'center', padding: '4px 8px', color: '#ffd7b0', fontWeight: 700 }}>Singles</th>
+                      <th style={{ textAlign: 'center', padding: '4px 8px', color: '#ffd7b0', fontWeight: 700 }}>Doubles</th>
+                      <th style={{ textAlign: 'center', padding: '4px 8px', color: '#ffd7b0', fontWeight: 700 }}>Triples</th>
+                      <th style={{ textAlign: 'center', padding: '4px 8px', color: '#ffd7b0', fontWeight: 700 }}>Dimes</th>
+                      <th style={{ textAlign: 'center', padding: '4px 8px', color: '#ffd7b0', fontWeight: 700 }}>HRs</th>
+                      <th style={{ textAlign: 'center', padding: '4px 8px', color: '#ffd7b0', fontWeight: 700 }}>GP</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -449,8 +449,8 @@ return (
                             <div
                               style={{
                                 display: 'inline-block',
-                                minWidth: 48,
-                                padding: '10px 8px',
+                                minWidth: 5,
+                                padding: '4px 8px',
                                 borderRadius: 8,
                                 background: i % 2 === 0 ? 'rgba(255,255,255,0.02)' : 'rgba(255,255,255,0.01)',
                                 color: '#e6f7ff',
@@ -471,32 +471,32 @@ return (
 
                     <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center' }}>
                         <div style={{ textAlign: 'center' }}>
-                            <div style={{ color: '#cbd5e1' }}>Avg Rank</div>
+                            <div style={{ color: '#cbd5e1' }}>Avg.</div>
                             <div style={{ color: '#ffd7b0', fontWeight: 700 }}>{formatRank(selected.avgRank, selected.avgTied)}</div>
                         </div>
 
                         <div style={{ textAlign: 'center' }}>
-                            <div style={{ color: '#cbd5e1' }}>Singles Rank</div>
+                            <div style={{ color: '#cbd5e1' }}>Singles</div>
                             <div style={{ color: '#ffd7b0', fontWeight: 700 }}>{formatRank(selected.singlesRank, selected.singlesTied)}</div>
                         </div>
 
                         <div style={{ textAlign: 'center' }}>
-                            <div style={{ color: '#cbd5e1' }}>Doubles Rank</div>
+                            <div style={{ color: '#cbd5e1' }}>Doubles</div>
                             <div style={{ color: '#ffd7b0', fontWeight: 700 }}>{formatRank(selected.doublesRank, selected.doublesTied)}</div>
                         </div>
 
                         <div style={{ textAlign: 'center' }}>
-                            <div style={{ color: '#cbd5e1' }}>Triples Rank</div>
+                            <div style={{ color: '#cbd5e1' }}>Triples</div>
                             <div style={{ color: '#ffd7b0', fontWeight: 700 }}>{formatRank(selected.triplesRank, selected.triplesTied)}</div>
                         </div>
 
                         <div style={{ textAlign: 'center' }}>
-                            <div style={{ color: '#cbd5e1' }}>HRs Rank</div>
+                            <div style={{ color: '#cbd5e1' }}>HRs</div>
                             <div style={{ color: '#ffd7b0', fontWeight: 700 }}>{formatRank(selected.hrsRank, selected.hrsTied)}</div>
                         </div>
 
                         <div style={{ textAlign: 'center' }}>
-                            <div style={{ color: '#cbd5e1' }}>Dimes Rank</div>
+                            <div style={{ color: '#cbd5e1' }}>Dimes</div>
                             <div style={{ color: '#ffd7b0', fontWeight: 700 }}>{formatRank(selected.dimesRank, selected.dimesTied)}</div>
                         </div>
                     </div>

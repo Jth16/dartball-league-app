@@ -114,7 +114,7 @@ const Home = (props) => {
                 fontWeight: 700
               }}
             >
-              View League Rules
+             League Rules
             </a>
           </div>
         </div>
