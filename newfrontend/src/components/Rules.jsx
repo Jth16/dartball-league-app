@@ -19,7 +19,7 @@ const Rules = () => (
                     <li><strong>Home/Away Determination:</strong> Home team (batting second) is decided by coin flip before the first game of the night.</li>
                     <li><strong>Smoking/Vaping:</strong> No smoking or vaping in the Firehall. Smoking permitted in the bar area only.</li>
                     <li><strong>Payment:</strong> Each team pays $20.00 per night.</li>
-                    <li><strong>Play Area:</strong> Players not currently playing must not occupy the throwing area or hang along the walls — respect throwers' space.</li>
+                    <li><strong>Play Area:</strong> Players and spectators who are not currently throwing must stay out of the throwing area and cannot play defense from the dugouts. Respect the throwers' space.</li>
                 </ul>
             </div>
         </section>
