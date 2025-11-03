@@ -25,6 +25,24 @@ const PlayerSearch = () => {
     return (name || '').toString().trim();
   };
 
+  // Helper: try several keys to lookup a metric entry (id, player_id, name)
+  const getRankEntry = (maps, metricKey, p) => {
+    if (!maps || !maps[metricKey]) return { rank: null, tied: false };
+    const map = maps[metricKey];
+    const tryKeys = [
+      (p && p.id),
+      (p && p.player_id),
+      (p && p.playerId),
+      (p && p.name),
+      normalizeName(p)
+    ].filter(k => k !== undefined && k !== null).map(String);
+    for (let k of tryKeys) {
+      const e = map.get(k);
+      if (e && (typeof e.rank !== 'undefined' || typeof e.tied !== 'undefined')) return e;
+    }
+    return { rank: null, tied: false };
+  };
+ 
   // robustly convert backend response -> array of player objects
   const coerceResponseToArray = (res) => {
     if (!res && res !== 0) return [];
@@ -204,54 +222,85 @@ const PlayerSearch = () => {
   // helper: try to load full player record by id, fallback to search by name, finally return original
   const loadFullPlayer = async (p) => {
     if (!p) return p;
-    const id = p.id ?? p.player_id;
-    // if no id available, nothing to fetch
-    if (!id) return p;
 
-    // try direct player endpoint first
-    const tryFetch = async (path) => {
-      try {
-        const res = await fetchWithToken(path);
-        // if fetchWithToken returned a Response, parse it
-        let payload = res;
-        if (res && typeof res === 'object' && typeof res.json === 'function') {
-          try { payload = await res.json(); } catch (e) {
-            try { const txt = await res.text(); payload = JSON.parse(txt); } catch { payload = null; }
-          }
-        }
-        // coerce to object
-        let found = null;
-        if (Array.isArray(payload)) found = payload.find(x => (x.id ?? x.player_id ?? x.name) === (id));
-        if (!found && payload && typeof payload === 'object' && (payload.id || payload.player_id || payload.name)) found = payload;
-        return found || null;
-      } catch {
-        return null;
-      }
+    // quick check: if object already has core stats, no fetch needed
+    const hasCoreStats = (obj) => {
+      return obj && (
+        typeof obj.AtBats !== 'undefined' ||
+        typeof obj.atBats !== 'undefined' ||
+        typeof obj.ab !== 'undefined' ||
+        typeof obj.Avg !== 'undefined' ||
+        typeof obj.avg !== 'undefined' ||
+        typeof obj.hits !== 'undefined' ||
+        typeof obj.Hits !== 'undefined'
+      );
     };
 
-    // 1) /routes/players/<id>
-    let full = await tryFetch(`/routes/players/${id}`);
-    if (full) return full;
-
-    // 2) search endpoint by name (narrow down by id if possible)
-    const nameQuery = encodeURIComponent(p.name || p.fullName || '');
-    if (nameQuery) {
-      const searchRes = await tryFetch(`/routes/players/search?q=${nameQuery}`);
-      if (searchRes) return searchRes;
+    if (hasCoreStats(p)) {
+      // annotate ranks and return immediately
+      try {
+        const maps = rankMapsRef.current;
+        if (maps) {
+          const eAvg = getRankEntry(maps, 'avg', p);
+          p.avgRank = eAvg.rank; p.avgTied = !!eAvg.tied;
+          const eSingles = getRankEntry(maps, 'singles', p);
+          p.singlesRank = eSingles.rank; p.singlesTied = !!eSingles.tied;
+          const eDoubles = getRankEntry(maps, 'doubles', p);
+          p.doublesRank = eDoubles.rank; p.doublesTied = !!eDoubles.tied;
+          const eTriples = getRankEntry(maps, 'triples', p);
+          p.triplesRank = eTriples.rank; p.triplesTied = !!eTriples.tied;
+          const eHrs = getRankEntry(maps, 'hrs', p);
+          p.hrsRank = eHrs.rank; p.hrsTied = !!eHrs.tied;
+          const eDimes = getRankEntry(maps, 'dimes', p);
+          p.dimesRank = eDimes.rank; p.dimesTied = !!eDimes.tied;
+        }
+      } catch (e) {
+        console.warn('loadFullPlayer: annotation failed', e);
+      }
+      return p;
     }
 
-    // annotate with global ranks if available
-    const maps = rankMapsRef.current;
-    if (maps && p) {
-      const idk = p.id ?? p.player_id ?? p.name;
-      p.avgRank = maps.avg.get(idk) ?? p.avgRank ?? null;
-      p.singlesRank = maps.singles.get(idk) ?? p.singlesRank ?? null;
-      p.doublesRank = maps.doubles.get(idk) ?? p.doublesRank ?? null;
-      p.triplesRank = maps.triples.get(idk) ?? p.triplesRank ?? null;
-      p.hrsRank = maps.hrs.get(idk) ?? p.hrsRank ?? null;
-      p.dimesRank = maps.dimes.get(idk) ?? p.dimesRank ?? null;
+    // otherwise attempt fetch by id (keeps previous robust behavior)
+    try {
+      if (p.id || p.player_id) {
+        const idToTry = p.id ?? p.player_id;
+        const url = `/routes/players/${idToTry}`;
+        try {
+          const resp = await fetchWithToken(url);
+          if (resp && resp.ok) {
+            const data = await resp.json();
+            p = data;
+          } else {
+            console.warn(`loadFullPlayer: fetch ${url} returned status ${resp ? resp.status : 'no-response'}`);
+          }
+        } catch (fetchErr) {
+          console.warn(`loadFullPlayer: fetch to ${url} failed`, fetchErr);
+        }
+      }
+    } catch (e) {
+      console.warn('loadFullPlayer unexpected error', e);
     }
 
+    // annotate ranks before returning
+    try {
+      const maps = rankMapsRef.current;
+      if (maps) {
+        const eAvg = getRankEntry(maps, 'avg', p);
+        p.avgRank = eAvg.rank; p.avgTied = !!eAvg.tied;
+        const eSingles = getRankEntry(maps, 'singles', p);
+        p.singlesRank = eSingles.rank; p.singlesTied = !!eSingles.tied;
+        const eDoubles = getRankEntry(maps, 'doubles', p);
+        p.doublesRank = eDoubles.rank; p.doublesTied = !!eDoubles.tied;
+        const eTriples = getRankEntry(maps, 'triples', p);
+        p.triplesRank = eTriples.rank; p.triplesTied = !!eTriples.tied;
+        const eHrs = getRankEntry(maps, 'hrs', p);
+        p.hrsRank = eHrs.rank; p.hrsTied = !!eHrs.tied;
+        const eDimes = getRankEntry(maps, 'dimes', p);
+        p.dimesRank = eDimes.rank; p.dimesTied = !!eDimes.tied;
+      }
+    } catch (e) {
+      console.warn('loadFullPlayer rank annotation failed', e);
+    }
     return p;
   };
 
