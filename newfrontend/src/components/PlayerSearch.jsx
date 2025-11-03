@@ -12,6 +12,39 @@ const PlayerSearch = () => {
   const teamsMapRef = useRef(null);
   const debounceRef = useRef(null);
 
+  // Build / expose rank maps whenever we receive the full players list
+  useEffect(() => {
+    try {
+      if (Array.isArray(allPlayers) && allPlayers.length > 0) {
+        rankMapsRef.current = buildRankMaps(allPlayers);
+        // expose for debugging in browser console
+        // open DevTools and inspect window.__rankMaps
+        // eslint-disable-next-line no-undef
+        window.__rankMaps = rankMapsRef.current;
+        console.log('buildRankMaps: sizes', {
+          avg: rankMapsRef.current.avg?.size ?? 0,
+          singles: rankMapsRef.current.singles?.size ?? 0,
+          doubles: rankMapsRef.current.doubles?.size ?? 0,
+          triples: rankMapsRef.current.triples?.size ?? 0,
+          hrs: rankMapsRef.current.hrs?.size ?? 0,
+          dimes: rankMapsRef.current.dimes?.size ?? 0,
+          allPlayersCount: allPlayers.length
+        });
+        // show a few keys to verify what format is being used
+        try {
+          console.log('sample avg keys', [...(rankMapsRef.current.avg?.keys()||[])].slice(0,20));
+        } catch (e) {}
+      } else {
+        rankMapsRef.current = null;
+        // eslint-disable-next-line no-undef
+        window.__rankMaps = null;
+        console.log('buildRankMaps: no players yet');
+      }
+    } catch (e) {
+      console.warn('buildRankMaps effect error', e);
+    }
+  }, [allPlayers]);
+
   // used to skip the immediate suggestion fetch caused by programmatic setQuery (when picking)
   const skipSuggestRef = useRef(false);
 
@@ -64,25 +97,42 @@ const PlayerSearch = () => {
   // build rank maps for global players list (higher value => better rank)
   const buildRankMaps = (players = []) => {
     const metrics = [
-      { key: 'avg', getter: p => parseFloat(p.Avg ?? p.avg ?? 0) },
-      { key: 'singles', getter: p => Number(p.Singles ?? p.singles ?? 0) },
-      { key: 'doubles', getter: p => Number(p.Doubles ?? p.doubles ?? 0) },
-      { key: 'triples', getter: p => Number(p.Triples ?? p.triples ?? 0) },
-      { key: 'hrs', getter: p => Number(p.HRs ?? p.hrs ?? 0) },
-      { key: 'dimes', getter: p => Number(p.Dimes ?? p.dimes ?? 0) }
+      { key: 'avg', getter: p => parseFloat(p.Avg ?? p.avg ?? NaN) },
+      { key: 'singles', getter: p => Number(p.Singles ?? p.singles ?? NaN) },
+      { key: 'doubles', getter: p => Number(p.Doubles ?? p.doubles ?? NaN) },
+      { key: 'triples', getter: p => Number(p.Triples ?? p.triples ?? NaN) },
+      { key: 'hrs', getter: p => Number(p.HRs ?? p.hrs ?? NaN) },
+      { key: 'dimes', getter: p => Number(p.Dimes ?? p.dimes ?? NaN) }
     ];
 
-    const idFor = (p) => p.id ?? p.player_id ?? p.name;
+    const idFor = (p) => String(p.id ?? p.player_id ?? p.name ?? '');
     const maps = {};
     metrics.forEach(m => {
-      const sorted = [...players].sort((a, b) => (m.getter(b) || 0) - (m.getter(a) || 0));
+      // sort descending, treat non-numeric as -Infinity so they sink
+      const sorted = [...players].sort((a, b) => {
+        const av = m.getter(a), bv = m.getter(b);
+        const an = Number.isFinite(av) ? av : -Infinity;
+        const bn = Number.isFinite(bv) ? bv : -Infinity;
+        return bn - an;
+      });
+
+      // count identical values to detect ties
+      const counts = new Map();
+      sorted.forEach(s => {
+        const v = m.getter(s);
+        const key = Number.isFinite(v) ? String(v) : '__NA__';
+        counts.set(key, (counts.get(key) || 0) + 1);
+      });
+
       let lastVal = null;
       let lastRank = 0;
       const map = new Map();
       for (let i = 0; i < sorted.length; i++) {
         const val = m.getter(sorted[i]);
+        const valKey = Number.isFinite(val) ? String(val) : '__NA__';
         const rank = (i === 0 || val !== lastVal) ? (i + 1) : lastRank;
-        map.set(idFor(sorted[i]), Number.isFinite(val) ? rank : null);
+        const tied = (counts.get(valKey) || 0) > 1;
+        map.set(idFor(sorted[i]), Number.isFinite(val) ? { rank, tied } : { rank: null, tied: false });
         lastVal = val;
         lastRank = rank;
       }
@@ -171,13 +221,18 @@ const PlayerSearch = () => {
       const maps = rankMapsRef.current;
       if (maps) {
         normalized.forEach(p => {
-          const id = p.id ?? p.player_id ?? p.name;
-          p.avgRank = maps.avg.get(id) ?? null;
-          p.singlesRank = maps.singles.get(id) ?? null;
-          p.doublesRank = maps.doubles.get(id) ?? null;
-          p.triplesRank = maps.triples.get(id) ?? null;
-          p.hrsRank = maps.hrs.get(id) ?? null;
-          p.dimesRank = maps.dimes.get(id) ?? null;
+          const eAvg = getRankEntry(maps, 'avg', p);
+          p.avgRank = eAvg.rank; p.avgTied = !!eAvg.tied;
+          const eSingles = getRankEntry(maps, 'singles', p);
+          p.singlesRank = eSingles.rank; p.singlesTied = !!eSingles.tied;
+          const eDoubles = getRankEntry(maps, 'doubles', p);
+          p.doublesRank = eDoubles.rank; p.doublesTied = !!eDoubles.tied;
+          const eTriples = getRankEntry(maps, 'triples', p);
+          p.triplesRank = eTriples.rank; p.triplesTied = !!eTriples.tied;
+          const eHrs = getRankEntry(maps, 'hrs', p);
+          p.hrsRank = eHrs.rank; p.hrsTied = !!eHrs.tied;
+          const eDimes = getRankEntry(maps, 'dimes', p);
+          p.dimesRank = eDimes.rank; p.dimesTied = !!eDimes.tied;
         });
       }
 
@@ -324,15 +379,20 @@ const PlayerSearch = () => {
     }
     
     // annotate with global ranks (if available)
-    const maps = rankMapsRef.current;
-    if (maps) {
-      const idk = withName.id ?? withName.player_id ?? withName.name;
-      withName.avgRank = maps.avg.get(idk) ?? withName.avgRank ?? null;
-      withName.singlesRank = maps.singles.get(idk) ?? withName.singlesRank ?? null;
-      withName.doublesRank = maps.doubles.get(idk) ?? withName.doublesRank ?? null;
-      withName.triplesRank = maps.triples.get(idk) ?? withName.triplesRank ?? null;
-      withName.hrsRank = maps.hrs.get(idk) ?? withName.hrsRank ?? null;
-      withName.dimesRank = maps.dimes.get(idk) ?? withName.dimesRank ?? null;
+    const maps2 = rankMapsRef.current;
+    if (maps2) {
+      const eAvg = getRankEntry(maps2, 'avg', withName);
+      withName.avgRank = eAvg.rank; withName.avgTied = !!eAvg.tied;
+      const eSingles = getRankEntry(maps2, 'singles', withName);
+      withName.singlesRank = eSingles.rank; withName.singlesTied = !!eSingles.tied;
+      const eDoubles = getRankEntry(maps2, 'doubles', withName);
+      withName.doublesRank = eDoubles.rank; withName.doublesTied = !!eDoubles.tied;
+      const eTriples = getRankEntry(maps2, 'triples', withName);
+      withName.triplesRank = eTriples.rank; withName.triplesTied = !!eTriples.tied;
+      const eHrs = getRankEntry(maps2, 'hrs', withName);
+      withName.hrsRank = eHrs.rank; withName.hrsTied = !!eHrs.tied;
+      const eDimes = getRankEntry(maps2, 'dimes', withName);
+      withName.dimesRank = eDimes.rank; withName.dimesTied = !!eDimes.tied;
     }
     setSelected(withName);
   };
