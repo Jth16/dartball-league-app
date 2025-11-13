@@ -52,6 +52,51 @@ const Schedule = () => {
     return { headers, rows: dataRows };
   };
 
+  // Try to parse a date string robustly. Returns Date or null.
+  const parsePossibleDate = (txt) => {
+    if (!txt) return null;
+    let s = String(txt).trim();
+    s = s.replace(/^"|"$/g, '').trim();
+
+    // YYYY-MM-DD or YYYY/MM/DD
+    const iso = s.match(/^(\d{4})[-\/](\d{1,2})[-\/](\d{1,2})$/);
+    if (iso) {
+      const d = new Date(Number(iso[1]), Number(iso[2]) - 1, Number(iso[3]));
+      d.setHours(0,0,0,0);
+      return d;
+    }
+
+    // MM/DD[/YYYY] or M-D-YYYY etc.
+    const md = s.match(/^(\d{1,2})[\/\-\s](\d{1,2})(?:[\/\-\s](\d{2,4}))?$/);
+    if (md) {
+      const month = Number(md[1]);
+      const day = Number(md[2]);
+      let year = md[3] ? Number(md[3]) : (new Date()).getFullYear();
+      if (year < 100) year += 2000;
+      const d = new Date(year, month - 1, day);
+      if (!Number.isNaN(d.getTime())) { d.setHours(0,0,0,0); return d; }
+    }
+
+    // Month name formats like "Apr 1, 2025" or "April 1"
+    const mdName = s.match(/^([A-Za-z]+)\s+(\d{1,2})(?:,\s*(\d{4}))?$/);
+    if (mdName) {
+      const monthPart = mdName[1];
+      const day = Number(mdName[2]);
+      const year = mdName[3] ? Number(mdName[3]) : (new Date()).getFullYear();
+      const d = new Date(`${monthPart} ${day} ${year}`);
+      if (!Number.isNaN(d.getTime())) { d.setHours(0,0,0,0); return d; }
+    }
+
+    // fallback: let Date try (and normalize to midnight)
+    const dFallback = new Date(s);
+    if (!Number.isNaN(dFallback.getTime())) {
+      dFallback.setHours(0,0,0,0);
+      return dFallback;
+    }
+
+    return null;
+  };
+
   useEffect(() => {
     let mounted = true;
 
@@ -182,6 +227,7 @@ const Schedule = () => {
 
   // render rows; insert a round header when Round cell changes (we expect one of the kept headers to be 'Round')
   const roundIdx = headers.findIndex(h => /round/i.test(h));
+  const dateIdx = headers.findIndex(h => /date/i.test(h)); // index of the date column (within kept headers)
   let lastRound = null;
 
   return (
@@ -238,6 +284,25 @@ const Schedule = () => {
                const insertRoundHeader = roundVal && roundVal !== lastRound;
                lastRound = roundVal || lastRound;
 
+               // determine if this row's date has already passed
+               // try header index first; if not present, scan row for the first parseable date cell
+               let dateCell = '';
+               if (dateIdx >= 0 && r[dateIdx]) {
+                 dateCell = r[dateIdx];
+               } else {
+                 for (let ci = 0; ci < r.length; ci++) {
+                   if (parsePossibleDate(r[ci])) { dateCell = r[ci]; break; }
+                 }
+                 if (!dateCell) dateCell = r[0] || '';
+               }
+               const parsed = parsePossibleDate(dateCell);
+               const todayStart = new Date();
+               todayStart.setHours(0,0,0,0);
+               const isPast = parsed instanceof Date ? (parsed.getTime() < todayStart.getTime()) : false;
+
+               // if past, apply strikethrough + subtle color
+               const pastCellStyle = isPast ? { textDecoration: 'line-through', opacity: 0.65 } : {};
+
                return (
                  <React.Fragment key={rowIndex}>
 
@@ -247,7 +312,14 @@ const Schedule = () => {
 
                    <tr style={rowStyle}>
                      {r.map((cell, ci) => (
-                       <td key={ci} style={{ ...dateCellStyle, textAlign: ci === 0 ? 'center' : 'center' }}>
+                       <td
+                         key={ci}
+                         style={{
+                           ...dateCellStyle,
+                           textAlign: ci === 0 ? 'center' : 'center',
+                           ...pastCellStyle
+                         }}
+                       >
                          {cell || '—'}
                        </td>
                      ))}
@@ -259,7 +331,7 @@ const Schedule = () => {
          </table>
        </div>
     </div>
-  );
-};
+   );
+ };
 
-export default Schedule;
+ export default Schedule;
