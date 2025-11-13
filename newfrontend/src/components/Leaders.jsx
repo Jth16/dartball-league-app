@@ -9,10 +9,74 @@ const normalizeNum = (v) => {
   return Number.isFinite(n) ? n : 0;
 };
 
+// build rank maps (returns maps for keys: avg, singles, doubles, triples, hrs, dimes)
+// each map stores entries as { rank, tied } keyed by stringified id/name
+const buildRankMaps = (players = []) => {
+  const metrics = [
+    { key: 'Avg', getter: p => parseFloat(p.Avg ?? p.avg ?? NaN) },
+    { key: 'Singles', getter: p => Number(p.Singles ?? p.singles ?? NaN) },
+    { key: 'Doubles', getter: p => Number(p.Doubles ?? p.doubles ?? NaN) },
+    { key: 'Triples', getter: p => Number(p.Triples ?? p.triples ?? NaN) },
+    { key: 'HRs', getter: p => Number(p.HRs ?? p.hrs ?? NaN) },
+    { key: 'Dimes', getter: p => Number(p.Dimes ?? p.dimes ?? NaN) },
+    { key: 'hits', getter: p => Number(p.hits ?? NaN) }
+  ];
+
+  const idFor = (p) => String(p.id ?? p.player_id ?? p.name ?? '');
+
+  const maps = {};
+  metrics.forEach(m => {
+    const sorted = [...players].sort((a, b) => {
+      const av = m.getter(a), bv = m.getter(b);
+      const an = Number.isFinite(av) ? av : -Infinity;
+      const bn = Number.isFinite(bv) ? bv : -Infinity;
+      return bn - an;
+    });
+
+    // count identical numeric values to detect ties
+    const counts = new Map();
+    sorted.forEach(s => {
+      const v = m.getter(s);
+      const key = Number.isFinite(v) ? String(v) : '__NA__';
+      counts.set(key, (counts.get(key) || 0) + 1);
+    });
+
+    let lastVal = null;
+    let lastRank = 0;
+    const map = new Map();
+    for (let i = 0; i < sorted.length; i++) {
+      const val = m.getter(sorted[i]);
+      const valKey = Number.isFinite(val) ? String(val) : '__NA__';
+      const rank = (i === 0 || val !== lastVal) ? (i + 1) : lastRank;
+      const tied = (counts.get(valKey) || 0) > 1;
+      map.set(idFor(sorted[i]), Number.isFinite(val) ? { rank, tied } : { rank: null, tied: false });
+      lastVal = val;
+      lastRank = rank;
+    }
+    maps[m.key] = map;
+  });
+
+  return maps;
+};
+
 const Leaders = () => {
   const [players, setPlayers] = useState([]);
   const [teamsMap, setTeamsMap] = useState({});
   const containerRef = useRef(null);
+  const rankMapsRef = useRef(null);
+
+  // submenu selection state
+  const [selectedCategory, setSelectedCategory] = useState('all');
+
+  const menuItems = [
+    { label: 'Overall Leaders', key: 'all' },
+    { label: 'Singles', key: 'Singles' },
+    { label: 'Doubles', key: 'Doubles' },
+    { label: 'Triples', key: 'Triples' },
+    { label: 'HomeRuns', key: 'HRs' },
+    { label: 'Hits', key: 'hits' },
+    { label: 'Dimes', key: 'Dimes' }
+  ];
 
   useEffect(() => {
     let mounted = true;
@@ -50,6 +114,17 @@ const Leaders = () => {
     return () => { mounted = false; };
   }, []);
 
+  // rebuild rank maps whenever players change
+  useEffect(() => {
+    if (Array.isArray(players) && players.length > 0) {
+      rankMapsRef.current = buildRankMaps(players);
+      // optional debug exposure
+      // window.__leadersRankMaps = rankMapsRef.current;
+    } else {
+      rankMapsRef.current = null;
+    }
+  }, [players]);
+
   const topBy = (key, n = TOP_N) => {
     const sorted = [...players].sort((a, b) => {
       const av = normalizeNum(b[key]) - normalizeNum(a[key]);
@@ -69,6 +144,26 @@ const Leaders = () => {
     { title: 'Most HRs', key: 'HRs', label: 'Most HRs', format: (v) => v },
     { title: 'Most Dimes', key: 'Dimes', label: 'Most Dimes', format: (v) => v },
   ];
+
+  const submenuStyle = {
+    display: 'flex',
+    gap: 8,
+    marginTop: 12,
+    marginBottom: 8,
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+    alignItems: 'center'
+  };
+  const menuBtn = (active) => ({
+    padding: '6px 10px',
+    borderRadius: 8,
+    border: '1px solid rgba(255,255,255,0.06)',
+    background: active ? 'linear-gradient(90deg,#7a2b00,#c2410c)' : '#111',
+    color: '#fff',
+    cursor: 'pointer',
+    fontWeight: active ? 800 : 600,
+    fontSize: 13
+  });
 
   // Styles matched to TeamsTable theme (dark + dark-orange accent)
   const containerStyle = {
@@ -143,6 +238,9 @@ const Leaders = () => {
     borderRadius: 6
   };
 
+  // helper to get id key used in rank maps
+  const idForPlayer = (p) => String(p.id ?? p.player_id ?? p.name ?? '');
+
   return (
     <div ref={containerRef} data-printable style={containerStyle}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
@@ -161,9 +259,30 @@ const Leaders = () => {
 
       <div style={accentBar} />
 
+      {/* submenu */}
+      <div style={submenuStyle}>
+        {menuItems.map(mi => (
+          <button
+            key={mi.key}
+            onClick={() => setSelectedCategory(mi.key)}
+            style={menuBtn(selectedCategory === mi.key)}
+            className="no-print"
+          >
+            {mi.label}
+          </button>
+        ))}
+      </div>
+
       <div style={tableWrapperStyle}>
-        {tables.map(tbl => {
-          const rows = topBy(tbl.key);
+        {(
+          selectedCategory === 'all'
+            ? tables
+            : tables.filter(t => t.key === selectedCategory)
+        ).map(tbl => {
+          // show TOP_N when "all" (overview), otherwise show the full sorted list for the selected category
+          const rows = topBy(tbl.key, selectedCategory === 'all' ? TOP_N : (players.length || 0));
+          const maps = rankMapsRef.current;
+
           return (
             <div key={tbl.key} style={{ overflowX: 'auto' }}>
               <div style={{ marginBottom: 8, textAlign: 'center', color: '#fff', fontWeight: 700 }}>{tbl.title}</div>
@@ -180,14 +299,20 @@ const Leaders = () => {
                 <tbody>
                   {rows.length === 0 ? (
                     <tr><td colSpan="4" style={{ padding: 12, textAlign: 'center', color: '#cbd5e1' }}>—</td></tr>
-                  ) : rows.map((p, idx) => (
-                    <tr key={p.id || idx} style={rowStyle}>
-                      <td style={{ ...tdStyle, textAlign: 'center' }}>{idx + 1}</td>
-                      <td style={tdStyle}>{p.name}</td>
-                      <td style={tdStyle}>{teamsMap[p.team_id] ?? p.team_id}</td>
-                      <td style={{ ...tdStyle, textAlign: 'center' }}>{tbl.format(p[tbl.key] ?? 0)}</td>
-                    </tr>
-                  ))}
+                  ) : rows.map((p, idx) => {
+                    const idKey = idForPlayer(p);
+                    const entry = maps && maps[tbl.key] ? (maps[tbl.key].get(idKey) || { rank: null, tied: false }) : { rank: null, tied: false };
+                    const rankDisplay = entry.rank ? (entry.tied ? `T-${entry.rank}` : String(entry.rank)) : String(idx + 1);
+
+                    return (
+                      <tr key={p.id || idx} style={rowStyle}>
+                        <td style={{ ...tdStyle, textAlign: 'center' }}>{rankDisplay}</td>
+                        <td style={tdStyle}>{p.name}</td>
+                        <td style={tdStyle}>{teamsMap[p.team_id] ?? p.team_id}</td>
+                        <td style={{ ...tdStyle, textAlign: 'center' }}>{tbl.format(p[tbl.key] ?? 0)}</td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>
