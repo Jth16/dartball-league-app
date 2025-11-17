@@ -63,7 +63,7 @@ const Leaders = () => {
   const [players, setPlayers] = useState([]);
   const [teamsMap, setTeamsMap] = useState({});
   const containerRef = useRef(null);
-  const rankMapsRef = useRef(null);
+  const [rankMaps, setRankMaps] = useState(null);
 
   // submenu selection state
   const [selectedCategory, setSelectedCategory] = useState('all');
@@ -117,11 +117,12 @@ const Leaders = () => {
   // rebuild rank maps whenever players change
   useEffect(() => {
     if (Array.isArray(players) && players.length > 0) {
-      rankMapsRef.current = buildRankMaps(players);
+      const maps = buildRankMaps(players);
+      setRankMaps(maps);
       // optional debug exposure
-      // window.__leadersRankMaps = rankMapsRef.current;
+      // window.__leadersRankMaps = maps;
     } else {
-      rankMapsRef.current = null;
+      setRankMaps(null);
     }
   }, [players]);
 
@@ -281,7 +282,7 @@ const Leaders = () => {
         ).map(tbl => {
           // show TOP_N when "all" (overview), otherwise show the full sorted list for the selected category
           const rows = topBy(tbl.key, selectedCategory === 'all' ? TOP_N : (players.length || 0));
-          const maps = rankMapsRef.current;
+          const maps = rankMaps;
 
           return (
             <div key={tbl.key} style={{ overflowX: 'auto' }}>
