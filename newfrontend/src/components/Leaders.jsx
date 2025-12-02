@@ -70,9 +70,10 @@ const Leaders = () => {
 
   const menuItems = [
     { label: 'Overall Leaders', key: 'all' },
-    { label: 'Sngles', key: 'Singles' },
-    { label: 'Dbles', key: 'Doubles' },
-    { label: 'Trples', key: 'Triples' },
+    { label: 'Average', key: 'Avg' },
+    { label: 'Singles', key: 'Singles' },
+    { label: 'Doubles', key: 'Doubles' },
+    { label: 'Triples', key: 'Triples' },
     { label: 'HRs', key: 'HRs' },
     { label: 'Hits', key: 'hits' },
     { label: 'Dimes', key: 'Dimes' }

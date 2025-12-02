@@ -93,13 +93,17 @@ const Home = (props) => {
       <section style={{ marginTop: 6 }}>
         <div style={blurb}>
           <h3 style={{ margin: '0 0 8px 0' }}>Latest News</h3>
-          <p style={small}><strong>Season kickoff:</strong> Opening night was a big success! Thank you to all who attended.</p>
+          <p style={small}><strong>Dartball Tournament:</strong> Coming this January. Details to come!</p>
 
          
           
           <p style={small}>Entry to the Firehall will be either through the Truck Room or the Bar. The Main Hall doors will be closed on Dartball Night.</p>
           <p style={small}>Please plan accordingly and arrive early to avoid any issues.</p>
           <p style={small}><strong>Reminder:</strong> There is NO smoking/vaping in the hall. Smoking/Vaping is permitted in the Bar area only</p>
+          <p style={small}><strong>Current Makeups:</strong></p>
+          <ul style={{ color: '#cbd5e1', fontSize: isMobile ? 16 : 14, lineHeight: 1.45, marginTop: 0 }}>
+            <li>Average Bo's vs Prince of Dartness (Dec. 1st)</li>
+          </ul>
           <div style={{ marginTop: 10 }}>
             <a
               href="/rules"
