@@ -140,8 +140,6 @@ const Results = () => {
 
   return (
     <div style={containerStyle}>
-      {/* Result leaders summary above the results list */}
-      <ResultLeaders />
       <div style={headerStyle}>
         <div>
           <h2 style={{ margin: 0 }}>Results by Date</h2>

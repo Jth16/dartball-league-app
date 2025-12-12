@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import TeamsTable from "./components/TeamsTable";
-import PlayersPage from "./components/PlayersTable";
+import StatsPage from "./components/StatsPage";
 import AdminLogin from "./components/AdminLogin";
 import HeaderImage from "./components/HeaderImage";
 import AdminPwdPage from "./components/AdminPwd";
@@ -110,10 +110,28 @@ function App() {
           >
             Standings
           </button>
-          <button
-            onClick={() => setPage("players")}
+           <button
+            onClick={() => setPage("results")}
             style={{
-              background: page === "players" ? "#ff9800" : "#222",
+              background: page === "results" ? "#ff9800" : "#222",
+              color: "#fff",
+              border: "none",
+              borderRadius: "25px",
+              padding: "0.75rem 1.25rem",
+              margin: "0 .25rem",
+              fontSize: "1.1rem",
+              fontWeight: "bold",
+              cursor: "pointer",
+              boxShadow: page === "rules" ? "0 0 10px #ff9800" : "none",
+              transition: "all 0.2s",
+            }}
+          >
+            Results
+          </button>
+          <button
+            onClick={() => setPage("Stats")}
+            style={{
+              background: page === "Stats" ? "#ff9800" : "#222",
               color: "#fff",
               border: "none",
               borderRadius: "25px",
@@ -129,24 +147,7 @@ function App() {
             Stats
           </button>
  
-          <button
-            onClick={() => setPage("leaders")}
-            style={{
-              background: page === "leaders" ? "#ff9800" : "#222",
-              color: "#fff",
-              border: "none",
-              borderRadius: "25px",
-              padding: "0.75rem 1.25rem",
-              margin: "0 .25rem",
-              fontSize: "1.1rem",
-              fontWeight: "bold",
-              cursor: "pointer",
-              boxShadow: page === "leaders" ? "0 0 10px #ff9800" : "none",
-              transition: "all 0.2s",
-            }}
-          >
-            Leaders
-          </button>
+      
           <button
             onClick={() => setPage("schedule")}
             style={{
@@ -184,29 +185,12 @@ function App() {
           >
             Rules
           </button>
-           <button
-            onClick={() => setPage("results")}
-            style={{
-              background: page === "results" ? "#ff9800" : "#222",
-              color: "#fff",
-              border: "none",
-              borderRadius: "25px",
-              padding: "0.75rem 1.25rem",
-              margin: "0 .25rem",
-              fontSize: "1.1rem",
-              fontWeight: "bold",
-              cursor: "pointer",
-              boxShadow: page === "rules" ? "0 0 10px #ff9800" : "none",
-              transition: "all 0.2s",
-            }}
-          >
-            Results
-          </button>
+          
         </nav>
         <div style={{ maxWidth: 900, height: "100%", minHeight: "800px", margin: "auto", background: "#111", padding: "2rem", borderRadius: 16, boxShadow: "0 4px 24px rgba(0,0,0,0.8)" }}>
          {page === "home" && <Home onNavigate={setPage} />}
         {page === "teams" && <TeamsTable teams={teams} />}
-        {page === "players" && <PlayersPage />}
+        {page === "Stats" && <StatsPage />}
         {page === "schedule" && <Schedule />}
         {page === "leaders" && <Leaders />}
         {page === "rules" && <Rules />}

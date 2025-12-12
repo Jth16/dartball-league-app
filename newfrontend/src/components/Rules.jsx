@@ -60,7 +60,7 @@ const Rules = () => (
                     <li><strong>Makeups/Cancellations:</strong> Teams that cannot make a scheduled game must cancel and schedule a makeup. Cancellations must be declared at least 1 hour before the scheduled game or result in a forfeit.</li>
                     <li><strong>Playoff Eligibility:</strong> A player must play in at least 33% of a team's games to be playoff-eligible for that team.</li>
                     <li><strong>Playoff Home and Away:</strong> Home and away designations for playoff games will be determined by regular season standings.</li>
-                    <li><strong>Reschedules:</strong> Rescheduled Games will be played the last week of the season if needed.</li>
+                    <li><strong>Reschedules:</strong> Rescheduled Games will be played the last week of the season.</li>
                 </ul>
             </div>
         </section>

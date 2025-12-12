@@ -7,46 +7,92 @@ const TeamsTable = () => {
     const containerRef = useRef(null);
 
     useEffect(() => {
-        const fetchTeams = async () => {
+        const fetchStandingsFromResults = async () => {
             try {
-                const response = await fetchWithToken('/routes/teams', { method: 'GET' });
-                if (!response.ok) throw new Error(`HTTP ${response.status}`);
-                const data = await response.json();
+                // fetch teams for names and results for computing standings
+                const [teamsResp, resultsResp] = await Promise.all([
+                    fetchWithToken('/routes/teams', { method: 'GET' }),
+                    fetchWithToken('/routes/results?limit=10000', { method: 'GET' })
+                ]);
 
-                const getGP = (t) => Number(t.games_played ?? t.GP ?? t.games ?? t.gamesPlayed ?? 0) || 0;
+                if (!teamsResp.ok) throw new Error(`Teams HTTP ${teamsResp.status}`);
+                if (!resultsResp.ok) throw new Error(`Results HTTP ${resultsResp.status}`);
 
-                const normalizeWinPct = (t) => {
-                    const raw = Number(t.win_pct ?? t.win_percentage ?? t.WP ?? 0) || 0;
-                    return raw <= 1 ? raw * 100 : raw;
-                };
+                const teamsData = await teamsResp.json();
+                const resultsData = await resultsResp.json();
 
-                const teamsWithPct = data.map(team => {
-                    const gp = getGP(team);
-                    const winPct = normalizeWinPct(team);
-                    return { ...team, games_played: gp, win_pct: winPct };
+                // build name map
+                const nameMap = {};
+                (Array.isArray(teamsData) ? teamsData : []).forEach(t => {
+                    nameMap[String(t.id)] = t.name || t.team_name || `Team ${t.id}`;
                 });
 
-                const leader = teamsWithPct.reduce((best, t) => {
+                // aggregate stats from results
+                const stats = {}; // keyed by team id (string)
+                const addTeamIfMissing = (id) => {
+                    const key = String(id);
+                    if (!stats[key]) stats[key] = { id: key, wins: 0, losses: 0, games_played: 0 };
+                    return stats[key];
+                };
+
+                (Array.isArray(resultsData) ? resultsData : []).forEach(r => {
+                    const t1 = String(r.team1_id);
+                    const t2 = String(r.team2_id);
+                    const s1 = Number(r.team1_score) || 0;
+                    const s2 = Number(r.team2_score) || 0;
+
+                    const st1 = addTeamIfMissing(t1);
+                    const st2 = addTeamIfMissing(t2);
+
+                    // each result counts as one game for both teams
+                    st1.games_played += 1;
+                    st2.games_played += 1;
+
+                    if (s1 > s2) {
+                        st1.wins += 1;
+                        st2.losses += 1;
+                    } else if (s2 > s1) {
+                        st2.wins += 1;
+                        st1.losses += 1;
+                    } else {
+                        // tie — do not increment wins/losses (keeps parity with existing logic)
+                    }
+                });
+
+                // compute win_pct (as percent like 65.4)
+                const rows = Object.values(stats).map(s => {
+                    const winPct = s.games_played > 0 ? (s.wins / s.games_played) * 100 : 0;
+                    return { ...s, win_pct: winPct, name: nameMap[s.id] ?? `Team ${s.id}` };
+                });
+
+                // determine leader (highest win_pct, break ties by most wins)
+                const leader = rows.reduce((best, t) => {
                     if (!best) return t;
                     if (t.win_pct > best.win_pct) return t;
                     if (t.win_pct === best.win_pct && (t.wins || 0) > (best.wins || 0)) return t;
                     return best;
-                }, teamsWithPct[0] || null) || { wins: 0, losses: 0, win_pct: 0 };
+                }, rows[0] || { wins: 0, losses: 0, win_pct: 0 });
 
-                const teamsWithGB = teamsWithPct.map(team => {
-                    const gb = ((leader.wins - (team.wins || 0)) + ((team.losses || 0) - leader.losses)) / 2;
-                    return { ...team, games_behind: gb };
+                // compute games behind
+                const withGB = rows.map(t => {
+                    const gb = ((leader.wins - (t.wins || 0)) + ((t.losses || 0) - leader.losses)) / 2;
+                    return { ...t, games_behind: gb };
                 });
 
-                const sortedTeams = teamsWithGB.sort((a, b) => b.win_pct - a.win_pct);
-                setTeams(sortedTeams);
+                // sort by win_pct desc, then wins desc
+                withGB.sort((a, b) => {
+                    if (b.win_pct !== a.win_pct) return b.win_pct - a.win_pct;
+                    return (b.wins || 0) - (a.wins || 0);
+                });
+
+                setTeams(withGB);
             } catch (err) {
-                console.error('fetchTeams failed', err);
+                console.error('fetchStandingsFromResults failed', err);
                 setTeams([]);
             }
         };
 
-        fetchTeams();
+        fetchStandingsFromResults();
     }, []);
 
     const formatPct = (pct) => {
@@ -146,7 +192,7 @@ const TeamsTable = () => {
            <div style={headerStyle}>
              <h1 style={titleStyle}>Team Standings</h1>
             <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-              <div style={{ color: "#9fb8d6", fontSize: 14 }}>Season standings</div>
+              <div style={{ color: "#9fb8d6", fontSize: 14 }}>Season standings (computed from results)</div>
               <button
                 className="no-print"
                 onClick={() => printElement(containerRef.current)}
@@ -185,7 +231,7 @@ const TeamsTable = () => {
                                     : <span style={pctBadge('.000')}>.000</span>}
                             </td>
                             <td style={{ ...cellStyle, textAlign: "center" }}>
-                                {team.games_behind === 0 ? "—" : Number(team.games_behind).toFixed(1)}
+                                {Number(team.games_behind) === 0 ? "—" : Number(team.games_behind).toFixed(1)}
                             </td>
                             <td style={{ ...cellStyle, textAlign: "center" }}>{team.games_played}</td>
                         </tr>

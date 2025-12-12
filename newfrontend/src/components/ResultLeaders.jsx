@@ -2,16 +2,18 @@ import React, { useEffect, useState } from 'react';
 
 const API_BASE = process.env.REACT_APP_API_URL || 'https://dartball-backend-654879525708.us-central1.run.app';
 
-const container = { marginBottom: 12, padding: 12, background: 'linear-gradient(180deg,#07131a,#081821)', borderRadius: 10 };
-const title = { margin: 0, color: '#fff', fontSize: 16, fontWeight: 700 };
-const small = { color: '#9fb0bd', fontSize: 13 };
-const statBox = { flex: 1, padding: 12, background: 'linear-gradient(180deg,#071724,#07202a)', borderRadius: 8, minWidth: 200, width: '100%' };
-const statValue = { fontSize: 20, fontWeight: 800, color: '#ffdfb5' };
-const meta = { marginTop: 6, color: '#cbd5e1', fontSize: 13 };
+// compacted panel styles — increased sizes for single panels
+const container = { marginBottom: 10, padding: 10, background: 'linear-gradient(180deg,#07131a,#081821)', borderRadius: 8 };
+const title = { margin: 0, color: '#fff', fontSize: 18, fontWeight: 700 }; // bigger
+const small = { color: '#9fb0bd', fontSize: 12 };
+// each stat panel will take about half the width so two panels appear per row
+const statBox = { flex: '0 0 48%', padding: 10, background: 'linear-gradient(180deg,#071724,#07202a)', borderRadius: 6, minWidth: 160, boxSizing: 'border-box' };
+const statValue = { fontSize: 22, fontWeight: 800, color: '#ffdfb5', lineHeight: 1 }; // bigger
+const meta = { marginTop: 6, color: '#cbd5e1', fontSize: 13 }; // slightly bigger
 
-const table = { width: '100%', borderCollapse: 'collapse', marginTop: 8 };
-const th = { textAlign: 'left', color: '#fff', fontWeight: 800, padding: '6px 8px', fontSize: 13 };
-const td = { padding: '6px 8px', color: '#e6f7ff' };
+const table = { width: '100%', borderCollapse: 'collapse', marginTop: 6, fontSize: 13 };
+const th = { textAlign: 'left', color: '#fff', fontWeight: 800, padding: '6px 8px', fontSize: 12 };
+const td = { padding: '6px 8px', color: '#e6f7ff', fontSize: 13 };
 
 // format dates using UTC so local timezone won't shift the displayed day
 const formatDisplayDate = (isoDate) => {
@@ -40,8 +42,10 @@ const ResultLeaders = ({ topN = 9 }) => {
   const [topSingleTeam, setTopSingleTeam] = useState(null);
   const [topCombined, setTopCombined] = useState(null);
   const [bestSeries, setBestSeries] = useState(null);
-  const [mostRunsList, setMostRunsList] = useState([]);
-  const [diffList, setDiffList] = useState([]);
+  const [topOneRun, setTopOneRun] = useState(null);
+  const [topOneRunLoss, setTopOneRunLoss] = useState(null);
+  const [statsList, setStatsList] = useState([]); // combined runs + diff list
+  const [sweepsTable, setSweepsTable] = useState([]);
 
   useEffect(() => {
     let mounted = true;
@@ -68,9 +72,32 @@ const ResultLeaders = ({ topN = 9 }) => {
         // group by date+matchup for series calculation
         const groups = {}; // key: `${date}|${minId}-${maxId}` -> { date, aId, bId, games: [r...] }
 
+        // sweeps counters (for sweeps table)
+        const sweepsFor = {};     // teamId -> number of sweeps (won 3-0)
+        const sweptAgainst = {};  // teamId -> number of times they got swept (lost 0-3)
+
+        // one-run victory / loss counters
+        const oneRunWins = {};   // teamId -> count of wins by exactly 1 run
+        const oneRunLosses = {}; // teamId -> count of losses by exactly 1 run
+
         (results || []).forEach(r => {
           const s1 = Number(r.team1_score) || 0;
           const s2 = Number(r.team2_score) || 0;
+
+          // count one-run wins per game
+          if (s1 - s2 === 1) {
+            const idWin = String(r.team1_id);
+            oneRunWins[idWin] = (oneRunWins[idWin] || 0) + 1;
+            // team2 lost by 1
+            const idLoss = String(r.team2_id);
+            oneRunLosses[idLoss] = (oneRunLosses[idLoss] || 0) + 1;
+          } else if (s2 - s1 === 1) {
+            const idWin = String(r.team2_id);
+            oneRunWins[idWin] = (oneRunWins[idWin] || 0) + 1;
+            // team1 lost by 1
+            const idLoss = String(r.team1_id);
+            oneRunLosses[idLoss] = (oneRunLosses[idLoss] || 0) + 1;
+          }
 
           // single-game best team
           if (!bestSingle || s1 > bestSingle.score) {
@@ -138,28 +165,36 @@ const ResultLeaders = ({ topN = 9 }) => {
         let bestSeriesLocal = null;
         Object.values(groups).forEach(g => {
           if (!g.games || g.games.length < 3) return; // require full 3-game series
-          // sum runs per team across the group's games
+
+          // sum runs per team across the group's games and count wins
           let aTotal = 0;
           let bTotal = 0;
+          let aWins = 0;
+          let bWins = 0;
+
           g.games.forEach(game => {
-            // map scores to normalized team order (a corresponds to g.teamA)
-            const ta = Number(game.team1_id) === Number(g.teamA) ? Number(game.team1_score || 0) : Number(game.team2_score || 0);
-            const tb = Number(game.team2_id) === Number(g.teamB) ? Number(game.team2_score || 0) : Number(game.team1_score || 0);
-            // But because we normalized a,b by numeric order, need robust mapping:
+            let aScore = 0;
+            let bScore = 0;
             if (Number(game.team1_id) === Number(g.teamA)) {
-              aTotal += Number(game.team1_score || 0);
-              bTotal += Number(game.team2_score || 0);
+              aScore = Number(game.team1_score || 0);
+              bScore = Number(game.team2_score || 0);
             } else if (Number(game.team2_id) === Number(g.teamA)) {
-              aTotal += Number(game.team2_score || 0);
-              bTotal += Number(game.team1_score || 0);
+              aScore = Number(game.team2_score || 0);
+              bScore = Number(game.team1_score || 0);
             } else {
-              // fallback, try matching by equality
-              aTotal += Number(game.team1_id) === Number(g.teamA) ? Number(game.team1_score||0) : Number(game.team2_score||0);
-              bTotal += Number(game.team2_id) === Number(g.teamB) ? Number(game.team2_score||0) : Number(game.team1_score||0);
+              // fallback (shouldn't happen)
+              aScore = Number(game.team1_score || 0);
+              bScore = Number(game.team2_score || 0);
             }
+
+            aTotal += aScore;
+            bTotal += bScore;
+
+            if (aScore > bScore) aWins += 1;
+            else if (bScore > aScore) bWins += 1;
           });
 
-          // decide which team had higher series total
+          // best series logic (highest total for one team across the group's games)
           if (!bestSeriesLocal || aTotal > bestSeriesLocal.total) {
             bestSeriesLocal = {
               total: aTotal,
@@ -182,18 +217,63 @@ const ResultLeaders = ({ topN = 9 }) => {
               gamesCount: g.games.length
             };
           }
+
+          // sweep detection: team wins all 3 games
+          // require strictly more wins than opponent (3-0)
+          if (aWins >= 3 && aWins > bWins) {
+            const key = String(g.teamA);
+            sweepsFor[key] = (sweepsFor[key] || 0) + 1;
+            sweptAgainst[String(g.teamB)] = (sweptAgainst[String(g.teamB)] || 0) + 1;
+          } else if (bWins >= 3 && bWins > aWins) {
+            const key = String(g.teamB);
+            sweepsFor[key] = (sweepsFor[key] || 0) + 1;
+            sweptAgainst[String(g.teamA)] = (sweptAgainst[String(g.teamA)] || 0) + 1;
+          }
         });
 
-        // build most runs list (season totals) and diff list
+        // determine best one-run victories
+        let bestOneRunLocal = null;
+        Object.keys(oneRunWins).forEach(tid => {
+          const cnt = oneRunWins[tid];
+          if (!bestOneRunLocal || cnt > bestOneRunLocal.count) {
+            bestOneRunLocal = { teamId: tid, teamName: tmap[tid] || `Team ${tid}`, count: cnt };
+          }
+        });
+
+        // determine most one-run losses
+        let bestOneRunLossLocal = null;
+        Object.keys(oneRunLosses).forEach(tid => {
+          const cnt = oneRunLosses[tid];
+          if (!bestOneRunLossLocal || cnt > bestOneRunLossLocal.count) {
+            bestOneRunLossLocal = { teamId: tid, teamName: tmap[tid] || `Team ${tid}`, count: cnt };
+          }
+        });
+
+        // build combined stats list (runs + diff) and sort for display
         const arr = Object.values(stats).map(x => ({ ...x, diff: x.runsFor - x.runsAgainst }));
-        const runsSorted = [...arr].sort((a,b) => b.runsFor - a.runsFor || b.diff - a.diff).slice(0, topN);
-        const diffSorted = [...arr].sort((a,b) => b.diff - a.diff || b.runsFor - a.runsFor).slice(0, topN);
+        const combinedSorted = [...arr].sort((a,b) => b.runsFor - a.runsFor || b.diff - a.diff).slice(0, topN);
+
+        // build sweeps table (all teams): columns sweeps_for (how many sweeps they have) and swept_against (how many times swept)
+        const allTeamIds = new Set([
+          ...Object.keys(tmap),
+          ...Object.keys(stats),
+          ...Object.keys(sweepsFor),
+          ...Object.keys(sweptAgainst)
+        ]);
+        const sweepsArr = Array.from(allTeamIds).map(id => ({
+          id,
+          name: tmap[id] || `Team ${id}`,
+          sweeps_for: sweepsFor[id] || 0,
+          swept_against: sweptAgainst[id] || 0
+        })).sort((a,b) => b.sweeps_for - a.sweeps_for || a.swept_against - b.swept_against || a.name.localeCompare(b.name));
 
         setTopSingleTeam(bestSingle);
         setTopCombined(bestCombinedLocal);
         setBestSeries(bestSeriesLocal);
-        setMostRunsList(runsSorted);
-        setDiffList(diffSorted);
+        setTopOneRun(bestOneRunLocal);
+        setTopOneRunLoss(bestOneRunLossLocal);
+        setStatsList(combinedSorted);
+        setSweepsTable(sweepsArr);
       } catch (e) {
         console.warn('ResultLeaders load failed', e);
       } finally {
@@ -208,17 +288,17 @@ const ResultLeaders = ({ topN = 9 }) => {
 
   return (
     <div style={container}>
-      <div style={{ display: 'flex', gap: 12, alignItems: 'stretch', flexWrap: 'wrap' }}>
-        {/* stack the single-game and series stat panels vertically */}
-        <div style={{ display: 'flex', gap: 12, flexDirection: 'column', flex: 2, minWidth: 240 }}>
+      <div style={{ display: 'flex', gap: 10, alignItems: 'stretch', flexWrap: 'wrap' }}>
+        {/* place single-game and series stat panels in a two-up grid */}
+        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', flex: 2, minWidth: 200 }}>
           <div style={statBox}>
             <h4 style={title}>Most runs by a team in a single game</h4>
             {topSingleTeam ? (
               <>
                 <div style={statValue}>{topSingleTeam.score}</div>
-                <div style={{ marginTop: 8, fontWeight: 700 }}>{topSingleTeam.teamName}</div>
+                <div style={{ marginTop: 8, fontWeight: 700, fontSize: 15 }}>{topSingleTeam.teamName}</div>
                 <div style={meta}>
-                  vs {topSingleTeam.opponentName} · Game {topSingleTeam.game_number} · {formatDisplayDate(topSingleTeam.date)}
+                  vs {topSingleTeam.opponentName} · G{topSingleTeam.game_number} · {formatDisplayDate(topSingleTeam.date)}
                 </div>
               </>
             ) : (
@@ -231,8 +311,8 @@ const ResultLeaders = ({ topN = 9 }) => {
             {topCombined ? (
               <>
                 <div style={statValue}>{topCombined.total}</div>
-                <div style={{ marginTop: 8, fontWeight: 700 }}>{topCombined.team1Name} vs {topCombined.team2Name}</div>
-                <div style={meta}>Game {topCombined.game_number} · {formatDisplayDate(topCombined.date)}</div>
+                <div style={{ marginTop: 8, fontWeight: 700, fontSize: 15 }}>{topCombined.team1Name} vs {topCombined.team2Name}</div>
+                <div style={meta}>G{topCombined.game_number} · {formatDisplayDate(topCombined.date)}</div>
               </>
             ) : (
               <div style={meta}>No game data</div>
@@ -244,7 +324,7 @@ const ResultLeaders = ({ topN = 9 }) => {
             {bestSeries ? (
               <>
                 <div style={statValue}>{bestSeries.total}</div>
-                <div style={{ marginTop: 8, fontWeight: 700 }}>{bestSeries.teamName}</div>
+                <div style={{ marginTop: 8, fontWeight: 700, fontSize: 15 }}>{bestSeries.teamName}</div>
                 <div style={meta}>
                   vs {bestSeries.opponentName} · {bestSeries.gamesCount} games · {formatDisplayDate(bestSeries.date)}
                 </div>
@@ -253,55 +333,83 @@ const ResultLeaders = ({ topN = 9 }) => {
               <div style={meta}>No complete 3-game series found</div>
             )}
           </div>
+
+          <div style={statBox}>
+            <h4 style={title}>Most 1-run victories</h4>
+            {topOneRun ? (
+              <>
+                <div style={statValue}>{topOneRun.count}</div>
+                <div style={{ marginTop: 8, fontWeight: 700, fontSize: 15 }}>{topOneRun.teamName}</div>
+                <div style={meta}>games decided by one run</div>
+              </>
+            ) : (
+              <div style={meta}>No 1-run victories recorded</div>
+            )}
+          </div>
+
+          <div style={statBox}>
+            <h4 style={title}>Most 1-run losses</h4>
+            {topOneRunLoss ? (
+              <>
+                <div style={statValue}>{topOneRunLoss.count}</div>
+                <div style={{ marginTop: 8, fontWeight: 700, fontSize: 15 }}>{topOneRunLoss.teamName}</div>
+                <div style={meta}>games lost by one run</div>
+              </>
+            ) : (
+              <div style={meta}>No 1-run losses recorded</div>
+            )}
+          </div>
         </div>
 
-        <div style={{ flex: 1, minWidth: 240 }}>
-          <div style={{ background: 'linear-gradient(180deg,#071724,#071b22)', padding: 12, borderRadius: 8 }}>
-            <h4 style={{ ...title, fontSize: 14 }}>Most Runs (season)</h4>
-            <div style={small}>Total runs scored</div>
+        <div style={{ flex: 1, minWidth: 300 }}>
+          <div style={{ background: 'linear-gradient(180deg,#071724,#071b22)', padding: 10, borderRadius: 8 }}>
+            <h4 style={{ ...title, fontSize: 13 }}>Season: Runs & Diff</h4>
+            <div style={small}>Combined table of total runs and run differential</div>
             <table style={table}>
               <thead>
                 <tr>
                   <th style={th}>Team</th>
                   <th style={th}>Runs</th>
+                  <th style={th}>Diff</th>
                   <th style={th}>G</th>
                 </tr>
               </thead>
               <tbody>
-                {mostRunsList.map(t => (
+                {statsList.map(t => (
                   <tr key={t.id}>
                     <td style={td}>{teamsMap[t.id] ?? t.id}</td>
                     <td style={td}>{t.runsFor}</td>
+                    <td style={td}>{t.diff}</td>
                     <td style={td}>{t.games}</td>
                   </tr>
                 ))}
-                {mostRunsList.length === 0 && <tr><td colSpan="3" style={{ padding: 12, color: '#9fb0bd' }}>—</td></tr>}
+                {statsList.length === 0 && <tr><td colSpan="4" style={{ padding: 10, color: '#9fb0bd' }}>—</td></tr>}
               </tbody>
             </table>
           </div>
 
-          <div style={{ height: 12 }} />
+          <div style={{ height: 10 }} />
 
-          <div style={{ background: 'linear-gradient(180deg,#071724,#071b22)', padding: 12, borderRadius: 8 }}>
-            <h4 style={{ ...title, fontSize: 14 }}>Run Diff (season)</h4>
-            <div style={small}>Runs For − Against</div>
-            <table style={table}>
+          <div style={{ background: 'linear-gradient(180deg,#071724,#071b22)', padding: 10, borderRadius: 8 }}>
+            <h4 style={{ ...title, fontSize: 13 }}>Sweeps (3–0) — For & Against</h4>
+            <div style={small}>How many 3–0 series each team has won and lost</div>
+            <table style={{ ...table, marginTop: 6 }}>
               <thead>
                 <tr>
                   <th style={th}>Team</th>
-                  <th style={th}>Diff</th>
-                  <th style={th}>RF</th>
+                  <th style={{ ...th, textAlign: 'center', width: 70 }}>Sweeps</th>
+                  <th style={{ ...th, textAlign: 'center', width: 80 }}>Swept</th>
                 </tr>
               </thead>
               <tbody>
-                {diffList.map(t => (
-                  <tr key={t.id}>
-                    <td style={td}>{teamsMap[t.id] ?? t.id}</td>
-                    <td style={td}>{t.diff}</td>
-                    <td style={td}>{t.runsFor}</td>
+                {sweepsTable.map(row => (
+                  <tr key={row.id}>
+                    <td style={td}>{row.name}</td>
+                    <td style={{ ...td, textAlign: 'center' }}>{row.sweeps_for}</td>
+                    <td style={{ ...td, textAlign: 'center' }}>{row.swept_against}</td>
                   </tr>
                 ))}
-                {diffList.length === 0 && <tr><td colSpan="3" style={{ padding: 12, color: '#9fb0bd' }}>—</td></tr>}
+                {sweepsTable.length === 0 && <tr><td colSpan="3" style={{ padding: 10, color: '#9fb0bd' }}>—</td></tr>}
               </tbody>
             </table>
           </div>

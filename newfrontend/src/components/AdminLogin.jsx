@@ -28,7 +28,9 @@ const AdminLogin = () => {
   return (
     <div style={{ padding: 24 }}>
 
-      <RecordAdmin teams={teams} setTeams={setTeams} apiBase={API_BASE} downloadToken={DOWNLOAD_TOKEN} />
+      <div style={{ marginTop: 18 }}>
+        <AddResult />
+      </div>
       <hr />
       <UpdatePlayerRecord teams={teams} />
       <hr />
@@ -37,10 +39,8 @@ const AdminLogin = () => {
       <TeamAdmin apiBase={API_BASE} downloadToken={DOWNLOAD_TOKEN} />
       <hr />
       <DeleteTeam teams={teams} setTeams={setTeams} />
-      <hr />
-      <div style={{ marginTop: 18 }}>
-        <AddResult />
-      </div>
+     
+      
     </div>
   );
 };
