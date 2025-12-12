@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify, request, current_app
 from flask_cors import cross_origin
-from models import db, Team, Player
+from models import db, Team, Player, Result
 import os, re, time
 from sqlalchemy import text
 
@@ -523,5 +523,173 @@ def search_players():
 
     except Exception as ex:
         current_app.logger.exception("search_players failed: %s", ex)
+        return jsonify({'message': 'Internal server error', 'error': str(ex)}), 500
+
+@routes.route('/routes/results/batch', methods=['POST', 'OPTIONS'])
+@cross_origin(headers=['Content-Type', 'X-Download-Token'])
+def create_results_batch():
+    # short-circuit preflight
+    if request.method == 'OPTIONS':
+        return ('', 200)
+
+    data = request.get_json(silent=True) or {}
+    current_app.logger.info("create_results_batch payload=%s remote=%s", data, request.remote_addr)
+
+    # required root fields
+    required = ['date', 'team1_id', 'team2_id', 'games']
+    missing = [k for k in required if k not in data]
+    if missing:
+        return jsonify({'message': 'missing fields', 'fields': missing}), 400
+
+    # parse date (accept common formats)
+    date_raw = str(data.get('date', '')).strip()
+    parsed_date = None
+    for fmt in ('%Y-%m-%d', '%m/%d/%Y', '%m-%d-%Y'):
+        try:
+            from datetime import datetime
+            parsed_date = datetime.strptime(date_raw, fmt).date()
+            break
+        except Exception:
+            continue
+    if parsed_date is None:
+        try:
+            parsed_date = __import__('datetime').datetime.fromisoformat(date_raw).date()
+        except Exception:
+            return jsonify({'message': 'invalid date format', 'value': date_raw}), 400
+
+    try:
+        team1_id = int(data['team1_id'])
+        team2_id = int(data['team2_id'])
+    except Exception as ex:
+        return jsonify({'message': 'invalid team ids', 'error': str(ex)}), 400
+
+    if team1_id == team2_id:
+        return jsonify({'message': 'team1_id and team2_id must be different'}), 400
+
+    # verify teams exist
+    t1 = Team.query.get(team1_id)
+    t2 = Team.query.get(team2_id)
+    if not t1 or not t2:
+        return jsonify({'message': 'one or both teams not found'}), 400
+
+    games = data.get('games')
+    if not isinstance(games, list) or len(games) == 0:
+        return jsonify({'message': 'games must be a non-empty array'}), 400
+    if len(games) > 20:
+        return jsonify({'message': 'too many games in batch'}), 400
+
+    to_create = []
+    try:
+        for g in games:
+            if not isinstance(g, dict):
+                return jsonify({'message': 'each game must be an object'}), 400
+            if 'game_number' not in g or 'team1_score' not in g or 'team2_score' not in g:
+                return jsonify({'message': 'game objects must include game_number, team1_score, team2_score', 'game': g}), 400
+            try:
+                game_number = int(g['game_number'])
+                team1_score = int(g['team1_score'])
+                team2_score = int(g['team2_score'])
+            except Exception as ex:
+                return jsonify({'message': 'invalid numeric fields in game', 'error': str(ex), 'game': g}), 400
+
+            r = Result(
+                date=parsed_date,
+                game_number=game_number,
+                team1_id=team1_id,
+                team2_id=team2_id,
+                team1_score=team1_score,
+                team2_score=team2_score
+            )
+            to_create.append(r)
+
+        db.session.add_all(to_create)
+        db.session.commit()
+
+        created = [{
+            'id': r.id,
+            'date': r.date.isoformat(),
+            'game_number': r.game_number,
+            'team1_id': r.team1_id,
+            'team2_id': r.team2_id,
+            'team1_score': r.team1_score,
+            'team2_score': r.team2_score
+        } for r in to_create]
+
+        return jsonify({'created': created}), 201
+
+    except Exception as ex:
+        current_app.logger.exception("create_results_batch failed")
+        db.session.rollback()
+        return jsonify({'message': 'Internal server error', 'error': str(ex)}), 500
+
+@routes.route('/routes/results', methods=['GET', 'OPTIONS'])
+@cross_origin(headers=['Content-Type', 'X-Download-Token'])
+def get_results():
+    # short-circuit preflight
+    if request.method == 'OPTIONS':
+        return ('', 200)
+
+    try:
+        # optional filters
+        date_q = request.args.get('date')  # YYYY-MM-DD or MM/DD/YYYY
+        team_id = request.args.get('team_id')  # matches either team1_id or team2_id
+        limit_param = request.args.get('limit')
+        try:
+            limit = int(limit_param) if limit_param else 500
+        except Exception:
+            limit = 500
+
+        query = Result.query
+
+        # filter by date (try common formats)
+        if date_q:
+            parsed_date = None
+            for fmt in ('%Y-%m-%d', '%m/%d/%Y', '%m-%d-%Y'):
+                try:
+                    from datetime import datetime
+                    parsed_date = datetime.strptime(date_q.strip(), fmt).date()
+                    break
+                except Exception:
+                    continue
+            if parsed_date is None:
+                try:
+                    parsed_date = __import__('datetime').datetime.fromisoformat(date_q.strip()).date()
+                except Exception:
+                    return jsonify({'message': 'invalid date format', 'value': date_q}), 400
+            query = query.filter(Result.date == parsed_date)
+
+        # filter by team id appearing in either team1 or team2
+        if team_id:
+            try:
+                tid = int(team_id)
+                query = query.filter((Result.team1_id == tid) | (Result.team2_id == tid))
+            except Exception:
+                return jsonify({'message': 'invalid team_id'}), 400
+
+        # order: newest date first, then by game_number ascending
+        results_q = query.order_by(Result.date.desc(), Result.game_number.asc()).limit(limit).all()
+
+        # build teams map to include names (avoid N+1)
+        team_objs = Team.query.all()
+        teams_map = {t.id: (t.name or getattr(t, 'team_name', None) or f"Team {t.id}") for t in team_objs}
+
+        out = []
+        for r in results_q:
+            out.append({
+                'id': r.id,
+                'date': r.date.isoformat() if getattr(r, 'date', None) else None,
+                'game_number': r.game_number,
+                'team1_id': r.team1_id,
+                'team1_name': teams_map.get(r.team1_id),
+                'team2_id': r.team2_id,
+                'team2_name': teams_map.get(r.team2_id),
+                'team1_score': r.team1_score,
+                'team2_score': r.team2_score
+            })
+
+        return jsonify(out), 200
+
+    except Exception as ex:
+        current_app.logger.exception("get_results failed: %s", ex)
         return jsonify({'message': 'Internal server error', 'error': str(ex)}), 500
 

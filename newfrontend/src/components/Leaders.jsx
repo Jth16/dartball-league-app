@@ -19,7 +19,8 @@ const buildRankMaps = (players = []) => {
     { key: 'Triples', getter: p => Number(p.Triples ?? p.triples ?? NaN) },
     { key: 'HRs', getter: p => Number(p.HRs ?? p.hrs ?? NaN) },
     { key: 'Dimes', getter: p => Number(p.Dimes ?? p.dimes ?? NaN) },
-    { key: 'hits', getter: p => Number(p.hits ?? NaN) }
+    { key: 'hits', getter: p => Number(p.hits ?? NaN) },
+    { key: 'ABs', getter: p => Number(p.ABs ?? p.ABS ?? p.abs ?? p.atBats ?? p.at_bats ?? p.ab ?? p.AtBats ?? NaN) }
   ];
 
   const idFor = (p) => String(p.id ?? p.player_id ?? p.name ?? '');
@@ -69,14 +70,15 @@ const Leaders = () => {
   const [selectedCategory, setSelectedCategory] = useState('all');
 
   const menuItems = [
-    { label: 'Overall Leaders', key: 'all' },
-    { label: 'Average', key: 'Avg' },
+    { label: 'Overall', key: 'all' },
+    { label: 'Avg.', key: 'Avg' },
     { label: 'Singles', key: 'Singles' },
-    { label: 'Doubles', key: 'Doubles' },
+    { label: 'Dbles', key: 'Doubles' },
     { label: 'Triples', key: 'Triples' },
     { label: 'HRs', key: 'HRs' },
     { label: 'Hits', key: 'hits' },
-    { label: 'Dimes', key: 'Dimes' }
+    { label: 'ABs', key: 'ABs' },
+    { label: 'DMs', key: 'Dimes' }
   ];
 
   useEffect(() => {
@@ -104,6 +106,8 @@ const Leaders = () => {
           Triples: normalizeNum(p.Triples),
           Dimes: normalizeNum(p.Dimes),
           HRs: normalizeNum(p.HRs),
+          // normalize various possible AB fields into ABs
+          ABs: normalizeNum(p.ABs ?? p.ABS ?? p.abs ?? p.atBats ?? p.at_bats ?? p.ab ?? p.AtBats),
           team_id: p.team_id
         }));
 
@@ -144,6 +148,7 @@ const Leaders = () => {
     { title: 'Most Doubles', key: 'Doubles', label: 'Most Doubles', format: (v) => v },
     { title: 'Most Triples', key: 'Triples', label: 'Most Triples', format: (v) => v },
     { title: 'Most HRs', key: 'HRs', label: 'Most HRs', format: (v) => v },
+    { title: 'Most ABs', key: 'ABs', label: 'Most ABs', format: (v) => v },
     { title: 'Most Dimes', key: 'Dimes', label: 'Most Dimes', format: (v) => v },
   ];
 
@@ -249,6 +254,7 @@ const Leaders = () => {
         <div>
           <h1 style={titleStyle}>League Leaders</h1>
           <div style={descStyle}>Top players by category</div>
+          <div style={descStyle}>*Payouts for league Leaders are only for the following Categories: Avg., Singles, Doubles, Triples, HRs, and Hits</div>
         </div>
         <button
           className="no-print"

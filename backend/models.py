@@ -35,3 +35,20 @@ class Player(db.Model):
 
     def __repr__(self):
         return f"<Player {self.name}: T-{self.team_id} S-{self.Singles} D-{self.Doubles} T-{self.Triples} HR-{self.HRs} Hits-{self.hits} Avg-{self.Avg:.3f}>"
+
+class Result(db.Model):
+    __tablename__ = "results"
+    id = db.Column(db.Integer, primary_key=True)
+    date = db.Column(db.Date, nullable=False)
+    game_number = db.Column(db.Integer, nullable=False)
+    team1_id = db.Column(db.Integer, db.ForeignKey('teams.id'), nullable=False)
+    team2_id = db.Column(db.Integer, db.ForeignKey('teams.id'), nullable=False)
+    team1_score = db.Column(db.Integer, nullable=False, default=0)
+    team2_score = db.Column(db.Integer, nullable=False, default=0)
+
+    # optional convenient relationships to Team
+    team1 = db.relationship('Team', foreign_keys=[team1_id])
+    team2 = db.relationship('Team', foreign_keys=[team2_id])
+
+    def __repr__(self):
+        return f"<Result {self.date} G#{self.game_number}: {self.team1_id} {self.team1_score} - {self.team2_id} {self.team2_score}>"
