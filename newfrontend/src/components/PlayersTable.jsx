@@ -6,6 +6,7 @@ import PlayerSearch from './PlayerSearch';
 const PlayersTable = () => {
     const [teams, setTeams] = useState([]);
     const [groupedPlayers, setGroupedPlayers] = useState([]);
+    const [collapsedMap, setCollapsedMap] = useState({}); // teamId -> bool (true = collapsed)
     const containerRef = useRef(null);
 
     useEffect(() => {
@@ -30,7 +31,12 @@ const PlayersTable = () => {
                     }
                 }));
 
-                if (mounted) setGroupedPlayers(groups);
+                if (mounted) {
+                    setGroupedPlayers(groups);
+                    // initialize collapse state: expanded by default
+                    const init = Object.fromEntries(groups.map(g => [g.teamId, false]));
+                    setCollapsedMap(init);
+                }
             } catch (err) {
                 console.error('load teams/players failed', err);
                 if (mounted) {
@@ -113,6 +119,31 @@ const PlayersTable = () => {
       verticalAlign: "middle"
     };
 
+    const toggleButtonStyle = {
+      display: 'flex',
+      alignItems: 'center',
+      gap: 10,
+      background: 'transparent',
+      border: 'none',
+      padding: 0,
+      cursor: 'pointer',
+      color: 'inherit'
+    };
+
+    const caretStyle = {
+      width: 18,
+      textAlign: 'center',
+      color: '#ffd7b0',
+      fontSize: 14,
+      lineHeight: 1
+    };
+
+    const rightMetaStyle = { color: "#ffd7b0", fontSize: 13 };
+
+    const toggleTeam = (teamId) => {
+      setCollapsedMap(prev => ({ ...prev, [teamId]: !prev[teamId] }));
+    };
+
     return (
       <div ref={containerRef} data-printable style={containerStyle}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -135,51 +166,80 @@ const PlayersTable = () => {
         {groupedPlayers.length === 0 ? (
             <p style={{ color: "#cbd5e1" }}>Loading teams and players…</p>
         ) : (
-          groupedPlayers.map(group => (
+          groupedPlayers.map(group => {
+            // compute team batting average = total hits / total at-bats
+            const totalAB = group.players.reduce((s, p) => s + (Number(p.AtBats) || 0), 0);
+            const totalHits = group.players.reduce((s, p) => s + (Number(p.hits) || 0), 0);
+            const teamAvg = totalAB > 0 ? (totalHits / totalAB) : null;
+
+            const isCollapsed = !!collapsedMap[group.teamId];
+
+            return (
             <section key={group.teamId} style={{ marginBottom: 28 }}>
               <div style={teamHeaderStyle}>
-                <h2 style={teamTitleStyle}>{group.teamName}</h2>
-                <div style={{ color: "#ffd7b0", fontSize: 13 }}>{group.players.length} players</div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                  <button
+                    onClick={() => toggleTeam(group.teamId)}
+                    aria-expanded={!isCollapsed}
+                    aria-controls={`team-${group.teamId}-panel`}
+                    style={toggleButtonStyle}
+                    title={isCollapsed ? 'Expand' : 'Collapse'}
+                  >
+                    <span style={caretStyle}>{isCollapsed ? '▸' : '▾'}</span>
+                    <div style={{ display: 'contents' }}>
+                      <h2 style={teamTitleStyle}>{group.teamName}</h2>
+                      <div style={{ color: "#ffd7b0", fontSize: 13 ,paddingLeft:20}}>
+                        { teamAvg != null ? `Team Batting Avg ${fmtAvg(teamAvg)}` : 'Avg N/A' }
+                      </div>
+                    </div>
+                  </button>
+                </div>
+                <div style={rightMetaStyle}>{group.players.length} players</div>
               </div>
 
-              <div style={tableWrap}>
-                <table style={tableStyle}>
-                  <thead>
-                    <tr>
-                      <th style={{ ...thStyle, width: '40%' }}>Name</th>
-                      <th style={{ ...thStyle, textAlign: 'center' }}>ABs</th>
-                      <th style={{ ...thStyle, textAlign: 'center' }}>Hits</th>
-                      <th style={{ ...thStyle, textAlign: 'center' }}>Avg</th>
-                      <th style={{ ...thStyle, textAlign: 'center' }}>Singles</th>
-                      <th style={{ ...thStyle, textAlign: 'center' }}>Doubles</th>
-                      <th style={{ ...thStyle, textAlign: 'center' }}>Triples</th>
-                      <th style={{ ...thStyle, textAlign: 'center' }}>HRs</th>
-                      <th style={{ ...thStyle, textAlign: 'center' }}>Dimes</th>
-                      
-                      <th style={{ ...thStyle, textAlign: 'center' }}>GP</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {group.players.map(player => (
-                      <tr key={player.id} style={rowStyle}>
-                        <td style={{ ...cellStyle, paddingLeft: 18 }}>{player.name}</td>
-                        <td style={{ ...cellStyle, textAlign: 'center' }}>{player.AtBats ?? 0}</td>
-                        <td style={{ ...cellStyle, textAlign: 'center' }}>{player.hits ?? 0}</td>
-                        <td style={{ ...cellStyle, textAlign: 'center' }}>{player.Avg != null ? fmtAvg(player.Avg) : 'N/A'}</td>
-                        <td style={{ ...cellStyle, textAlign: 'center' }}>{player.Singles ?? 0}</td>
-                        <td style={{ ...cellStyle, textAlign: 'center' }}>{player.Doubles ?? 0}</td>
-                        <td style={{ ...cellStyle, textAlign: 'center' }}>{player.Triples ?? 0}</td>
-                        
-                        <td style={{ ...cellStyle, textAlign: 'center' }}>{player.HRs ?? 0}</td>
-                        <td style={{ ...cellStyle, textAlign: 'center' }}>{player.Dimes ?? 0}</td>
-                        <td style={{ ...cellStyle, textAlign: 'center' }}>{player.GP ?? 0}</td>
+              <div
+                id={`team-${group.teamId}-panel`}
+                role="region"
+                aria-hidden={isCollapsed}
+                style={{ display: isCollapsed ? 'none' : 'block' }}
+              >
+                <div style={tableWrap}>
+                  <table style={tableStyle}>
+                    <thead>
+                      <tr>
+                        <th style={{ ...thStyle, width: '40%' }}>Name</th>
+                        <th style={{ ...thStyle, textAlign: 'center' }}>ABs</th>
+                        <th style={{ ...thStyle, textAlign: 'center' }}>Hits</th>
+                        <th style={{ ...thStyle, textAlign: 'center' }}>Avg</th>
+                        <th style={{ ...thStyle, textAlign: 'center' }}>Singles</th>
+                        <th style={{ ...thStyle, textAlign: 'center' }}>Doubles</th>
+                        <th style={{ ...thStyle, textAlign: 'center' }}>Triples</th>
+                        <th style={{ ...thStyle, textAlign: 'center' }}>HRs</th>
+                        <th style={{ ...thStyle, textAlign: 'center' }}>Dimes</th>
+                        <th style={{ ...thStyle, textAlign: 'center' }}>GP</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody>
+                      {group.players.map(player => (
+                        <tr key={player.id} style={rowStyle}>
+                          <td style={{ ...cellStyle, paddingLeft: 18 }}>{player.name}</td>
+                          <td style={{ ...cellStyle, textAlign: 'center' }}>{player.AtBats ?? 0}</td>
+                          <td style={{ ...cellStyle, textAlign: 'center' }}>{player.hits ?? 0}</td>
+                          <td style={{ ...cellStyle, textAlign: 'center' }}>{player.Avg != null ? fmtAvg(player.Avg) : 'N/A'}</td>
+                          <td style={{ ...cellStyle, textAlign: 'center' }}>{player.Singles ?? 0}</td>
+                          <td style={{ ...cellStyle, textAlign: 'center' }}>{player.Doubles ?? 0}</td>
+                          <td style={{ ...cellStyle, textAlign: 'center' }}>{player.Triples ?? 0}</td>
+                          <td style={{ ...cellStyle, textAlign: 'center' }}>{player.HRs ?? 0}</td>
+                          <td style={{ ...cellStyle, textAlign: 'center' }}>{player.Dimes ?? 0}</td>
+                          <td style={{ ...cellStyle, textAlign: 'center' }}>{player.GP ?? 0}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </section>
-          ))
+          )})
         )}
       </div>
     );

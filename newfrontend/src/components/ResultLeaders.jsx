@@ -250,7 +250,12 @@ const ResultLeaders = ({ topN = 9 }) => {
         });
 
         // build combined stats list (runs + diff) and sort for display
-        const arr = Object.values(stats).map(x => ({ ...x, diff: x.runsFor - x.runsAgainst }));
+        // compute avg runs scored per team (runs for / games) and diff
+        const arr = Object.values(stats).map(x => {
+          const diff = x.runsFor - x.runsAgainst;
+          const avgRunsPerGame = x.games > 0 ? (x.runsFor / x.games) : 0;
+          return { ...x, diff, avgRunsPerGame };
+        });
         const combinedSorted = [...arr].sort((a,b) => b.runsFor - a.runsFor || b.diff - a.diff).slice(0, topN);
 
         // build sweeps table (all teams): columns sweeps_for (how many sweeps they have) and swept_against (how many times swept)
@@ -372,6 +377,7 @@ const ResultLeaders = ({ topN = 9 }) => {
                   <th style={th}>Runs</th>
                   <th style={th}>Diff</th>
                   <th style={th}>G</th>
+                  <th style={th}>Avg R/G</th>
                 </tr>
               </thead>
               <tbody>
@@ -381,9 +387,10 @@ const ResultLeaders = ({ topN = 9 }) => {
                     <td style={td}>{t.runsFor}</td>
                     <td style={td}>{t.diff}</td>
                     <td style={td}>{t.games}</td>
+                    <td style={td}>{Number(t.avgRunsPerGame || 0).toFixed(1)}</td>
                   </tr>
                 ))}
-                {statsList.length === 0 && <tr><td colSpan="4" style={{ padding: 10, color: '#9fb0bd' }}>—</td></tr>}
+                {statsList.length === 0 && <tr><td colSpan="5" style={{ padding: 10, color: '#9fb0bd' }}>—</td></tr>}
               </tbody>
             </table>
           </div>
