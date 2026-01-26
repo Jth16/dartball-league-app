@@ -93,11 +93,7 @@ const Home = (props) => {
       <section style={{ marginTop: 6 }}>
         <div style={blurb}>
           <h3 style={{ margin: '0 0 8px 0' }}>Latest News</h3>
-          <p style={small}><strong>Dartball Tournament:</strong> Coming this January. Details to come!</p>
-          <p style={small}><strong>Holiday Party:</strong> Scheduled for Dec. 20th. There will be food and drinks. We will play the regularly scheduled games during the party.</p>
-          <p style={small}>Ticket money is due by Dec. 20th! Ticket goes off on the night of the Party.</p>
          
-          
           <p style={small}>Entry to the Firehall will be either through the Truck Room or the Bar. The Main Hall doors will be closed on Dartball Night.</p>
           <p style={small}>Please plan accordingly and arrive early to avoid any issues.</p>
           <p style={small}><strong>Reminder:</strong> There is NO smoking/vaping in the hall. Smoking/Vaping is permitted in the Bar area only</p>
