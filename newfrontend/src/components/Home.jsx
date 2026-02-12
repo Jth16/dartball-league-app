@@ -100,6 +100,16 @@ const Home = (props) => {
           <p style={small}><strong>Current Makeups:</strong></p>
           <ul style={{ color: '#cbd5e1', fontSize: isMobile ? 16 : 14, lineHeight: 1.45, marginTop: 0 }}>
             <li>Average Bo's vs Prince of Dartness (Dec. 1st)</li>
+            <li>Hillbillies vs Tipsy Tossers (Feb. 9th)</li>
+            <li>Prince of Dartness vs Hillbillies (Feb. 11th)</li>
+          </ul>
+          <p style={small}>End of Year Schedule:</p>
+          <ul style={{ color: '#cbd5e1', fontSize: isMobile ? 16 : 14, lineHeight: 1.45, marginTop: 0 }}>
+            <li>Mar. 4th - Regular Season Ends</li>
+            <li>Mar. 9th - MakeUps & 8/9 Playoff Game</li>
+            <li>Mar. 16th - Playoffs - Rd. 1</li>
+            <li>Mar. 18th - Playoffs - Rd. 2</li>
+            <li>Mar. 21st - Championship Game & End of Year Party</li>
           </ul>
           <div style={{ marginTop: 10 }}>
             <a
