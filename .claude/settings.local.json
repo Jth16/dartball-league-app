@@ -5,7 +5,9 @@
       "mcp__playwright__browser_console_messages",
       "Bash(netstat:*)",
       "Bash(findstr:*)",
-      "Bash(tasklist:*)"
+      "Bash(tasklist:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)"
     ]
   }
 }
