@@ -10,6 +10,7 @@
 
 # production
 /build
+newfrontend/build
 
 # misc
 .DS_Store
@@ -27,3 +28,7 @@ yarn-error.log*
 /backend/*.db
 /backend/db.sqlite3
 node_modules
+.playwright-mcp/console-2026-02-19T02-49-27-109Z.log
+.playwright-mcp/console-2026-02-18T19-57-21-816Z.log
+.playwright-mcp/console-2026-02-19T02-45-34-882Z.log
+newfrontend/build/asset-manifest.json
