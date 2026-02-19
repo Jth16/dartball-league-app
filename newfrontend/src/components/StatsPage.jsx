@@ -1,6 +1,8 @@
 import React, { useEffect, useState, Suspense } from 'react';
 import PlayersTable from './PlayersTable';
 import ResultLeaders from './ResultLeaders';
+import Results from './Results';
+import Playoffs from './Playoffs';
 
 const placeholderStyle = { padding: 18, color: '#9fb0bd' };
 
@@ -36,7 +38,7 @@ const Btn = ({ active, onClick, children }) => {
 };
 
 const StatsPage = () => {
-  const [view, setView] = useState('leaders'); // 'leaders' | 'players' | 'games'
+  const [view, setView] = useState('leaders'); // 'leaders' | 'players' | 'games' | 'results' | 'playoffs'
   const [LeadersComp, setLeadersComp] = useState(null);
 
   useEffect(() => {
@@ -51,6 +53,8 @@ const StatsPage = () => {
   const renderContent = () => {
     if (view === 'players') return <PlayersTable />;
     if (view === 'games') return <ResultLeaders />;
+    if (view === 'results') return <Results />;
+    if (view === 'playoffs') return <Playoffs />;
     // leaders
     if (LeadersComp) {
       return (
@@ -67,10 +71,12 @@ const StatsPage = () => {
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12, marginBottom: 12 }}>
        
         <div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
-          <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
+          <div style={{ display: 'flex', gap: 12, alignItems: 'center', flexWrap: 'wrap' }}>
             <Btn active={view === 'leaders'} onClick={() => setView('leaders')}>Leaders</Btn>
             <Btn active={view === 'players'} onClick={() => setView('players')}>Players</Btn>
             <Btn active={view === 'games'} onClick={() => setView('games')}>Games</Btn>
+            <Btn active={view === 'results'} onClick={() => setView('results')}>Results</Btn>
+            <Btn active={view === 'playoffs'} onClick={() => setView('playoffs')}>Playoffs</Btn>
           </div>
         </div>
 

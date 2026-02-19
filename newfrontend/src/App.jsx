@@ -10,8 +10,6 @@ import Leaders from "./components/Leaders"; // added
 import Rules from "./components/Rules";
 import { initGA, pageview } from "./utils/analytics";
 import Home from "./components/Home";
-import Results from "./components/Results";
-import Playoffs from "./components/Playoffs";
 
 const API_BASE = process.env.REACT_APP_API_URL || "https://dartball-backend-654879525708.us-central1.run.app";
 
@@ -111,24 +109,6 @@ function App() {
           >
             Standings
           </button>
-           <button
-            onClick={() => setPage("results")}
-            style={{
-              background: page === "results" ? "#ff9800" : "#222",
-              color: "#fff",
-              border: "none",
-              borderRadius: "25px",
-              padding: "0.75rem 1.25rem",
-              margin: "0 .25rem",
-              fontSize: "1.1rem",
-              fontWeight: "bold",
-              cursor: "pointer",
-              boxShadow: page === "rules" ? "0 0 10px #ff9800" : "none",
-              transition: "all 0.2s",
-            }}
-          >
-            Results
-          </button>
           <button
             onClick={() => setPage("Stats")}
             style={{
@@ -145,7 +125,7 @@ function App() {
               transition: "all 0.2s",
             }}
           >
-            Stats
+           All Stats
           </button>
  
       
@@ -186,24 +166,6 @@ function App() {
           >
             Rules
           </button>
-          <button
-            onClick={() => setPage("playoffs")}
-            style={{
-              background: page === "playoffs" ? "#ff9800" : "#222",
-              color: "#fff",
-              border: "none",
-              borderRadius: "25px",
-              padding: "0.75rem 1.25rem",
-              margin: "0 .25rem",
-              fontSize: "1.1rem",
-              fontWeight: "bold",
-              cursor: "pointer",
-              boxShadow: page === "playoffs" ? "0 0 10px #ff9800" : "none",
-              transition: "all 0.2s",
-            }}
-          >
-            Playoffs
-          </button>
 
         </nav>
         <div style={{ maxWidth: 900, height: "100%", minHeight: "800px", margin: "auto", background: "#111", padding: "2rem", borderRadius: 16, boxShadow: "0 4px 24px rgba(0,0,0,0.8)" }}>
@@ -219,8 +181,6 @@ function App() {
           ) : (
             <AdminPwdPage setIsAdmin={setIsAdmin} />
           ))}
-        {page === "results" && <Results />}
-        {page === "playoffs" && <Playoffs />}
         </div>
         <footer style={{ textAlign: "center", padding: "1rem 0", color: "#666", fontSize: "0.9rem" }}>
         &copy; {new Date().getFullYear()} Labelle Dartball League
