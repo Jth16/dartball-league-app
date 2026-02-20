@@ -8,6 +8,7 @@ import AdminPwdPage from "./components/AdminPwd";
 import Schedule from "./components/Schedule";
 import Leaders from "./components/Leaders"; // added
 import Rules from "./components/Rules";
+import PrivacyPolicy from "./components/PrivacyPolicy";
 import { initGA, pageview } from "./utils/analytics";
 import Home from "./components/Home";
 
@@ -175,6 +176,7 @@ function App() {
         {page === "schedule" && <Schedule />}
         {page === "leaders" && <Leaders />}
         {page === "rules" && <Rules />}
+        {page === "privacy" && <PrivacyPolicy />}
         {page === "admin" &&
           (isAdmin ? (
             <AdminLogin setIsAdmin={setIsAdmin} />
@@ -184,6 +186,14 @@ function App() {
         </div>
         <footer style={{ textAlign: "center", padding: "1rem 0", color: "#666", fontSize: "0.9rem" }}>
         &copy; {new Date().getFullYear()} Labelle Dartball League
+        <br />
+        <a
+          href="#"
+          onClick={e => { e.preventDefault(); setPage("privacy"); }}
+          style={{ color: "#555", fontSize: "0.75rem", textDecoration: "underline", cursor: "pointer" }}
+        >
+          Privacy Policy
+        </a>
       </footer>
         <div
           style={{

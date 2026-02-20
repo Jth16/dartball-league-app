@@ -1,0 +1,1 @@
+ALLOWED_ORIGINS: "http://localhost:3000,https://dartball-backend-654879525708.us-central1.run.app,https://jth16.github.io,https://ltvfdartball.com,https://localhost"
