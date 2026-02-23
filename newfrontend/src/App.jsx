@@ -8,6 +8,7 @@ import AdminPwdPage from "./components/AdminPwd";
 import Schedule from "./components/Schedule";
 import Leaders from "./components/Leaders"; // added
 import Rules from "./components/Rules";
+import Playoffs from "./components/Playoffs";
 import PrivacyPolicy from "./components/PrivacyPolicy";
 import { initGA, pageview } from "./utils/analytics";
 import Home from "./components/Home";
@@ -175,6 +176,7 @@ function App() {
         {page === "Stats" && <StatsPage />}
         {page === "schedule" && <Schedule />}
         {page === "leaders" && <Leaders />}
+        {page === "playoffs" && <Playoffs />}
         {page === "rules" && <Rules />}
         {page === "privacy" && <PrivacyPolicy />}
         {page === "admin" &&

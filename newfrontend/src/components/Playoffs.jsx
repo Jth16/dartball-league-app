@@ -158,6 +158,8 @@ const Playoffs = () => {
             boxShadow: '0 10px 30px rgba(2,6,8,0.6)',
         }}>
             <h1 style={{ margin: 0, color: '#fff', fontSize: '1.5rem', letterSpacing: '0.02em' }}>Playoffs</h1>
+            <p style={{ color: '#888', marginTop: 4, marginBottom: 12,fontSize: '1.0rem' }}>Seedings and playoff bracket according to current standings </p>
+            <p style={{ color: '#888', marginTop: 4, marginBottom: 12, fontSize: '0.8rem' }}> *Player must have played in at least 32 games to be eligble for the playoffs</p>
             <div style={{
                 height: 6, borderRadius: 6, marginTop: 12,
                 background: 'linear-gradient(90deg,#7a2b00,#c2410c,#ff8a00)',

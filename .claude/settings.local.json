@@ -39,7 +39,18 @@
       "Bash(\"/c/Users/JeffH/AppData/Local/Android/Sdk/platform-tools/adb.exe\" connect 192.168.0.99:43449)",
       "Bash(\"/c/Users/JeffH/AppData/Local/Android/Sdk/platform-tools/adb.exe\" -s 192.168.0.99:43449 install -r \"/c/source/VSCode Projects/dartball-mobile/newfrontend/android/app/build/outputs/apk/release/app-release.apk\")",
       "Bash(git remote add:*)",
-      "Bash(git push:*)"
+      "Bash(git push:*)",
+      "Bash(git -C \"C:\\\\source\\\\VSCode Projects\\\\dartball-league-app\" status --short)",
+      "Bash(git -C \"C:\\\\source\\\\VSCode Projects\\\\dartball-league-app\" diff --stat HEAD)",
+      "Bash(git -C \"C:\\\\source\\\\VSCode Projects\\\\dartball-league-app\" status -u)",
+      "Bash(git -C \"C:\\\\source\\\\VSCode Projects\\\\dartball-league-app\" check-ignore -v newfrontend/src/App.jsx newfrontend/src/components/PrivacyPolicy.jsx)",
+      "Bash(git -C \"C:\\\\source\\\\VSCode Projects\\\\dartball-league-app\\\\newfrontend\" remote -v)",
+      "Bash(git -C \"C:\\\\source\\\\VSCode Projects\\\\dartball-league-app\" remote -v)",
+      "Bash(gh api:*)",
+      "Bash(git -C \"C:\\\\source\\\\VSCode Projects\\\\dartball-league-app\" branch -a)",
+      "Bash(git -C \"C:\\\\source\\\\VSCode Projects\\\\dartball-league-app\" log remotes/origin/gh-pages --oneline -5)",
+      "Bash(git -C:*)",
+      "Bash(git clone:*)"
     ]
   }
 }
