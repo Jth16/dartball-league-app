@@ -85,6 +85,23 @@ const TeamsTable = () => {
                     return (b.wins || 0) - (a.wins || 0);
                 });
 
+                // clinching indicators — 6 games remaining in regular season
+                const gamesRemaining = 6;
+                if (withGB.length >= 2) {
+                    const t1 = withGB[0];
+                    const t2 = withGB[1];
+                    const t1WorstPct = t1.wins / (t1.games_played + gamesRemaining);
+                    const t2BestPct = (t2.wins + gamesRemaining) / (t2.games_played + gamesRemaining);
+                    if (t1WorstPct > t2BestPct) withGB[0].clinched1st = true;
+                }
+                if (withGB.length >= 3) {
+                    const t2 = withGB[1];
+                    const t3 = withGB[2];
+                    const t2WorstPct = t2.wins / (t2.games_played + gamesRemaining);
+                    const t3BestPct = (t3.wins + gamesRemaining) / (t3.games_played + gamesRemaining);
+                    if (t2WorstPct > t3BestPct) withGB[1].clinched2nd = true;
+                }
+
                 setTeams(withGB);
             } catch (err) {
                 console.error('fetchStandingsFromResults failed', err);
@@ -222,7 +239,11 @@ const TeamsTable = () => {
                <tbody>
                     {teams.map((team) => (
                         <tr key={team.id} style={rowStyle}>
-                            <td style={{ ...cellStyle, paddingLeft: 18 }}>{team.name}</td>
+                            <td style={{ ...cellStyle, paddingLeft: 18 }}>
+                                {team.name}
+                                {team.clinched1st && <span style={{ color: '#ff9800', fontWeight: 700, marginLeft: 4 }}>-y</span>}
+                                {team.clinched2nd && <span style={{ color: '#aaa', fontWeight: 700, marginLeft: 4 }}>-x</span>}
+                            </td>
                             <td style={{ ...cellStyle, textAlign: "center" }}>{team.wins}</td>
                             <td style={{ ...cellStyle, textAlign: "center" }}>{team.losses}</td>
                             <td style={{ ...cellStyle, textAlign: "center" }}>
