@@ -85,21 +85,25 @@ const TeamsTable = () => {
                     return (b.wins || 0) - (a.wins || 0);
                 });
 
-                // clinching indicators — 6 games remaining in regular season
-                const gamesRemaining = 6;
+                // clinching indicators — 96 game season, remaining games per team vary (makeups)
+                // worst case for team: loses all remaining; best case for chaser: wins all remaining
+                // since all teams play 96 total games, final win% = wins/96, so compare wins directly
+                const seasonGames = 96;
+                const gamesLeft = (t) => seasonGames - t.games_played;
                 if (withGB.length >= 2) {
                     const t1 = withGB[0];
                     const t2 = withGB[1];
-                    const t1WorstPct = t1.wins / (t1.games_played + gamesRemaining);
-                    const t2BestPct = (t2.wins + gamesRemaining) / (t2.games_played + gamesRemaining);
-                    if (t1WorstPct > t2BestPct) withGB[0].clinched1st = true;
+                    // t1 clinches 1st if even losing all remaining, t2 winning all remaining can't catch t1
+                    if (t1.wins / seasonGames > (t2.wins + gamesLeft(t2)) / seasonGames) {
+                        withGB[0].clinched1st = true;
+                    }
                 }
                 if (withGB.length >= 3) {
                     const t2 = withGB[1];
                     const t3 = withGB[2];
-                    const t2WorstPct = t2.wins / (t2.games_played + gamesRemaining);
-                    const t3BestPct = (t3.wins + gamesRemaining) / (t3.games_played + gamesRemaining);
-                    if (t2WorstPct > t3BestPct) withGB[1].clinched2nd = true;
+                    if (t2.wins / seasonGames > (t3.wins + gamesLeft(t3)) / seasonGames) {
+                        withGB[1].clinched2nd = true;
+                    }
                 }
 
                 setTeams(withGB);
