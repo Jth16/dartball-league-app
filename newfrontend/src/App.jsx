@@ -175,7 +175,7 @@ function App() {
         {page === "teams" && <TeamsTable teams={teams} />}
         {page === "Stats" && <StatsPage />}
         {page === "schedule" && <Schedule />}
-        {page === "leaders" && <Leaders />}
+{page === "leaders" && <Leaders />}
         {page === "playoffs" && <Playoffs />}
         {page === "rules" && <Rules />}
         {page === "privacy" && <PrivacyPolicy />}

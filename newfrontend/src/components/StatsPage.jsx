@@ -3,6 +3,7 @@ import PlayersTable from './PlayersTable';
 import ResultLeaders from './ResultLeaders';
 import Results from './Results';
 import Playoffs from './Playoffs';
+import HeadToHead from './HeadToHead';
 
 const placeholderStyle = { padding: 18, color: '#9fb0bd' };
 
@@ -38,7 +39,7 @@ const Btn = ({ active, onClick, children }) => {
 };
 
 const StatsPage = () => {
-  const [view, setView] = useState('leaders'); // 'leaders' | 'players' | 'games' | 'results' | 'playoffs'
+  const [view, setView] = useState('leaders'); // 'leaders' | 'players' | 'games' | 'results' | 'playoffs' | 'h2h'
   const [LeadersComp, setLeadersComp] = useState(null);
 
   useEffect(() => {
@@ -55,6 +56,7 @@ const StatsPage = () => {
     if (view === 'games') return <ResultLeaders />;
     if (view === 'results') return <Results />;
     if (view === 'playoffs') return <Playoffs />;
+    if (view === 'h2h') return <HeadToHead />;
     // leaders
     if (LeadersComp) {
       return (
@@ -77,6 +79,7 @@ const StatsPage = () => {
             <Btn active={view === 'games'} onClick={() => setView('games')}>Games</Btn>
             <Btn active={view === 'results'} onClick={() => setView('results')}>Results</Btn>
             <Btn active={view === 'playoffs'} onClick={() => setView('playoffs')}>Playoffs</Btn>
+            <Btn active={view === 'h2h'} onClick={() => setView('h2h')}>H2H</Btn>
           </div>
         </div>
 
