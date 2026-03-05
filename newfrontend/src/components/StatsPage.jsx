@@ -78,7 +78,7 @@ const StatsPage = () => {
             <Btn active={view === 'players'} onClick={() => setView('players')}>Players</Btn>
             <Btn active={view === 'games'} onClick={() => setView('games')}>Games</Btn>
             <Btn active={view === 'results'} onClick={() => setView('results')}>Results</Btn>
-            <Btn active={view === 'playoffs'} onClick={() => setView('playoffs')}>Playoffs</Btn>
+      
             <Btn active={view === 'h2h'} onClick={() => setView('h2h')}>H2H</Btn>
           </div>
         </div>

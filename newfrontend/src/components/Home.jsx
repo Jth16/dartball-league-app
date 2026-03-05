@@ -106,6 +106,25 @@ const Home = (props) => {
           <p style={small}>Entry to the Firehall will be either through the Truck Room or the Bar. The Main Hall doors will be closed on Dartball Night.</p>
           <p style={small}>Please plan accordingly and arrive early to avoid any issues.</p>
           <p style={small}><strong>Reminder:</strong> There is NO smoking/vaping in the hall. Smoking/Vaping is permitted in the Bar area only</p>
+          
+          <div style={{ marginTop: 10, display: 'flex', gap: 10 }}>
+            <a
+              href="/playoffs"
+              onClick={handlePlayoffsClick}
+              style={{
+                display: 'inline-block',
+                padding: '8px 12px',
+                borderRadius: 8,
+                background: 'linear-gradient(90deg,#7a2b00,#c2410c)',
+                color: '#fff',
+                textDecoration: 'none',
+                fontWeight: 700
+              }}
+            >
+              Playoff Bracket
+            </a>
+            
+          </div>
           <p style={small}><strong>Current Makeups:</strong></p>
           <ul style={{ color: '#cbd5e1', fontSize: isMobile ? 16 : 14, lineHeight: 1.45, marginTop: 0 }}>
             <li>Average Bo's vs Prince of Dartness (Dec. 1st)</li>
@@ -160,40 +179,7 @@ const Home = (props) => {
             <li>Runner-Up Team: $500.00</li>
             <li>3rd Place Team: $200.00</li>
           </ul>
-          <br />
-          <br />
-          <div style={{ marginTop: 10, display: 'flex', gap: 10 }}>
-            <a
-              href="/playoffs"
-              onClick={handlePlayoffsClick}
-              style={{
-                display: 'inline-block',
-                padding: '8px 12px',
-                borderRadius: 8,
-                background: 'linear-gradient(90deg,#7a2b00,#c2410c)',
-                color: '#fff',
-                textDecoration: 'none',
-                fontWeight: 700
-              }}
-            >
-              Playoffs
-            </a>
-            <a
-              href="/rules"
-              onClick={handleRulesClick}
-              style={{
-                display: 'inline-block',
-                padding: '8px 12px',
-                borderRadius: 8,
-                background: 'linear-gradient(90deg,#7a2b00,#c2410c)',
-                color: '#fff',
-                textDecoration: 'none',
-                fontWeight: 700
-              }}
-            >
-             League Rules
-            </a>
-          </div>
+          
         </div>
 
         <div style={blurb}>
