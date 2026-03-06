@@ -50,32 +50,6 @@ The official dartball rules for the league.
   - Championship Game (Best of 7) with a 3rd place consolation series (Best of 5)
 
 ---
-
-## Payouts
-
-### Regular Season (paid at start of Round 1 playoffs)
-| Place | Payout |
-|-------|--------|
-| 1st | $700 |
-| 2nd | $600 |
-| 3rd | $500 |
-| 4th | $400 |
-| 5th | $275 |
-| 6th | $180 |
-| 7th | $100 |
-| 8th | $75 |
-| 9th | $50 |
-
-### League Leaders (paid at Championship)
-$50 per category winner for: Most Hits, Singles, Doubles, Triples, Home Runs, and Best Batting Average (minimum 70 games played for average).
-
-### Playoffs
-| Finish | Payout |
-|--------|--------|
-| Champions | $800 |
-| Runner-Up | $500 |
-| 3rd Place | $200 |
-
 ---
 
 ## Stay Connected
