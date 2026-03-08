@@ -34,6 +34,7 @@ jobs:
         run: npm run build
         working-directory: newfrontend
         env:
+          CI: false
           REACT_APP_API_URL: ${{ secrets.REACT_APP_API_URL }}
 
       - uses: actions/upload-pages-artifact@v3
