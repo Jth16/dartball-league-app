@@ -50,7 +50,10 @@
       "Bash(git -C \"C:\\\\source\\\\VSCode Projects\\\\dartball-league-app\" branch -a)",
       "Bash(git -C \"C:\\\\source\\\\VSCode Projects\\\\dartball-league-app\" log remotes/origin/gh-pages --oneline -5)",
       "Bash(git -C:*)",
-      "Bash(git clone:*)"
+      "Bash(git clone:*)",
+      "Bash(npm run deploy)",
+      "Bash(gh run list --limit 5)",
+      "Bash(winget install --id GitHub.cli --silent)"
     ]
   }
 }
