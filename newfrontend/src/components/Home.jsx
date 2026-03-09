@@ -131,15 +131,16 @@ const Home = (props) => {
             <li>Hillbillies vs Tipsy Tossers (Feb. 9th)</li>
             <li>Prince of Dartness vs Hillbillies (Feb. 11th)</li>
           </ul>
+          <p>*Any tie-breaker games will be played on Weds, March 11th.</p>
           <p style={small}><strong>End of Year Schedule:</strong></p>
           <ul style={{ color: '#cbd5e1', fontSize: isMobile ? 16 : 14, lineHeight: 1.45, marginTop: 0 }}>
             <li><strong>Mar. 4th - Regular Season Ends</strong></li>
-            <li><strong>Mar. 9th - MakeUps & 8/9 Playoff Game</strong></li>
+            <li><strong>Mar. 9th - MakeUps</strong></li>
                 <p>6:30 PM Bd. 1 - Average Bo's vs Prince of Dartness</p>
                 <p>6:30 PM Bd. 2 - Hillbillies vs Tipsy Tossers</p>
                 <p>7:30 PM Bd. 1 - Prince of Dartness vs Hillbillies </p>
             <li><strong>Mar. 11th - Playoffs Play-in</strong></li>    
-                <p>7:00 PM Bd. 2 - 8 vs. 9 Playoff game (Best of 3 series)</p>       
+                <p>7:00 PM - 8 vs. 9 Playoff game (Best of 3 series)</p>       
             <li><strong>Mar. 16th - Playoffs - Rd. 1</strong></li>
                 <p>6:30 PM Bd. 1 - 1 vs. 8 Playoff game (Best of 5 series)</p>
                 <p>6:30 PM Bd. 2 - 2 vs. 7 Playoff game (Best of 5 series)</p>
