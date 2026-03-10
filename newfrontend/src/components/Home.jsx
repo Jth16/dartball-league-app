@@ -140,6 +140,7 @@ const Home = (props) => {
                 <p>6:30 PM Bd. 2 - Hillbillies vs Tipsy Tossers</p>
                 <p>7:30 PM Bd. 1 - Prince of Dartness vs Hillbillies </p>
             <li><strong>Mar. 11th - Playoffs Play-in</strong></li>    
+                <p>6:30 PM - Tipsy Tossers vs. Softball Dads - TieBreaker (Best of 3 series)</p>
                 <p>7:00 PM - 8 vs. 9 Playoff game (Best of 3 series)</p>       
             <li><strong>Mar. 16th - Playoffs - Rd. 1</strong></li>
                 <p>6:30 PM Bd. 1 - 1 vs. 8 Playoff game (Best of 5 series)</p>
