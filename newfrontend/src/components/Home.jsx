@@ -125,32 +125,22 @@ const Home = (props) => {
             </a>
             
           </div>
-          <p style={small}><strong>Current Makeups:</strong></p>
-          <ul style={{ color: '#cbd5e1', fontSize: isMobile ? 16 : 14, lineHeight: 1.45, marginTop: 0 }}>
-            <li>Average Bo's vs Prince of Dartness (Dec. 1st)</li>
-            <li>Hillbillies vs Tipsy Tossers (Feb. 9th)</li>
-            <li>Prince of Dartness vs Hillbillies (Feb. 11th)</li>
-          </ul>
-          <p>*Any tie-breaker games will be played on Weds, March 11th.</p>
+
           <p style={small}><strong>End of Year Schedule:</strong></p>
           <ul style={{ color: '#cbd5e1', fontSize: isMobile ? 16 : 14, lineHeight: 1.45, marginTop: 0 }}>
-            <li><strong>Mar. 4th - Regular Season Ends</strong></li>
-            <li><strong>Mar. 9th - MakeUps</strong></li>
-                <p>6:30 PM Bd. 1 - Average Bo's vs Prince of Dartness</p>
-                <p>6:30 PM Bd. 2 - Hillbillies vs Tipsy Tossers</p>
-                <p>7:30 PM Bd. 1 - Prince of Dartness vs Hillbillies </p>
-            <li><strong>Mar. 11th - Playoffs Play-in</strong></li>    
+
+            <li><strong>Mar. 11th (Weds) - Playoffs Play-in</strong></li>    
                 <p>6:30 PM - Tipsy Tossers vs. Softball Dads - TieBreaker (Best of 3 series)</p>
                 <p>7:00 PM - 8 vs. 9 Playoff game (Best of 3 series)</p>       
-            <li><strong>Mar. 16th - Playoffs - Rd. 1</strong></li>
+            <li><strong>Mar. 16th (Mon) - Playoffs - Rd. 1</strong></li>
                 <p>6:30 PM Bd. 1 - 1 vs. 8 Playoff game (Best of 5 series)</p>
                 <p>6:30 PM Bd. 2 - 2 vs. 7 Playoff game (Best of 5 series)</p>
                 <p>7:30 PM Bd. 1 - 3 vs. 6 Playoff game (Best of 5 series)</p>
                 <p>7:30 PM Bd. 2 - 4 vs. 5 Playoff game (Best of 5 series)</p>
-            <li><strong>Mar. 18th - Playoffs - Rd. 2</strong></li>
+            <li><strong>Mar. 18th (Wed) - Playoffs - Rd. 2</strong></li>
                 <p>6:30 PM Bd. 1 - 1/8 Winner vs. 4/5 Winner (Best of 5 series)</p>
                 <p>6:30 PM Bd. 2 - 2/7 Winner vs. 3/6 Winner (Best of 5 series)</p>
-            <li><strong>Mar. 21st - Championship Game & End of Year Party</strong></li>
+            <li><strong>Mar. 21st (Sat) - Championship Game & End of Year Party</strong></li>
                 <p>Doors open at 5:30</p>
                 <p>3rd Place game starts at 6:00 PM (Best of 5 Series)</p>
                 <p>Championship game starts at 7:00 PM (Best of 7 Series)</p>
