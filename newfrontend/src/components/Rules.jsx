@@ -55,11 +55,11 @@ const Rules = () => (
             <div style={textStyle}>
                 <ul>
                     <li><strong>Standings:</strong> Determined by team win percentage. In the Event of a tie, a best of 3 series will determine the higher seed.</li>
-                    <li><strong>Playoffs:</strong> Top 8 teams make the playoffs. 8th and 9th place teams play a best-of-3 to decide the final spot.</li>
+                    <li><strong>Playoffs:</strong> Top 8 teams make the playoffs. 8th and 9th place teams play a best-of-3 to decide the final spot. </li>
                     <li><strong>Forfeits:</strong> Fewer than 3 players at scheduled start time = forfeit of all three games (opponent awarded three 1–0 wins).</li>
                     <li><strong>Makeups/Cancellations:</strong> Teams that cannot make a scheduled game must cancel and schedule a makeup. Cancellations must be declared at least 1 hour before the scheduled game or result in a forfeit.</li>
                     <li><strong>Playoff Eligibility:</strong> A player must play in at least 33% of a team's games to be playoff-eligible for that team.</li>
-                    <li><strong>Playoff Home and Away:</strong> Home and away designations for playoff games will be determined by regular season standings.</li>
+                    <li><strong>Playoff Home and Away:</strong>Each series will alternate home and away, with the higher seed having home-field advantage.</li>
                     <li><strong>Reschedules:</strong> Rescheduled Games will be played the last week of the season.</li>
                 </ul>
             </div>

@@ -67,49 +67,54 @@ const Playoffs = () => {
     const seedName = (n) => teams[n - 1]?.name || `Seed ${n}`;
 
     /* ── Matchup card ── */
-    const Matchup = ({ topLabel, topName, bottomLabel, bottomName, title, width = 155 }) => (
-        <div style={{
-            background: 'linear-gradient(180deg, #0d1b2a 0%, #0b1520 100%)',
-            border: '1px solid #1e3a50',
-            borderRadius: 6,
-            width,
-            flexShrink: 0,
-            boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
-        }}>
-            {title && (
+    const Matchup = ({ topLabel, topName, bottomLabel, bottomName, title, time, width = 155 }) => (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+            <div style={{
+                background: 'linear-gradient(180deg, #0d1b2a 0%, #0b1520 100%)',
+                border: '1px solid #1e3a50',
+                borderRadius: 6,
+                width,
+                flexShrink: 0,
+                boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
+            }}>
+                {title && (
+                    <div style={{
+                        background: 'linear-gradient(90deg, #7a2b00, #c2410c)',
+                        color: '#fff',
+                        fontSize: '0.6rem',
+                        fontWeight: 'bold',
+                        padding: '3px 8px',
+                        textAlign: 'center',
+                        letterSpacing: '0.5px',
+                        textTransform: 'uppercase',
+                        borderRadius: '5px 5px 0 0',
+                    }}>
+                        {title}
+                    </div>
+                )}
                 <div style={{
-                    background: 'linear-gradient(90deg, #7a2b00, #c2410c)',
-                    color: '#fff',
-                    fontSize: '0.6rem',
-                    fontWeight: 'bold',
-                    padding: '3px 8px',
-                    textAlign: 'center',
-                    letterSpacing: '0.5px',
-                    textTransform: 'uppercase',
-                    borderRadius: '5px 5px 0 0',
+                    padding: '6px 10px',
+                    borderBottom: '1px solid #1e3a50',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 6,
                 }}>
-                    {title}
+                    <span style={{ color: '#ff9800', fontSize: '0.7rem', fontWeight: 'bold', minWidth: 16 }}>{topLabel}</span>
+                    <span style={{ fontSize: '0.8rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{topName}</span>
                 </div>
+                <div style={{
+                    padding: '6px 10px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 6,
+                }}>
+                    <span style={{ color: '#ff9800', fontSize: '0.7rem', fontWeight: 'bold', minWidth: 16 }}>{bottomLabel}</span>
+                    <span style={{ fontSize: '0.8rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{bottomName}</span>
+                </div>
+            </div>
+            {time && (
+                <div style={{ fontSize: '0.65rem', color: '#7a8fa0', textAlign: 'center', paddingLeft: 2 }}>{time}</div>
             )}
-            <div style={{
-                padding: '6px 10px',
-                borderBottom: '1px solid #1e3a50',
-                display: 'flex',
-                alignItems: 'center',
-                gap: 6,
-            }}>
-                <span style={{ color: '#ff9800', fontSize: '0.7rem', fontWeight: 'bold', minWidth: 16 }}>{topLabel}</span>
-                <span style={{ fontSize: '0.8rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{topName}</span>
-            </div>
-            <div style={{
-                padding: '6px 10px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: 6,
-            }}>
-                <span style={{ color: '#ff9800', fontSize: '0.7rem', fontWeight: 'bold', minWidth: 16 }}>{bottomLabel}</span>
-                <span style={{ fontSize: '0.8rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{bottomName}</span>
-            </div>
         </div>
     );
 
@@ -158,7 +163,6 @@ const Playoffs = () => {
             boxShadow: '0 10px 30px rgba(2,6,8,0.6)',
         }}>
             <h1 style={{ margin: 0, color: '#fff', fontSize: '1.5rem', letterSpacing: '0.02em' }}>Playoffs</h1>
-            <p style={{ color: '#888', marginTop: 4, marginBottom: 12,fontSize: '1.0rem' }}>Seedings and playoff bracket according to current standings </p>
             <p style={{ color: '#888', marginTop: 4, marginBottom: 12, fontSize: '0.8rem' }}> *Player must have played in at least 32 games to be eligble for the playoffs</p>
             <div style={{
                 height: 6, borderRadius: 6, marginTop: 12,
@@ -166,42 +170,29 @@ const Playoffs = () => {
                 boxShadow: '0 6px 18px rgba(194,65,12,0.08)',
             }} />
 
-            {/* ── Current Seedings ── */}
-            <h3 style={{ color: '#ff9800', margin: '1.25rem 0 0.5rem' }}>Current Seedings</h3>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: '1.5rem' }}>
-                {teams.slice(0, 9).map((team, i) => (
-                    <div
-                        key={team.id}
-                        style={{
-                            background: i < 8 ? 'linear-gradient(180deg, #0d1b2a, #0b1520)' : 'linear-gradient(180deg, #2a1a0e, #1a0f05)',
-                            border: `1px solid ${i < 8 ? '#1e3a50' : '#ff9800'}`,
-                            borderRadius: 6,
-                            padding: '5px 14px',
-                            fontSize: '0.85rem',
-                            display: 'flex',
-                            gap: 8,
-                            alignItems: 'center',
-                        }}
-                    >
-                        <span style={{ color: '#ff9800', fontWeight: 'bold' }}>#{i + 1}</span>
-                        <span>{team.name}</span>
-                        <span style={{ color: '#7a8fa0', fontSize: '0.75rem' }}>({team.wins}-{team.losses})</span>
+            {/* ── Play-in Result ── */}
+            <h3 style={{ color: '#ff9800', margin: '1.25rem 0 0.5rem' }}>Play-in Result (Best of 3)</h3>
+            <div style={{ display: 'flex', gap: 12, alignItems: 'stretch', marginBottom: '1.5rem', flexWrap: 'wrap' }}>
+                {[
+                    { seed: 8, games: 1, winner: false },
+                    { seed: 9, games: 2, winner: true },
+                ].map(({ seed, games, winner }) => (
+                    <div key={seed} style={{
+                        background: winner ? 'linear-gradient(180deg, #2a1a0e, #1a0f05)' : 'linear-gradient(180deg, #0d1b2a, #0b1520)',
+                        border: `1px solid ${winner ? '#ff9800' : '#1e3a50'}`,
+                        borderRadius: 8,
+                        padding: '4px 8px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 14,
+                        minWidth: 200,
+                    }}>
+                        <span style={{ color: '#ff9800', fontWeight: 'bold', fontSize: '0.8rem' }}>#{seed}</span>
+                        <span style={{ fontSize: '0.9rem', flex: 1 }}>{seedName(seed)}</span>
+                        <span style={{ fontSize: '1.5rem', fontWeight: 'bold', color: winner ? '#fff' : '#7a8fa0' }}>{games}</span>
+                        {winner && <span style={{ fontSize: '0.7rem', color: '#ff9800', fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Winner</span>}
                     </div>
                 ))}
-            </div>
-
-            {/* ── Play-in Game ── */}
-            <div style={{
-                margin: '0 0 1.5rem 0',
-                padding: '10px 16px',
-                background: 'linear-gradient(180deg, #2a1a0e, #1a0f05)',
-                borderRadius: 8,
-                border: '1px solid #ff9800',
-                fontSize: '0.9rem',
-            }}>
-                <span style={{ color: '#ff9800', fontWeight: 'bold' }}>Play-in Game: </span>
-                <span>#{8} {seedName(8)} vs #{9} {seedName(9)}</span>
-                <span style={{ color: '#7a8fa0', marginLeft: 12, fontSize: '0.8rem' }}>— Winner faces #1 seed in Round 1</span>
             </div>
 
             {/* ── Playoff Bracket ── */}
@@ -215,8 +206,9 @@ const Playoffs = () => {
                                     title="Round 1"
                                     topLabel="#1"
                                     topName={seedName(1)}
-                                    bottomLabel=""
-                                    bottomName="8/9 Winner"
+                                    bottomLabel="#8"
+                                    bottomName={seedName(9)}
+                                    time="Mar 16 · 6:30 PM Bd. 1"
                                 />
                             }
                             slot2={
@@ -226,6 +218,7 @@ const Playoffs = () => {
                                     topName={seedName(4)}
                                     bottomLabel="#5"
                                     bottomName={seedName(5)}
+                                    time="Mar 16 · 7:30 PM Bd. 2"
                                 />
                             }
                             result={
@@ -235,6 +228,7 @@ const Playoffs = () => {
                                     topName="TBD"
                                     bottomLabel=""
                                     bottomName="TBD"
+                                    time="Mar 18 · 6:30 PM Bd. 1"
                                 />
                             }
                         />
@@ -248,6 +242,7 @@ const Playoffs = () => {
                                     topName={seedName(2)}
                                     bottomLabel="#7"
                                     bottomName={seedName(7)}
+                                    time="Mar 16 · 6:30 PM Bd. 2"
                                 />
                             }
                             slot2={
@@ -257,6 +252,7 @@ const Playoffs = () => {
                                     topName={seedName(3)}
                                     bottomLabel="#6"
                                     bottomName={seedName(6)}
+                                    time="Mar 16 · 7:30 PM Bd. 1"
                                 />
                             }
                             result={
@@ -266,6 +262,7 @@ const Playoffs = () => {
                                     topName="TBD"
                                     bottomLabel=""
                                     bottomName="TBD"
+                                    time="Mar 18 · 6:30 PM Bd. 2"
                                 />
                             }
                         />
@@ -277,6 +274,7 @@ const Playoffs = () => {
                             topName="TBD"
                             bottomLabel=""
                             bottomName="TBD"
+                            time="Mar 21 · 7:00 PM"
                             width={170}
                         />
                     }

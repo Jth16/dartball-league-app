@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import Playoffs from './Playoffs';
 
 const Home = (props) => {
   const [isMobile, setIsMobile] = useState(typeof window !== 'undefined' && window.matchMedia ? window.matchMedia('(max-width:600px)').matches : false);
@@ -69,15 +70,6 @@ const Home = (props) => {
     }
   }, []);
 
-  const handlePlayoffsClick = (e) => {
-    if (e && e.preventDefault) e.preventDefault();
-    if (typeof props?.onNavigate === 'function') {
-      props.onNavigate('playoffs');
-    } else {
-      window.dispatchEvent(new CustomEvent('navigate', { detail: { page: 'playoffs' } }));
-    }
-  };
-
   const handleRulesClick = (e) => {
     if (e && e.preventDefault) e.preventDefault();
     if (typeof props?.onNavigate === 'function') {
@@ -107,39 +99,17 @@ const Home = (props) => {
           <p style={small}>Please plan accordingly and arrive early to avoid any issues.</p>
           <p style={small}><strong>Reminder:</strong> There is NO smoking/vaping in the hall. Smoking/Vaping is permitted in the Bar area only</p>
           
-          <div style={{ marginTop: 10, display: 'flex', gap: 10 }}>
-            <a
-              href="/playoffs"
-              onClick={handlePlayoffsClick}
-              style={{
-                display: 'inline-block',
-                padding: '8px 12px',
-                borderRadius: 8,
-                background: 'linear-gradient(90deg,#7a2b00,#c2410c)',
-                color: '#fff',
-                textDecoration: 'none',
-                fontWeight: 700
-              }}
-            >
-              Playoff Bracket
-            </a>
-            
-          </div>
-
           <p style={small}><strong>End of Year Schedule:</strong></p>
           <ul style={{ color: '#cbd5e1', fontSize: isMobile ? 16 : 14, lineHeight: 1.45, marginTop: 0 }}>
 
-            <li><strong>Mar. 11th (Weds) - Playoffs Play-in</strong></li>    
-                <p>6:30 PM - Tipsy Tossers vs. Softball Dads - TieBreaker (Best of 3 series)</p>
-                <p>7:00 PM - 8 vs. 9 Playoff game (Best of 3 series)</p>       
             <li><strong>Mar. 16th (Mon) - Playoffs - Rd. 1</strong></li>
-                <p>6:30 PM Bd. 1 - 1 vs. 8 Playoff game (Best of 5 series)</p>
-                <p>6:30 PM Bd. 2 - 2 vs. 7 Playoff game (Best of 5 series)</p>
-                <p>7:30 PM Bd. 1 - 3 vs. 6 Playoff game (Best of 5 series)</p>
-                <p>7:30 PM Bd. 2 - 4 vs. 5 Playoff game (Best of 5 series)</p>
+                <p>6:30 PM Bd. 1 - #1 BBD vs. #8 Labelle Firehall (Best of 5 series)</p>
+                <p>6:30 PM Bd. 2 - #2 KGB vs. #7 The Old & the New (Best of 5 series)</p>
+                <p>7:30 PM Bd. 1 - #3 Hillbillies vs. #6 Tipsy Tossers (Best of 5 series)</p>
+                <p>7:30 PM Bd. 2 - #4 Prince of Dartness vs. #5 Softball Dad's (Best of 5 series)</p>
             <li><strong>Mar. 18th (Wed) - Playoffs - Rd. 2</strong></li>
-                <p>6:30 PM Bd. 1 - 1/8 Winner vs. 4/5 Winner (Best of 5 series)</p>
-                <p>6:30 PM Bd. 2 - 2/7 Winner vs. 3/6 Winner (Best of 5 series)</p>
+                <p>6:30 PM Bd. 1 - #1/8 Winner vs. #4/5 Winner (Best of 5 series)</p>
+                <p>6:30 PM Bd. 2 - #2/7 Winner vs. #3/6 Winner (Best of 5 series)</p>
             <li><strong>Mar. 21st (Sat) - Championship Game & End of Year Party</strong></li>
                 <p>Doors open at 5:30</p>
                 <p>3rd Place game starts at 6:00 PM (Best of 5 Series)</p>
@@ -148,6 +118,8 @@ const Home = (props) => {
                 <p>DJ and St. Patty's Party starting at 7:00pm</p>
             
           </ul>
+          
+        <Playoffs />
           <p style={small}><strong>Regular Season Payouts (Paid March 16th):</strong></p>
           <ul style={{ color: '#cbd5e1', fontSize: isMobile ? 16 : 14, lineHeight: 1.45, marginTop: 0 }}>
             <li>1st Place: $700.00</li>
@@ -173,6 +145,7 @@ const Home = (props) => {
           </ul>
           
         </div>
+
 
         <div style={blurb}>
           <h3 style={{ margin: '0 0 8px 0' }}>Follow Us on Facebook</h3>
