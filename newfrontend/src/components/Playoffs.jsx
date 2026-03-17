@@ -178,31 +178,6 @@ const Playoffs = () => {
                 boxShadow: '0 6px 18px rgba(194,65,12,0.08)',
             }} />
 
-            {/* ── Play-in Result ── */}
-            <h3 style={{ color: '#ff9800', margin: '1.25rem 0 0.5rem' }}>Play-in Result (Best of 3)</h3>
-            <div style={{ display: 'flex', gap: 12, alignItems: 'stretch', marginBottom: '1.5rem', flexWrap: 'wrap' }}>
-                {[
-                    { seed: 8, games: 1, winner: false },
-                    { seed: 9, games: 2, winner: true },
-                ].map(({ seed, games, winner }) => (
-                    <div key={seed} style={{
-                        background: winner ? 'linear-gradient(180deg, #2a1a0e, #1a0f05)' : 'linear-gradient(180deg, #0d1b2a, #0b1520)',
-                        border: `1px solid ${winner ? '#ff9800' : '#1e3a50'}`,
-                        borderRadius: 8,
-                        padding: '4px 8px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: 14,
-                        minWidth: 200,
-                    }}>
-                        <span style={{ color: '#ff9800', fontWeight: 'bold', fontSize: '0.8rem' }}>#{seed}</span>
-                        <span style={{ fontSize: '0.9rem', flex: 1 }}>{seedName(seed)}</span>
-                        <span style={{ fontSize: '1.5rem', fontWeight: 'bold', color: winner ? '#fff' : '#7a8fa0' }}>{games}</span>
-                        {winner && <span style={{ fontSize: '0.7rem', color: '#ff9800', fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Winner</span>}
-                    </div>
-                ))}
-            </div>
-
             {/* ── Playoff Bracket ── */}
             <h3 style={{ color: '#ff9800', margin: '0 0 0.75rem' }}>Playoff Bracket</h3>
             <div style={{ overflowX: 'auto', paddingBottom: '1rem' }}>
@@ -296,6 +271,31 @@ const Playoffs = () => {
                     }
                     gap={40}
                 />
+            </div>
+
+             {/* ── Play-in Result ── */}
+            <h3 style={{ color: '#ff9800', margin: '0 0 0.75rem', fontSize: '1.0rem' }}>Play-in Result (Best of 3)</h3>
+            <div style={{ display: 'flex', gap: 12, alignItems: 'stretch', marginBottom: '1.5rem', flexWrap: 'wrap' }}>
+                {[
+                    { seed: 8, games: 1, winner: false },
+                    { seed: 9, games: 2, winner: true },
+                ].map(({ seed, games, winner }) => (
+                    <div key={seed} style={{
+                        background: winner ? 'linear-gradient(180deg, #2a1a0e, #1a0f05)' : 'linear-gradient(180deg, #0d1b2a, #0b1520)',
+                        border: `1px solid ${winner ? '#ff9800' : '#1e3a50'}`,
+                        borderRadius: 8,
+                        padding: '4px 8px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 14,
+                        minWidth: 200,
+                    }}>
+                        <span style={{ color: '#ff9800', fontWeight: 'bold', fontSize: '0.8rem' }}>#{seed}</span>
+                        <span style={{ fontSize: '0.9rem', flex: 1 }}>{seedName(seed)}</span>
+                        <span style={{ fontSize: '1.5rem', fontWeight: 'bold', color: winner ? '#fff' : '#7a8fa0' }}>{games}</span>
+                        {winner && <span style={{ fontSize: '0.7rem', color: '#ff9800', fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Winner</span>}
+                    </div>
+                ))}
             </div>
         </div>
     );
