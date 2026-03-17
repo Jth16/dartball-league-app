@@ -102,14 +102,9 @@ const Home = (props) => {
           <p style={small}><strong>End of Year Schedule:</strong></p>
           <ul style={{ color: '#cbd5e1', fontSize: isMobile ? 16 : 14, lineHeight: 1.45, marginTop: 0 }}>
 
-            <li><strong>Mar. 16th (Mon) - Playoffs - Rd. 1</strong></li>
-                <p>6:30 PM Bd. 1 - #1 BBD vs. #8 Labelle Firehall (Best of 5 series)</p>
-                <p>6:30 PM Bd. 2 - #2 KGB vs. #7 The Old & the New (Best of 5 series)</p>
-                <p>7:30 PM Bd. 1 - #3 Hillbillies vs. #6 Tipsy Tossers (Best of 5 series)</p>
-                <p>7:30 PM Bd. 2 - #4 Prince of Dartness vs. #5 Softball Dad's (Best of 5 series)</p>
             <li><strong>Mar. 18th (Wed) - Playoffs - Rd. 2</strong></li>
-                <p>6:30 PM Bd. 1 - #1/8 Winner vs. #4/5 Winner (Best of 5 series)</p>
-                <p>6:30 PM Bd. 2 - #2/7 Winner vs. #3/6 Winner (Best of 5 series)</p>
+                <p>6:30 PM Bd. 1 - BBD vs. Softball Dads (Best of 5 series)</p>
+                <p>6:30 PM Bd. 2 - KGB vs. Tipsy Tossers (Best of 5 series)</p>
             <li><strong>Mar. 21st (Sat) - Championship Game & End of Year Party</strong></li>
                 <p>Doors open at 5:30</p>
                 <p>3rd Place game starts at 6:00 PM (Best of 5 Series)</p>
@@ -120,30 +115,14 @@ const Home = (props) => {
           </ul>
           
         <Playoffs />
-          <p style={small}><strong>Regular Season Payouts (Paid March 16th):</strong></p>
-          <ul style={{ color: '#cbd5e1', fontSize: isMobile ? 16 : 14, lineHeight: 1.45, marginTop: 0 }}>
-            <li>1st Place: $700.00</li>
-            <li>2nd Place: $600.00</li>
-            <li>3rd Place: $500.00</li>
-            <li>4th Place: $400.00</li>
-            <li>5th Place: $275.00</li>
-            <li>6th Place: $180.00</li>
-            <li>7th Place: $100.00</li>
-            <li>8th Place: $75.00</li>
-            <li>9th Place: $50.00</li>
-          </ul>
-          <p style={small}><strong>League Leaders (Paid March 21st):</strong></p>
-          <p style={small}> Each League Leader will be paid $50.00 for the following Categories:</p>
-          <ul style={{ color: '#cbd5e1', fontSize: isMobile ? 16 : 14, lineHeight: 1.45, marginTop: 0 }}>
-            <li>Most Hits, Singles, Doubles, Triples, HomeRuns, and Best Avg.(min. 70 games played)</li>
-          </ul>
+        
           <p style={small}><strong>Playoffs Payouts (Paid March 21st):</strong></p>
           <ul style={{ color: '#cbd5e1', fontSize: isMobile ? 16 : 14, lineHeight: 1.45, marginTop: 0 }}>
             <li>Championship Team: $800.00</li>
             <li>Runner-Up Team: $500.00</li>
             <li>3rd Place Team: $200.00</li>
           </ul>
-          
+          <p style={small}><strong>Playoff Recap: (Coming Soon)</strong></p>
         </div>
 
 

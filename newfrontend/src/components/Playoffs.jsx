@@ -67,56 +67,64 @@ const Playoffs = () => {
     const seedName = (n) => teams[n - 1]?.name || `Seed ${n}`;
 
     /* ── Matchup card ── */
-    const Matchup = ({ topLabel, topName, bottomLabel, bottomName, title, time, width = 155 }) => (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-            <div style={{
-                background: 'linear-gradient(180deg, #0d1b2a 0%, #0b1520 100%)',
-                border: '1px solid #1e3a50',
-                borderRadius: 6,
-                width,
-                flexShrink: 0,
-                boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
-            }}>
-                {title && (
+    const Matchup = ({ topLabel, topName, bottomLabel, bottomName, title, time, topScore, bottomScore, width = 155 }) => {
+        const topWon = topScore != null && bottomScore != null && topScore > bottomScore;
+        const bottomWon = topScore != null && bottomScore != null && bottomScore > topScore;
+        return (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+                <div style={{
+                    background: 'linear-gradient(180deg, #0d1b2a 0%, #0b1520 100%)',
+                    border: '1px solid #1e3a50',
+                    borderRadius: 6,
+                    width,
+                    flexShrink: 0,
+                    boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
+                }}>
+                    {title && (
+                        <div style={{
+                            background: 'linear-gradient(90deg, #7a2b00, #c2410c)',
+                            color: '#fff',
+                            fontSize: '0.6rem',
+                            fontWeight: 'bold',
+                            padding: '3px 8px',
+                            textAlign: 'center',
+                            letterSpacing: '0.5px',
+                            textTransform: 'uppercase',
+                            borderRadius: '5px 5px 0 0',
+                        }}>
+                            {title}
+                        </div>
+                    )}
                     <div style={{
-                        background: 'linear-gradient(90deg, #7a2b00, #c2410c)',
-                        color: '#fff',
-                        fontSize: '0.6rem',
-                        fontWeight: 'bold',
-                        padding: '3px 8px',
-                        textAlign: 'center',
-                        letterSpacing: '0.5px',
-                        textTransform: 'uppercase',
-                        borderRadius: '5px 5px 0 0',
+                        padding: '6px 10px',
+                        borderBottom: '1px solid #1e3a50',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 6,
+                        opacity: bottomWon ? 0.45 : 1,
                     }}>
-                        {title}
+                        <span style={{ color: '#ff9800', fontSize: '0.7rem', fontWeight: 'bold', minWidth: 16 }}>{topLabel}</span>
+                        <span style={{ fontSize: '0.8rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', flex: 1 }}>{topName}</span>
+                        {topScore != null && <span style={{ fontSize: '0.9rem', fontWeight: 'bold', color: topWon ? '#fff' : '#7a8fa0', minWidth: 12, textAlign: 'right' }}>{topScore}</span>}
                     </div>
+                    <div style={{
+                        padding: '6px 10px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 6,
+                        opacity: topWon ? 0.45 : 1,
+                    }}>
+                        <span style={{ color: '#ff9800', fontSize: '0.7rem', fontWeight: 'bold', minWidth: 16 }}>{bottomLabel}</span>
+                        <span style={{ fontSize: '0.8rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', flex: 1 }}>{bottomName}</span>
+                        {bottomScore != null && <span style={{ fontSize: '0.9rem', fontWeight: 'bold', color: bottomWon ? '#fff' : '#7a8fa0', minWidth: 12, textAlign: 'right' }}>{bottomScore}</span>}
+                    </div>
+                </div>
+                {time && (
+                    <div style={{ fontSize: '0.65rem', color: '#7a8fa0', textAlign: 'center', paddingLeft: 2 }}>{time}</div>
                 )}
-                <div style={{
-                    padding: '6px 10px',
-                    borderBottom: '1px solid #1e3a50',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 6,
-                }}>
-                    <span style={{ color: '#ff9800', fontSize: '0.7rem', fontWeight: 'bold', minWidth: 16 }}>{topLabel}</span>
-                    <span style={{ fontSize: '0.8rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{topName}</span>
-                </div>
-                <div style={{
-                    padding: '6px 10px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 6,
-                }}>
-                    <span style={{ color: '#ff9800', fontSize: '0.7rem', fontWeight: 'bold', minWidth: 16 }}>{bottomLabel}</span>
-                    <span style={{ fontSize: '0.8rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{bottomName}</span>
-                </div>
             </div>
-            {time && (
-                <div style={{ fontSize: '0.65rem', color: '#7a8fa0', textAlign: 'center', paddingLeft: 2 }}>{time}</div>
-            )}
-        </div>
-    );
+        );
+    };
 
     /* ── Bracket connector: joins two slots → result ── */
     const BracketPair = ({ slot1, slot2, result, gap = 16 }) => (
@@ -208,6 +216,8 @@ const Playoffs = () => {
                                     topName={seedName(1)}
                                     bottomLabel="#8"
                                     bottomName={seedName(9)}
+                                    topScore={3}
+                                    bottomScore={0}
                                     time="Mar 16 · 6:30 PM Bd. 1"
                                 />
                             }
@@ -218,16 +228,18 @@ const Playoffs = () => {
                                     topName={seedName(4)}
                                     bottomLabel="#5"
                                     bottomName={seedName(5)}
+                                    topScore={1}
+                                    bottomScore={3}
                                     time="Mar 16 · 7:30 PM Bd. 2"
                                 />
                             }
                             result={
                                 <Matchup
                                     title="Semifinal 1"
-                                    topLabel=""
-                                    topName="TBD"
-                                    bottomLabel=""
-                                    bottomName="TBD"
+                                    topLabel="#1"
+                                    topName={seedName(1)}
+                                    bottomLabel="#5"
+                                    bottomName={seedName(5)}
                                     time="Mar 18 · 6:30 PM Bd. 1"
                                 />
                             }
@@ -242,6 +254,8 @@ const Playoffs = () => {
                                     topName={seedName(2)}
                                     bottomLabel="#7"
                                     bottomName={seedName(7)}
+                                    topScore={3}
+                                    bottomScore={2}
                                     time="Mar 16 · 6:30 PM Bd. 2"
                                 />
                             }
@@ -252,16 +266,18 @@ const Playoffs = () => {
                                     topName={seedName(3)}
                                     bottomLabel="#6"
                                     bottomName={seedName(6)}
+                                    topScore={1}
+                                    bottomScore={3}
                                     time="Mar 16 · 7:30 PM Bd. 1"
                                 />
                             }
                             result={
                                 <Matchup
                                     title="Semifinal 2"
-                                    topLabel=""
-                                    topName="TBD"
-                                    bottomLabel=""
-                                    bottomName="TBD"
+                                    topLabel="#2"
+                                    topName={seedName(2)}
+                                    bottomLabel="#6"
+                                    bottomName={seedName(6)}
                                     time="Mar 18 · 6:30 PM Bd. 2"
                                 />
                             }
