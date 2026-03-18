@@ -1,6 +1,25 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Playoffs from './Playoffs';
 
+const CollapsibleArticle = ({ label, headline, children, defaultOpen = true, isMobile }) => {
+  const [open, setOpen] = useState(defaultOpen);
+  return (
+    <div style={{ borderLeft: '3px solid #c2410c', paddingLeft: 12, marginBottom: 14 }}>
+      <div
+        onClick={() => setOpen(o => !o)}
+        style={{ cursor: 'pointer', display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 8, userSelect: 'none' }}
+      >
+        <div style={{ flex: 1 }}>
+          <p style={{ color: '#ff9800', fontSize: isMobile ? 13 : 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', margin: '0 0 4px 0' }}>{label}</p>
+          <p style={{ color: '#fff', fontSize: isMobile ? 17 : 15, fontWeight: 700, margin: open ? '0 0 8px 0' : 0 }}>{headline}</p>
+        </div>
+        <span style={{ color: '#ff9800', fontSize: '0.75rem', paddingTop: 3, flexShrink: 0 }}>{open ? '▲' : '▼'}</span>
+      </div>
+      {open && <div>{children}</div>}
+    </div>
+  );
+};
+
 const Home = (props) => {
   const [isMobile, setIsMobile] = useState(typeof window !== 'undefined' && window.matchMedia ? window.matchMedia('(max-width:600px)').matches : false);
   const fbRef = useRef(null);
@@ -99,9 +118,19 @@ const Home = (props) => {
           <p style={small}>Please plan accordingly and arrive early to avoid any issues.</p>
           <p style={small}><strong>Reminder:</strong> There is NO smoking/vaping in the hall. Smoking/Vaping is permitted in the Bar area only</p>
           
-          <div style={{ borderLeft: '3px solid #c2410c', paddingLeft: 12, marginBottom: 14 }}>
-            <p style={{ color: '#ff9800', fontSize: isMobile ? 13 : 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', margin: '0 0 4px 0' }}>Round 1 Recap · Mar 16</p>
-            <p style={{ color: '#fff', fontSize: isMobile ? 17 : 15, fontWeight: 700, margin: '0 0 8px 0' }}>KGB Survives Thriller to Advance Past The Old & the New</p>
+          <CollapsibleArticle isMobile={isMobile} label="Semifinal Preview · Mar 18" headline="#1 BBD vs. #5 Softball Dads — Can the Dads Keep the Magic Going?">
+            <p style={small}>After a dominant sweep of Labelle Firehall in Round 1, top-seeded BBD enters the semifinals with all the momentum — and a chip on their shoulder. The Dads, meanwhile, pulled off one of the more impressive upsets of the first round, grinding out three consecutive wins over the favored Prince of Dartness, including back-to-back <strong>5–4</strong> nail-biters that showcased their mental toughness. BBD's offense was relentless in Round 1, outscoring their opponent <strong>19–6</strong> across three games. But Softball Dads have proven they can win close games, and they'll need that composure again on Wednesday night.</p>
+            <p style={small}>Expect a exciting, grind-it-out series. BBD has the edge in raw firepower, but if Softball Dads can make it ugly and keep things close, anything is possible in a best-of-five.</p>
+            <p style={{ color: '#7a8fa0', fontSize: isMobile ? 12 : 11, margin: '6px 0 0 0' }}>Wed, Mar 18 · 6:30 PM · Bd. 1 · Best of 5</p>
+          </CollapsibleArticle>
+
+          <CollapsibleArticle isMobile={isMobile} label="Semifinal Preview · Mar 18" headline="#2 KGB vs. #6 Tipsy Tossers — A Battle-Tested Rematch Waiting to Happen">
+            <p style={small}>KGB is the most battle-tested team left in the bracket after surviving a grueling five-game war against The Old & the New in Round 1. They went down early, clawed back, but lost again in Game 4, and then slammed the door with an <strong>8–3</strong> Game 5 victory. That kind of adversity either breaks a team — or makes them dangerous. KGB looks dangerous.</p>
+            <p style={small}>Standing in their way are the Tipsy Tossers, who started slow — dropping Game 1 <strong>0–2</strong> to the Hillbillies — before exploding for back-to-back wins including a stunning <strong>12–3</strong> blowout in Game 3. The Tossers bring unpredictable offense that can either go quiet or erupt without warning. If their bats come alive early, KGB's depth will be put to the test in what could be the most entertaining matchup of the semifinals.</p>
+            <p style={{ color: '#7a8fa0', fontSize: isMobile ? 12 : 11, margin: '6px 0 0 0' }}>Wed, Mar 18 · 6:30 PM · Bd. 2 · Best of 5</p>
+          </CollapsibleArticle>
+
+          <CollapsibleArticle isMobile={isMobile} label="Round 1 Recap · Mar 16" headline="KGB Survives Thriller to Advance Past The Old & the New" defaultOpen={false}>
             <p style={small}>In the most dramatic series of the first round, #2 KGB edged out #7 The Old & the New in a hard-fought five-game series. The Old & the New came out swinging, taking Game 1 convincingly <strong>9–4</strong> and silencing the second seed early. KGB responded with back-to-back wins — a tight <strong>4–1</strong> victory in Game 2 followed by a dominant <strong>10–5</strong> performance in Game 3 to take control of the series.</p>
             <p style={small}>But The Old & the New refused to go quietly, clawing back with a gutsy <strong>4–3</strong> win in Game 4 to force a deciding fifth game. With everything on the line, KGB rose to the moment and shut the door with an <strong>8–3</strong> victory to close out the series 3–2 and advance to the semifinals.</p>
             <table style={{ borderCollapse: 'collapse', width: '100%', marginTop: 10, fontSize: isMobile ? 14 : 12 }}>
@@ -136,11 +165,9 @@ const Home = (props) => {
                 </tr>
               </tbody>
             </table>
-          </div>
+          </CollapsibleArticle>
 
-          <div style={{ borderLeft: '3px solid #c2410c', paddingLeft: 12, marginBottom: 14 }}>
-            <p style={{ color: '#ff9800', fontSize: isMobile ? 13 : 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', margin: '0 0 4px 0' }}>Round 1 Recap · Mar 16</p>
-            <p style={{ color: '#fff', fontSize: isMobile ? 17 : 15, fontWeight: 700, margin: '0 0 8px 0' }}>BBD Rolls Through Labelle Firehall in Dominant Sweep</p>
+          <CollapsibleArticle isMobile={isMobile} label="Round 1 Recap · Mar 16" headline="BBD Rolls Through Labelle Firehall in Dominant Sweep" defaultOpen={false}>
             <p style={small}>#1 seed BBD wasted no time asserting themselves as the team to beat, dispatching #8 Labelle Firehall in a clean three-game sweep. BBD set the tone immediately with a dominant <strong>10–2</strong> victory in Game 1, leaving no doubt about the talent gap. They kept the pressure on in Game 2, winning a tighter <strong>3–1</strong> contest before closing out the series with a <strong>6–3</strong> victory in Game 3. Labelle Firehall — who earned their spot by winning the play-in — had no answers for BBD's offense across all three games.</p>
             <table style={{ borderCollapse: 'collapse', width: '100%', marginTop: 10, fontSize: isMobile ? 14 : 12 }}>
               <thead>
@@ -172,11 +199,9 @@ const Home = (props) => {
                 </tr>
               </tbody>
             </table>
-          </div>
+          </CollapsibleArticle>
 
-          <div style={{ borderLeft: '3px solid #c2410c', paddingLeft: 12, marginBottom: 14 }}>
-            <p style={{ color: '#ff9800', fontSize: isMobile ? 13 : 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', margin: '0 0 4px 0' }}>Round 1 Recap · Mar 16</p>
-            <p style={{ color: '#fff', fontSize: isMobile ? 17 : 15, fontWeight: 700, margin: '0 0 8px 0' }}>Tipsy Tossers Rally Past Hillbillies to Advance</p>
+          <CollapsibleArticle isMobile={isMobile} label="Round 1 Recap · Mar 16" headline="Tipsy Tossers Rally Past Hillbillies to Advance" defaultOpen={false}>
             <p style={small}>The Hillbillies came out firing in Game 1, shutting out the Tipsy Tossers <strong>2–0</strong> and drawing first blood. But the Tossers flipped the script completely in Games 2 and 3 — edging out a <strong>2–1</strong> win before exploding for a dominant <strong>12–3</strong> blowout that made a statement to the rest of the bracket. The Hillbillies couldn't recover, falling <strong>3–1</strong> in Game 4 as Tipsy Tossers closed out the series 3–1 and punched their ticket to the semifinals.</p>
             <table style={{ borderCollapse: 'collapse', width: '100%', marginTop: 10, fontSize: isMobile ? 14 : 12 }}>
               <thead>
@@ -209,11 +234,9 @@ const Home = (props) => {
                 </tr>
               </tbody>
             </table>
-          </div>
+          </CollapsibleArticle>
 
-          <div style={{ borderLeft: '3px solid #c2410c', paddingLeft: 12, marginBottom: 14 }}>
-            <p style={{ color: '#ff9800', fontSize: isMobile ? 13 : 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', margin: '0 0 4px 0' }}>Round 1 Recap · Mar 16</p>
-            <p style={{ color: '#fff', fontSize: isMobile ? 17 : 15, fontWeight: 700, margin: '0 0 8px 0' }}>Softball Dads Grind Out Three Tight Wins to Upset Prince of Dartness</p>
+          <CollapsibleArticle isMobile={isMobile} label="Round 1 Recap · Mar 16" headline="Softball Dads Grind Out Three Tight Wins to Upset Prince of Dartness" defaultOpen={false}>
             <p style={small}>Prince of Dartness looked like the clear favorites after a commanding <strong>11–3</strong> blowout in Game 1, but Softball Dads refused to be swept aside. They answered with a <strong>3–1</strong> win in Game 2 to even the series, then delivered back-to-back nail-biters — winning Game 3 <strong>5–4</strong> and Game 4 <strong>5–4</strong> — to close out the series 3–1. Three consecutive one-run victories is a testament to the Dads' composure under pressure, and they now advance to the semifinals as one of the most dangerous teams left in the bracket.</p>
             <table style={{ borderCollapse: 'collapse', width: '100%', marginTop: 10, fontSize: isMobile ? 14 : 12 }}>
               <thead>
@@ -246,23 +269,9 @@ const Home = (props) => {
                 </tr>
               </tbody>
             </table>
-          </div>
+          </CollapsibleArticle>
 
-          <div style={{ borderLeft: '3px solid #c2410c', paddingLeft: 12, marginBottom: 14 }}>
-            <p style={{ color: '#ff9800', fontSize: isMobile ? 13 : 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', margin: '0 0 4px 0' }}>Semifinal Preview · Mar 18</p>
-            <p style={{ color: '#fff', fontSize: isMobile ? 17 : 15, fontWeight: 700, margin: '0 0 8px 0' }}>#1 BBD vs. #5 Softball Dads — Can the Dads Keep the Magic Going?</p>
-            <p style={small}>After a dominant sweep of Labelle Firehall in Round 1, top-seeded BBD enters the semifinals with all the momentum — and a chip on their shoulder. The Dads, meanwhile, pulled off one of the more impressive upsets of the first round, grinding out three consecutive wins over the favored Prince of Dartness, including back-to-back <strong>5–4</strong> nail-biters that showcased their mental toughness. BBD's offense was relentless in Round 1, outscoring their opponent <strong>19–6</strong> across three games. But Softball Dads have proven they can win close games, and they'll need that composure again on Wednesday night.</p>
-            <p style={small}>Expect a exciting, grind-it-out series. BBD has the edge in raw firepower, but if Softball Dads can make it ugly and keep things close, anything is possible in a best-of-five.</p>
-            <p style={{ color: '#7a8fa0', fontSize: isMobile ? 12 : 11, margin: '6px 0 0 0' }}>Wed, Mar 18 · 6:30 PM · Bd. 1 · Best of 5</p>
-          </div>
-
-          <div style={{ borderLeft: '3px solid #c2410c', paddingLeft: 12, marginBottom: 14 }}>
-            <p style={{ color: '#ff9800', fontSize: isMobile ? 13 : 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', margin: '0 0 4px 0' }}>Semifinal Preview · Mar 18</p>
-            <p style={{ color: '#fff', fontSize: isMobile ? 17 : 15, fontWeight: 700, margin: '0 0 8px 0' }}>#2 KGB vs. #6 Tipsy Tossers — A Battle-Tested Rematch Waiting to Happen</p>
-            <p style={small}>KGB is the most battle-tested team left in the bracket after surviving a grueling five-game war against The Old & the New in Round 1. They went down early, clawed back, but lost again in Game 4, and then slammed the door with an <strong>8–3</strong> Game 5 victory. That kind of adversity either breaks a team — or makes them dangerous. KGB looks dangerous.</p>
-            <p style={small}>Standing in their way are the Tipsy Tossers, who started slow — dropping Game 1 <strong>0–2</strong> to the Hillbillies — before exploding for back-to-back wins including a stunning <strong>12–3</strong> blowout in Game 3. The Tossers bring unpredictable offense that can either go quiet or erupt without warning. If their bats come alive early, KGB's depth will be put to the test in what could be the most entertaining matchup of the semifinals.</p>
-            <p style={{ color: '#7a8fa0', fontSize: isMobile ? 12 : 11, margin: '6px 0 0 0' }}>Wed, Mar 18 · 6:30 PM · Bd. 2 · Best of 5</p>
-          </div>
+        
 
          
           
