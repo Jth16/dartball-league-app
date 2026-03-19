@@ -215,6 +215,8 @@ const Playoffs = () => {
                                     topName={seedName(1)}
                                     bottomLabel="#5"
                                     bottomName={seedName(5)}
+                                    topScore={2}
+                                    bottomScore={3}
                                     time="Mar 18 · 6:30 PM Bd. 1"
                                 />
                             }
@@ -253,21 +255,36 @@ const Playoffs = () => {
                                     topName={seedName(2)}
                                     bottomLabel="#6"
                                     bottomName={seedName(6)}
+                                    topScore={2}
+                                    bottomScore={3}
                                     time="Mar 18 · 6:30 PM Bd. 2"
                                 />
                             }
                         />
                     }
                     result={
-                        <Matchup
-                            title="Championship"
-                            topLabel=""
-                            topName="TBD"
-                            bottomLabel=""
-                            bottomName="TBD"
-                            time="Mar 21 · 7:00 PM"
-                            width={170}
-                        />
+                        <div style={{ position: 'relative', alignSelf: 'stretch', width: 170, flexShrink: 0 }}>
+                            <Matchup
+                                title="3rd Place"
+                                topLabel="#1"
+                                topName={seedName(1)}
+                                bottomLabel="#2"
+                                bottomName={seedName(2)}
+                                time="Mar 21 · 6:00 PM"
+                                width={170}
+                            />
+                            <div style={{ position: 'absolute', top: '50%', transform: 'translateY(-50%)', left: 0 }}>
+                                <Matchup
+                                    title="Championship"
+                                    topLabel="#5"
+                                    topName={seedName(5)}
+                                    bottomLabel="#6"
+                                    bottomName={seedName(6)}
+                                    time="Mar 21 · 7:00 PM"
+                                    width={170}
+                                />
+                            </div>
+                        </div>
                     }
                     gap={40}
                 />
