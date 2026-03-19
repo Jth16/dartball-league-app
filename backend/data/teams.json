@@ -1,0 +1,83 @@
+[
+  {
+    "id": 10,
+    "name": "KGB",
+    "wins": 23,
+    "losses": 13,
+    "win_pct": 63.888888888888886,
+    "games_behind": 6.0,
+    "games_played": 36
+  },
+  {
+    "id": 11,
+    "name": "BBD",
+    "wins": 23,
+    "losses": 13,
+    "win_pct": 63.888888888888886,
+    "games_behind": 4.5,
+    "games_played": 36
+  },
+  {
+    "id": 12,
+    "name": "Labelle Firehall",
+    "wins": 11,
+    "losses": 25,
+    "win_pct": 30.555555555555557,
+    "games_behind": 6.0,
+    "games_played": 36
+  },
+  {
+    "id": 13,
+    "name": "Average Bo's",
+    "wins": 15,
+    "losses": 18,
+    "win_pct": 45.45454545454545,
+    "games_behind": 6.0,
+    "games_played": 33
+  },
+  {
+    "id": 14,
+    "name": "Prince of Dartness",
+    "wins": 15,
+    "losses": 18,
+    "win_pct": 45.45454545454545,
+    "games_behind": 6.0,
+    "games_played": 33
+  },
+  {
+    "id": 15,
+    "name": "The Old & the New",
+    "wins": 13,
+    "losses": 20,
+    "win_pct": 39.39393939393939,
+    "games_behind": 6.0,
+    "games_played": 33
+  },
+  {
+    "id": 16,
+    "name": "Tipsy Tossers",
+    "wins": 15,
+    "losses": 18,
+    "win_pct": 45.45454545454545,
+    "games_behind": 5.0,
+    "games_played": 33
+  },
+  {
+    "id": 17,
+    "name": "Softball Dad's",
+    "wins": 18,
+    "losses": 15,
+    "win_pct": 54.54545454545454,
+    "games_behind": 5.0,
+    "games_played": 33
+  },
+  {
+    "id": 18,
+    "name": "Hillbillies",
+    "wins": 20,
+    "losses": 13,
+    "win_pct": 60.60606060606061,
+    "games_behind": 5.0,
+    "games_played": 33
+  }
+]

@@ -118,13 +118,95 @@ const Home = (props) => {
           <p style={small}>Please plan accordingly and arrive early to avoid any issues.</p>
           <p style={small}><strong>Reminder:</strong> There is NO smoking/vaping in the hall. Smoking/Vaping is permitted in the Bar area only</p>
           
-          <CollapsibleArticle isMobile={isMobile} label="Semifinal Preview · Mar 18" headline="#1 BBD vs. #5 Softball Dads — Can the Dads Keep the Magic Going?">
+          <CollapsibleArticle isMobile={isMobile} label="Championship Preview · Mar 21" headline="Tipsy Tossers vs. Softball Dads — Two Cinderellas, One Crown">
+            <p style={small}>Nobody had these two teams penciled in for the championship game — and that's exactly what makes Saturday night so compelling. The #5 Softball Dads and #6 Tipsy Tossers both survived the gauntlet of the playoffs by beating the teams nobody expected them to beat, and now they meet for all the marbles in a Best of 7 championship.</p>
+            <p style={small}><strong>The Tipsy Tossers</strong> have been the most exciting team in these playoffs. Their offense can erupt at any moment — they hung <strong>12</strong> runs on the Hillbillies in a single game and came out firing with a <strong>9–4</strong> dismantling of KGB in Game 1 of the semifinals. When their bats are hot, no team in this league can match them run for run. The Tossers have also shown they can gut out wins when the series gets tight — rallying to win Games 4 and 5 against a battle-hardened KGB squad. Expect a high-energy, high-variance team that can put up crooked numbers in a hurry.</p>
+            <p style={small}><strong>The Softball Dads</strong> are the most mentally tough team left standing. They've been counted out in every series and answered every time. Getting blown out <strong>11–3</strong> in Game 1 against Prince of Dartness? Didn't matter — won three straight. Getting embarrassed <strong>12–1</strong> by the top seed in Game 1? Didn't matter — won three of four. The Dads win the close games: they're 4-for-4 in games decided by two runs or fewer this postseason. If this series goes deep, that composure is worth its weight in gold.</p>
+            <p style={small}><strong>The edge:</strong> In a short series, the Tossers' explosive offense is a real threat — a blowout win or two can swing momentum fast. But in a Best of 7, the Dads' resilience and ability to win tight games gives them a slight advantage the longer the series goes. Expect it to go at least six games. If the Dads can weather an early Tossers barrage and keep it close through the middle games, they may have just enough to close it out. But don't be surprised if Tipsy Tossers send the crowd home buzzing with a championship of their own.</p>
+            <p style={{ color: '#7a8fa0', fontSize: isMobile ? 12 : 11, margin: '6px 0 0 0' }}>Sat, Mar 21 · 7:00 PM · Best of 7</p>
+          </CollapsibleArticle>
+
+          <CollapsibleArticle isMobile={isMobile} label="Semifinal Recap · Mar 18" headline="Tipsy Tossers Stun KGB in Five-Game Classic to Reach the Championship">
+            <p style={small}>In a heart-stopping semifinal, the Tipsy Tossers outlasted #2-seeded KGB in a nail-biting five-game series to punch their ticket to the championship. The Tossers came out blazing, handing KGB a dominant <strong>9–4</strong> loss in Game 1. KGB dug deep and found their composure — edging out a tight <strong>6–5</strong> win in Game 2 before pulling away in Game 3 with a commanding <strong>6–2</strong> victory to reclaim the series lead.</p>
+            <p style={small}>But the Tossers weren't done. They silenced the KGB crowd with a convincing <strong>5–1</strong> win in Game 4 to force a deciding Game 5. When it mattered most, Tipsy Tossers delivered — closing out the series with a hard-fought <strong>6–4</strong> victory to win 3–2 and advance to the championship game on Saturday.</p>
+            <table style={{ borderCollapse: 'collapse', width: '100%', marginTop: 10, fontSize: isMobile ? 14 : 12 }}>
+              <thead>
+                <tr>
+                  <th style={{ textAlign: 'left', color: '#ff9800', padding: '3px 8px', borderBottom: '1px solid #1e3a50' }}>Game</th>
+                  <th style={{ textAlign: 'center', color: '#ff9800', padding: '3px 8px', borderBottom: '1px solid #1e3a50' }}>Tipsy Tossers</th>
+                  <th style={{ textAlign: 'center', color: '#ff9800', padding: '3px 8px', borderBottom: '1px solid #1e3a50' }}>KGB</th>
+                  <th style={{ textAlign: 'left', color: '#ff9800', padding: '3px 8px', borderBottom: '1px solid #1e3a50' }}>Winner</th>
+                </tr>
+              </thead>
+              <tbody>
+                {[
+                  { game: 'Game 1', tt: 9, kgb: 4, winner: 'Tipsy Tossers' },
+                  { game: 'Game 2', tt: 5, kgb: 6, winner: 'KGB' },
+                  { game: 'Game 3', tt: 2, kgb: 6, winner: 'KGB' },
+                  { game: 'Game 4', tt: 5, kgb: 1, winner: 'Tipsy Tossers' },
+                  { game: 'Game 5', tt: 6, kgb: 4, winner: 'Tipsy Tossers' },
+                ].map(({ game, tt, kgb, winner }) => (
+                  <tr key={game}>
+                    <td style={{ padding: '3px 8px', color: '#cbd5e1' }}>{game}</td>
+                    <td style={{ padding: '3px 8px', textAlign: 'center', fontWeight: tt > kgb ? 700 : 400, color: tt > kgb ? '#fff' : '#7a8fa0' }}>{tt}</td>
+                    <td style={{ padding: '3px 8px', textAlign: 'center', fontWeight: kgb > tt ? 700 : 400, color: kgb > tt ? '#fff' : '#7a8fa0' }}>{kgb}</td>
+                    <td style={{ padding: '3px 8px', color: '#cbd5e1' }}>{winner}</td>
+                  </tr>
+                ))}
+                <tr style={{ borderTop: '1px solid #1e3a50' }}>
+                  <td style={{ padding: '4px 8px', color: '#ff9800', fontWeight: 700 }}>Series</td>
+                  <td style={{ padding: '4px 8px', textAlign: 'center', color: '#fff', fontWeight: 700 }}>3</td>
+                  <td style={{ padding: '4px 8px', textAlign: 'center', color: '#7a8fa0', fontWeight: 700 }}>2</td>
+                  <td style={{ padding: '4px 8px', color: '#ff9800', fontWeight: 700 }}>Tipsy Tossers win</td>
+                </tr>
+              </tbody>
+            </table>
+          </CollapsibleArticle>
+
+          <CollapsibleArticle isMobile={isMobile} label="Semifinal Recap · Mar 18" headline="Softball Dads Shock BBD in Game 5 Masterclass to Reach the Championship">
+            <p style={small}>In one of the biggest upsets of the playoffs, #5 Softball Dads knocked out top-seeded BBD in a dramatic five-game series. BBD looked every bit the dominant force in Game 1, dismantling the Dads <strong>12–1</strong> in emphatic fashion. The Dads punched back in Game 2, stealing a tight <strong>6–5</strong> win to even the series. BBD reasserted themselves with a dominant <strong>17–5</strong> blowout in Game 3 to reclaim the series lead — but the Dads weren't going home.</p>
+            <p style={small}>Softball Dads dug deep again, winning another <strong>6–5</strong> thriller in Game 4 to force a deciding fifth game. And when it mattered most, the Dads delivered their biggest win of the playoffs — a commanding <strong>5–1</strong> victory in Game 5 to eliminate the top seed and advance to the championship game on Saturday.</p>
+            <table style={{ borderCollapse: 'collapse', width: '100%', marginTop: 10, fontSize: isMobile ? 14 : 12 }}>
+              <thead>
+                <tr>
+                  <th style={{ textAlign: 'left', color: '#ff9800', padding: '3px 8px', borderBottom: '1px solid #1e3a50' }}>Game</th>
+                  <th style={{ textAlign: 'center', color: '#ff9800', padding: '3px 8px', borderBottom: '1px solid #1e3a50' }}>BBD</th>
+                  <th style={{ textAlign: 'center', color: '#ff9800', padding: '3px 8px', borderBottom: '1px solid #1e3a50' }}>Softball Dads</th>
+                  <th style={{ textAlign: 'left', color: '#ff9800', padding: '3px 8px', borderBottom: '1px solid #1e3a50' }}>Winner</th>
+                </tr>
+              </thead>
+              <tbody>
+                {[
+                  { game: 'Game 1', bbd: 12, sd: 1, winner: 'BBD' },
+                  { game: 'Game 2', bbd: 5, sd: 6, winner: 'Softball Dads' },
+                  { game: 'Game 3', bbd: 17, sd: 5, winner: 'BBD' },
+                  { game: 'Game 4', bbd: 5, sd: 6, winner: 'Softball Dads' },
+                  { game: 'Game 5', bbd: 1, sd: 5, winner: 'Softball Dads' },
+                ].map(({ game, bbd, sd, winner }) => (
+                  <tr key={game}>
+                    <td style={{ padding: '3px 8px', color: '#cbd5e1' }}>{game}</td>
+                    <td style={{ padding: '3px 8px', textAlign: 'center', fontWeight: bbd > sd ? 700 : 400, color: bbd > sd ? '#fff' : '#7a8fa0' }}>{bbd}</td>
+                    <td style={{ padding: '3px 8px', textAlign: 'center', fontWeight: sd > bbd ? 700 : 400, color: sd > bbd ? '#fff' : '#7a8fa0' }}>{sd}</td>
+                    <td style={{ padding: '3px 8px', color: '#cbd5e1' }}>{winner}</td>
+                  </tr>
+                ))}
+                <tr style={{ borderTop: '1px solid #1e3a50' }}>
+                  <td style={{ padding: '4px 8px', color: '#ff9800', fontWeight: 700 }}>Series</td>
+                  <td style={{ padding: '4px 8px', textAlign: 'center', color: '#7a8fa0', fontWeight: 700 }}>2</td>
+                  <td style={{ padding: '4px 8px', textAlign: 'center', color: '#fff', fontWeight: 700 }}>3</td>
+                  <td style={{ padding: '4px 8px', color: '#ff9800', fontWeight: 700 }}>Softball Dads win</td>
+                </tr>
+              </tbody>
+            </table>
+          </CollapsibleArticle>
+
+          <CollapsibleArticle isMobile={isMobile} label="Semifinal Preview · Mar 18" headline="#1 BBD vs. #5 Softball Dads — Can the Dads Keep the Magic Going?" defaultOpen={false}>
             <p style={small}>After a dominant sweep of Labelle Firehall in Round 1, top-seeded BBD enters the semifinals with all the momentum — and a chip on their shoulder. The Dads, meanwhile, pulled off one of the more impressive upsets of the first round, grinding out three consecutive wins over the favored Prince of Dartness, including back-to-back <strong>5–4</strong> nail-biters that showcased their mental toughness. BBD's offense was relentless in Round 1, outscoring their opponent <strong>19–6</strong> across three games. But Softball Dads have proven they can win close games, and they'll need that composure again on Wednesday night.</p>
             <p style={small}>Expect a exciting, grind-it-out series. BBD has the edge in raw firepower, but if Softball Dads can make it ugly and keep things close, anything is possible in a best-of-five.</p>
             <p style={{ color: '#7a8fa0', fontSize: isMobile ? 12 : 11, margin: '6px 0 0 0' }}>Wed, Mar 18 · 6:30 PM · Bd. 1 · Best of 5</p>
           </CollapsibleArticle>
 
-          <CollapsibleArticle isMobile={isMobile} label="Semifinal Preview · Mar 18" headline="#2 KGB vs. #6 Tipsy Tossers — A Battle-Tested Rematch Waiting to Happen">
+          <CollapsibleArticle isMobile={isMobile} label="Semifinal Preview · Mar 18" headline="#2 KGB vs. #6 Tipsy Tossers — A Battle-Tested Rematch Waiting to Happen" defaultOpen={false}>
             <p style={small}>KGB is the most battle-tested team left in the bracket after surviving a grueling five-game war against The Old & the New in Round 1. They went down early, clawed back, but lost again in Game 4, and then slammed the door with an <strong>8–3</strong> Game 5 victory. That kind of adversity either breaks a team — or makes them dangerous. KGB looks dangerous.</p>
             <p style={small}>Standing in their way are the Tipsy Tossers, who started slow — dropping Game 1 <strong>0–2</strong> to the Hillbillies — before exploding for back-to-back wins including a stunning <strong>12–3</strong> blowout in Game 3. The Tossers bring unpredictable offense that can either go quiet or erupt without warning. If their bats come alive early, KGB's depth will be put to the test in what could be the most entertaining matchup of the semifinals.</p>
             <p style={{ color: '#7a8fa0', fontSize: isMobile ? 12 : 11, margin: '6px 0 0 0' }}>Wed, Mar 18 · 6:30 PM · Bd. 2 · Best of 5</p>
@@ -271,17 +353,11 @@ const Home = (props) => {
             </table>
           </CollapsibleArticle>
 
-        
-
-         
           
         <Playoffs />
          <p style={small}><strong>End of Year Schedule:</strong></p>
           <ul style={{ color: '#cbd5e1', fontSize: isMobile ? 16 : 14, lineHeight: 1.45, marginTop: 0 }}>
-
-            <li><strong>Mar. 18th (Wed) - Playoffs - Rd. 2</strong></li>
-                <p>6:30 PM Bd. 1 - BBD vs. Softball Dads (Best of 5 series)</p>
-                <p>6:30 PM Bd. 2 - KGB vs. Tipsy Tossers (Best of 5 series)</p>
+           
             <li><strong>Mar. 21st (Sat) - Championship Game & End of Year Party</strong></li>
                 <p>Doors open at 5:30</p>
                 <p>3rd Place game starts at 6:00 PM (Best of 5 Series)</p>
