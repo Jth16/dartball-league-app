@@ -115,10 +115,56 @@ const Home = (props) => {
           <h3 style={{ margin: '0 0 8px 0' }}>Latest News</h3>
          
           <p style={small}>Entry to the Firehall will be either through the Truck Room or the Bar. The Main Hall doors will be closed on Dartball Night.</p>
-          <p style={small}>Please plan accordingly and arrive early to avoid any issues.</p>
-          <p style={small}><strong>Reminder:</strong> There is NO smoking/vaping in the hall. Smoking/Vaping is permitted in the Bar area only</p>
+          <h1 style={title}>The Champion has been crowned!</h1><br/>
           
-          <CollapsibleArticle isMobile={isMobile} label="Championship Preview · Mar 21" headline="Tipsy Tossers vs. Softball Dads — Two Cinderellas, One Crown">
+          <CollapsibleArticle isMobile={isMobile} label="Championship Recap · Mar 21" headline="Softball Dads Are Champions! A Night to Remember at the Firehall">
+            <img
+              src={process.env.PUBLIC_URL + '/PXL_20260322_011047551.jpg'}
+              alt="Softball Dads championship celebration"
+              style={{ width: '100%', borderRadius: 8, marginBottom: 12, display: 'block' }}
+            />
+            <p style={small}>On a night filled with music, food, and the best of what the Labelle Dartball League has to offer, the <strong>Softball Dads</strong> are your champions — claiming the title with a hard-fought <strong>4–2</strong> series victory over the Tipsy Tossers. With most of the league in attendance, the Firehall was electric from the opening dart to the final out.</p>
+            <p style={small}>The Dads came out swinging in Game 1, edging the Tossers in a tight <strong>3–2</strong> battle to set the tone. They followed it up with a dominant <strong>12–4</strong> blowout in Game 2. Game 3 was all Softball Dads — a <strong>2–0</strong> shutout put them one win away from the title and seemingly in complete control.</p>
+            <p style={small}>But the Tipsy Tossers refused to go quietly. They stormed back with a <strong>4–2</strong> win in Game 4 and a tense <strong>5–4</strong> thriller in Game 5 to claw the series back to 3–2 and send the crowd into a frenzy. A Game 7 suddenly felt very possible.</p>
+            <p style={small}>The Softball Dads had other ideas. Rising to the moment one final time, they closed the book on a remarkable championship run with a convincing <strong>6–4</strong> win in Game 6 — winning the inaugural championship in the Labelle Dartball Leagues first season back after a long absence.</p>
+            <table style={{ borderCollapse: 'collapse', width: '100%', marginTop: 10, fontSize: isMobile ? 14 : 12 }}>
+              <thead>
+                <tr>
+                  <th style={{ textAlign: 'left', color: '#ff9800', padding: '3px 8px', borderBottom: '1px solid #1e3a50' }}>Game</th>
+                  <th style={{ textAlign: 'center', color: '#ff9800', padding: '3px 8px', borderBottom: '1px solid #1e3a50' }}>Softball Dads</th>
+                  <th style={{ textAlign: 'center', color: '#ff9800', padding: '3px 8px', borderBottom: '1px solid #1e3a50' }}>Tipsy Tossers</th>
+                  <th style={{ textAlign: 'left', color: '#ff9800', padding: '3px 8px', borderBottom: '1px solid #1e3a50' }}>Winner</th>
+                </tr>
+              </thead>
+              <tbody>
+                {[
+                  { game: 'Game 1', sd: 3,  tt: 2, winner: 'Softball Dads' },
+                  { game: 'Game 2', sd: 12, tt: 4, winner: 'Softball Dads' },
+                  { game: 'Game 3', sd: 2,  tt: 0, winner: 'Softball Dads' },
+                  { game: 'Game 4', sd: 2,  tt: 4, winner: 'Tipsy Tossers' },
+                  { game: 'Game 5', sd: 4,  tt: 5, winner: 'Tipsy Tossers' },
+                  { game: 'Game 6', sd: 6,  tt: 4, winner: 'Softball Dads' },
+                ].map(({ game, sd, tt, winner }) => (
+                  <tr key={game}>
+                    <td style={{ padding: '3px 8px', color: '#cbd5e1' }}>{game}</td>
+                    <td style={{ padding: '3px 8px', textAlign: 'center', fontWeight: sd > tt ? 700 : 400, color: sd > tt ? '#fff' : '#7a8fa0' }}>{sd}</td>
+                    <td style={{ padding: '3px 8px', textAlign: 'center', fontWeight: tt > sd ? 700 : 400, color: tt > sd ? '#fff' : '#7a8fa0' }}>{tt}</td>
+                    <td style={{ padding: '3px 8px', color: '#cbd5e1' }}>{winner}</td>
+                  </tr>
+                ))}
+                <tr style={{ borderTop: '1px solid #1e3a50' }}>
+                  <td style={{ padding: '4px 8px', color: '#ff9800', fontWeight: 700 }}>Series</td>
+                  <td style={{ padding: '4px 8px', textAlign: 'center', color: '#fff', fontWeight: 700 }}>4</td>
+                  <td style={{ padding: '4px 8px', textAlign: 'center', color: '#7a8fa0', fontWeight: 700 }}>2</td>
+                  <td style={{ padding: '4px 8px', color: '#ff9800', fontWeight: 700 }}>Softball Dads win</td>
+                </tr>
+              </tbody>
+            </table>
+            <p style={{ ...small, marginTop: 14 }}>A big congratulations to the <strong>Tipsy Tossers</strong> on an outstanding playoff run and a fantastic season. As the #6 seed, they knocked out #3 Hillbillies and #2 KGB before pushing the championship series to six games — a true testament to the kind of team they are. The league is better for having them in it, and they'll be a team to watch next year.</p>
+            <p style={{ ...small, marginTop: 10, borderTop: '1px solid #1e3a50', paddingTop: 12 }}>A huge thank you to all nine teams — BBD, KGB, Tipsy Tossers, Softball Dads, Prince of Dartness, The Old &amp; the New, Labelle Firehall, the Hillbillies, and everyone who laced up and competed this season. It was an unforgettable year of dartball, and we can't wait to do it all again. See you next season!</p>
+          </CollapsibleArticle>
+
+          <CollapsibleArticle isMobile={isMobile} label="Championship Preview · Mar 21" headline="Tipsy Tossers vs. Softball Dads — Two Cinderellas, One Crown" defaultOpen={false}>
             <p style={small}>Nobody had these two teams penciled in for the championship game — and that's exactly what makes Saturday night so compelling. The #5 Softball Dads and #6 Tipsy Tossers both survived the gauntlet of the playoffs by beating the teams nobody expected them to beat, and now they meet for all the marbles in a Best of 7 championship.</p>
             <p style={small}><strong>The Tipsy Tossers</strong> have been the most exciting team in these playoffs. Their offense can erupt at any moment — they hung <strong>12</strong> runs on the Hillbillies in a single game and came out firing with a <strong>9–4</strong> dismantling of KGB in Game 1 of the semifinals. When their bats are hot, no team in this league can match them run for run. The Tossers have also shown they can gut out wins when the series gets tight — rallying to win Games 4 and 5 against a battle-hardened KGB squad. Expect a high-energy, high-variance team that can put up crooked numbers in a hurry.</p>
             <p style={small}><strong>The Softball Dads</strong> are the most mentally tough team left standing. They've been counted out in every series and answered every time. Getting blown out <strong>11–3</strong> in Game 1 against Prince of Dartness? Didn't matter — won three straight. Getting embarrassed <strong>12–1</strong> by the top seed in Game 1? Didn't matter — won three of four. The Dads win the close games: they're 4-for-4 in games decided by two runs or fewer this postseason. If this series goes deep, that composure is worth its weight in gold.</p>
@@ -126,7 +172,7 @@ const Home = (props) => {
             <p style={{ color: '#7a8fa0', fontSize: isMobile ? 12 : 11, margin: '6px 0 0 0' }}>Sat, Mar 21 · 7:00 PM · Best of 7</p>
           </CollapsibleArticle>
 
-          <CollapsibleArticle isMobile={isMobile} label="Semifinal Recap · Mar 18" headline="Tipsy Tossers Stun KGB in Five-Game Classic to Reach the Championship">
+          <CollapsibleArticle isMobile={isMobile} label="Semifinal Recap · Mar 18" headline="Tipsy Tossers Stun KGB in Five-Game Classic to Reach the Championship" defaultOpen={false}>
             <p style={small}>In a heart-stopping semifinal, the Tipsy Tossers outlasted #2-seeded KGB in a nail-biting five-game series to punch their ticket to the championship. The Tossers came out blazing, handing KGB a dominant <strong>9–4</strong> loss in Game 1. KGB dug deep and found their composure — edging out a tight <strong>6–5</strong> win in Game 2 before pulling away in Game 3 with a commanding <strong>6–2</strong> victory to reclaim the series lead.</p>
             <p style={small}>But the Tossers weren't done. They silenced the KGB crowd with a convincing <strong>5–1</strong> win in Game 4 to force a deciding Game 5. When it mattered most, Tipsy Tossers delivered — closing out the series with a hard-fought <strong>6–4</strong> victory to win 3–2 and advance to the championship game on Saturday.</p>
             <table style={{ borderCollapse: 'collapse', width: '100%', marginTop: 10, fontSize: isMobile ? 14 : 12 }}>
@@ -163,7 +209,7 @@ const Home = (props) => {
             </table>
           </CollapsibleArticle>
 
-          <CollapsibleArticle isMobile={isMobile} label="Semifinal Recap · Mar 18" headline="Softball Dads Shock BBD in Game 5 Masterclass to Reach the Championship">
+          <CollapsibleArticle isMobile={isMobile} label="Semifinal Recap · Mar 18" headline="Softball Dads Shock BBD in Game 5 Masterclass to Reach the Championship" defaultOpen={false}>
             <p style={small}>In one of the biggest upsets of the playoffs, #5 Softball Dads knocked out top-seeded BBD in a dramatic five-game series. BBD looked every bit the dominant force in Game 1, dismantling the Dads <strong>12–1</strong> in emphatic fashion. The Dads punched back in Game 2, stealing a tight <strong>6–5</strong> win to even the series. BBD reasserted themselves with a dominant <strong>17–5</strong> blowout in Game 3 to reclaim the series lead — but the Dads weren't going home.</p>
             <p style={small}>Softball Dads dug deep again, winning another <strong>6–5</strong> thriller in Game 4 to force a deciding fifth game. And when it mattered most, the Dads delivered their biggest win of the playoffs — a commanding <strong>5–1</strong> victory in Game 5 to eliminate the top seed and advance to the championship game on Saturday.</p>
             <table style={{ borderCollapse: 'collapse', width: '100%', marginTop: 10, fontSize: isMobile ? 14 : 12 }}>

@@ -280,6 +280,8 @@ const Playoffs = () => {
                                     topName={seedName(5)}
                                     bottomLabel="#6"
                                     bottomName={seedName(6)}
+                                    topScore={4}
+                                    bottomScore={2}
                                     time="Mar 21 · 7:00 PM"
                                     width={170}
                                 />
