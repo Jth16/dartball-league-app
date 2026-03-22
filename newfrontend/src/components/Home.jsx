@@ -119,7 +119,7 @@ const Home = (props) => {
           
           <CollapsibleArticle isMobile={isMobile} label="Championship Recap · Mar 21" headline="Softball Dads Are Champions! A Night to Remember at the Firehall">
             <img
-              src={process.env.PUBLIC_URL + '/PXL_20260322_011047551.jpg'}
+              src={process.env.PUBLIC_URL + '/Champions.jpg'}
               alt="Softball Dads championship celebration"
               style={{ width: '100%', borderRadius: 8, marginBottom: 12, display: 'block' }}
             />
