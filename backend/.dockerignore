@@ -3,3 +3,9 @@ db.sqlite3
 *.db
 tmp/*.db
 instance/*.db
+
+# never bake local secrets into the image
+.env
+.env.*
+!.env.example
+.venv

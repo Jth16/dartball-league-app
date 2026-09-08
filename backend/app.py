@@ -3,6 +3,9 @@ import threading
 import time
 import os
 
+from dotenv import load_dotenv
+load_dotenv()  # no-op in production where .env doesn't exist; loads local dev vars otherwise
+
 # google-cloud-storage is only needed in SQL/GCS mode; skip gracefully if absent
 try:
     from google.cloud import storage

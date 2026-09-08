@@ -1,2 +1,5 @@
 instance/*.db
 instance/*.sqbpro
+.env
+.env.*
+!.env.example

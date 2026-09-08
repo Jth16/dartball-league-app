@@ -1,21 +1,31 @@
 param(
     [string]$Project = "firstamerciantestaddress",
-    [string]$Image = "",
-    [string]$DownloadToken = "your-token",
-    [string]$CloudSqlInstance = "firstamerciantestaddress:us-central1:dartballpost",
-    [string]$DbUser = "appuser",
-    [string]$DbPass = "NewPass123!",
-    [string]$DbName = "postgres"
+    [string]$Image = ""
 )
 
 if (-not $Image -or $Image -eq "") {
     $Image = "gcr.io/$Project/dartball-backend:latest"
 }
 
+# Read SQLALCHEMY_DATABASE_URI (Neon) from backend/.env — never hardcode it here.
+$envFile = Join-Path $PSScriptRoot ".env"
+$SqlAlchemyUri = ""
+if (Test-Path $envFile) {
+    $line = Get-Content $envFile | Where-Object { $_ -match '^SQLALCHEMY_DATABASE_URI=' }
+    if ($line) { $SqlAlchemyUri = ($line -split '=', 2)[1] }
+}
+if (-not $SqlAlchemyUri -or $SqlAlchemyUri -eq "") {
+    Write-Error "SQLALCHEMY_DATABASE_URI not found in backend/.env — copy .env.example to .env and fill it in."
+    exit 1
+}
+
+# Strip extra query params like &channel_binding=require — gcloud's Windows .cmd wrapper
+# runs through cmd.exe, which treats a bare & as a command separator and truncates the value.
+# sslmode=require alone is sufficient for the psycopg2 connection.
+$SqlAlchemyUri = ($SqlAlchemyUri -split '&')[0]
+
 Write-Host "Project: $Project"
 Write-Host "Image: $Image"
-Write-Host "Cloud SQL instance: $CloudSqlInstance"
-Write-Host "DB name: $DbName DB user: $DbUser"
 
 Write-Host "Starting Cloud Build to build and push image..."
 gcloud builds submit --tag $Image --project $Project .
@@ -24,31 +34,15 @@ if ($LASTEXITCODE -ne 0) {
     exit $LASTEXITCODE
 }
 
-
-if ($CloudSqlInstance -ne "" -and $DbUser -ne "" -and $DbPass -ne "" -and $DbName -ne "") {
-    $envVars += "CLOUD_SQL_CONNECTION_NAME=$CloudSqlInstance"
-    $envVars += "DB_USER=$DbUser"
-    $envVars += "DB_PASS=$DbPass"
-    $envVars += "DB_NAME=$DbName"
-    # optionally disable sqlite fallback if you want:
-    $envVars += "USE_SQLITE=false"
-}
-
-$envStr = ($envVars -join ",")
-
 Write-Host "Deploying image to Cloud Run..."
-$deployCmd = "gcloud run deploy dartball-backend --image $Image --region us-central1 --platform managed --allow-unauthenticated --set-env-vars `"$envStr`" --project $Project"
-if ($CloudSqlInstance -ne "") {
-    # add Cloud SQL instances attachment so unix socket is available in container
-    $deployCmd += " --add-cloudsql-instances $CloudSqlInstance"
-}
+# Uses --update-env-vars (incremental) so ALLOWED_ORIGINS and FIREBASE_SERVICE_ACCOUNT_JSON,
+# which are managed separately, are left untouched.
 $gcloudArgs = @(
-  "run","deploy","dartball-backend",
-  "--image","gcr.io/firstamerciantestaddress/dartball-backend:latest",
-  "--region","us-central1","--platform","managed","--allow-unauthenticated",
-  "--set-env-vars","CLOUD_SQL_CONNECTION_NAME=firstamerciantestaddress:us-central1:dartballpost,DB_USER=appuser,DB_PASS=NewPass123!,DB_NAME=postgres,USE_SQLITE=false",
-  "--add-cloudsql-instances","firstamerciantestaddress:us-central1:dartballpost",
-  "--project","firstamerciantestaddress"
+    "run", "deploy", "dartball-backend",
+    "--image", $Image,
+    "--region", "us-central1", "--platform", "managed", "--allow-unauthenticated",
+    "--update-env-vars", "SQLALCHEMY_DATABASE_URI=$SqlAlchemyUri",
+    "--project", $Project
 )
 & gcloud @gcloudArgs
 
