@@ -9,7 +9,7 @@ Dartball League App — a full-stack web application for managing a dartball lea
 ## Tech Stack
 
 - **Frontend:** React 19 (CRA with react-scripts), React Router DOM 7, inline CSS styling
-- **Backend:** Flask 2.2 (Python), Flask-SQLAlchemy, PostgreSQL (Google Cloud SQL)
+- **Backend:** Flask 2.2 (Python), Flask-SQLAlchemy, PostgreSQL (Neon, serverless)
 - **Deployment:** Frontend on GitHub Pages, backend on Google Cloud Run (Docker/Gunicorn)
 
 ## Commands
@@ -52,7 +52,7 @@ Single-page app using React Router DOM (`BrowserRouter`/`Routes`/`Route`). `App.
 
 Flask app using blueprint pattern. All routes registered under the `/routes/` prefix:
 
-- **app.py** — App initialization, CORS config, Cloud SQL database connection setup
+- **app.py** — App initialization, CORS config, database connection setup (reads `SQLALCHEMY_DATABASE_URI`, loaded from `backend/.env` locally via python-dotenv)
 - **routes.py** — All API endpoints as a Flask blueprint
 - **models.py** — SQLAlchemy ORM models: `Team`, `Player`, `Result`
 
@@ -93,8 +93,9 @@ Token-based: frontend sends `X-Download-Token` header (from `REACT_APP_DOWNLOAD_
 - `REACT_APP_DOWNLOAD_TOKEN` — Token for `X-Download-Token` auth header
 - `REACT_APP_GA_ID` — Google Analytics measurement ID (`newfrontend/.env`)
 
-**Backend** (runtime env):
-- `SQLALCHEMY_DATABASE_URI` — Direct database URI (preferred over individual vars)
-- `CLOUD_SQL_CONNECTION_NAME`, `DB_USER`, `DB_PASS`, `DB_NAME` — Cloud SQL config (fallback)
+**Backend** (runtime env, see `backend/.env.example`):
+- `SQLALCHEMY_DATABASE_URI` — Neon Postgres connection URI (`postgresql+psycopg2://...?sslmode=require`); local dev loads this from `backend/.env` (gitignored)
 - `ALLOWED_ORIGINS` — Comma-separated CORS origins
 - `DOWNLOAD_TOKEN` — Expected API auth token (validated against `X-Download-Token` header)
+
+> Cloud SQL (`CLOUD_SQL_CONNECTION_NAME`/`DB_USER`/`DB_PASS`/`DB_NAME`) and the `STORAGE_BACKEND=json` mode are retired — the app moved to Neon to cut hosting costs. `backend/migrate_to_neon.py` was the one-time migration script.
