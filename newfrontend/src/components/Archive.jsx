@@ -370,7 +370,7 @@ const Archive = () => {
             <Tab active={view === 'standings'} onClick={() => setView('standings')}>Standings</Tab>
             <Tab active={view === 'leaders'} onClick={() => setView('leaders')}>Leaders</Tab>
             <Tab active={view === 'players'} onClick={() => setView('players')}>Players</Tab>
-            <Tab active={view === 'results'} onClick={() => setView('results')}>Results</Tab>
+            <Tab active={view === 'results'} onClick={() => setView('results')}>Playoffs</Tab>
           </div>
 
           {view === 'standings' && <StandingsView season={season} />}
