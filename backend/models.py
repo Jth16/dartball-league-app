@@ -101,3 +101,8 @@ class ArchivedResult(db.Model):
     team2_name = db.Column(db.String)
     team1_score = db.Column(db.Integer, default=0)
     team2_score = db.Column(db.Integer, default=0)
+    # set (e.g. "Round 1", "Semifinal", "Championship") only for playoff-series rows,
+    # which are backfilled by hand since playoff games aren't recorded through the
+    # normal results flow — see backend/backfill_2025_2026_playoffs.py. NULL for
+    # regular-season rows copied automatically by storage.archive_season().
+    round_label = db.Column(db.String, nullable=True)

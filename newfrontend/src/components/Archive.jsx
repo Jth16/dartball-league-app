@@ -193,31 +193,116 @@ const ResultsView = ({ season }) => {
 
   return (
     <div style={tableWrap}>
+      <div style={{ marginBottom: 8, color: '#9fb0bd', fontSize: 13 }}>Playoff series results</div>
       <table style={tableStyle}>
         <thead>
           <tr>
-            <th style={thStyle}>Date</th>
-            <th style={{ ...thStyle, textAlign: 'center' }}>Game</th>
+            <th style={thStyle}>Round</th>
             <th style={thStyle}>Team 1</th>
-            <th style={{ ...thStyle, textAlign: 'center' }}>Score</th>
+            <th style={{ ...thStyle, textAlign: 'center' }}>Series</th>
             <th style={thStyle}>Team 2</th>
-            <th style={{ ...thStyle, textAlign: 'center' }}>Score</th>
+            <th style={{ ...thStyle, textAlign: 'center' }}>Series</th>
           </tr>
         </thead>
         <tbody>
-          {results.map(r => (
-            <tr key={r.id} style={rowStyle}>
-              <td style={{ ...cellStyle, paddingLeft: 18 }}>{r.date}</td>
-              <td style={{ ...cellStyle, textAlign: 'center' }}>{r.game_number}</td>
-              <td style={cellStyle}>{r.team1_name}</td>
-              <td style={{ ...cellStyle, textAlign: 'center' }}>{r.team1_score}</td>
-              <td style={cellStyle}>{r.team2_name}</td>
-              <td style={{ ...cellStyle, textAlign: 'center' }}>{r.team2_score}</td>
-            </tr>
-          ))}
+          {results.map(r => {
+            const t1Won = r.team1_score > r.team2_score;
+            const t2Won = r.team2_score > r.team1_score;
+            return (
+              <tr key={r.id} style={rowStyle}>
+                <td style={{ ...cellStyle, paddingLeft: 18 }}>{r.round_label}</td>
+                <td style={{ ...cellStyle, fontWeight: t1Won ? 700 : 400, color: t1Won ? '#fff' : '#9fb0bd' }}>{r.team1_name}</td>
+                <td style={{ ...cellStyle, textAlign: 'center', fontWeight: t1Won ? 700 : 400 }}>{r.team1_score}</td>
+                <td style={{ ...cellStyle, fontWeight: t2Won ? 700 : 400, color: t2Won ? '#fff' : '#9fb0bd' }}>{r.team2_name}</td>
+                <td style={{ ...cellStyle, textAlign: 'center', fontWeight: t2Won ? 700 : 400 }}>{r.team2_score}</td>
+              </tr>
+            );
+          })}
         </tbody>
       </table>
-      {results.length === 0 && <p style={{ color: '#9fb0bd', padding: 12 }}>No results found for this season.</p>}
+      {results.length === 0 && <p style={{ color: '#9fb0bd', padding: 12 }}>No playoff results found for this season.</p>}
+    </div>
+  );
+};
+
+const LEADER_CATEGORIES = [
+  { title: 'Batting Average', key: 'Avg', format: (v) => (typeof v === 'number' ? v.toFixed(3).replace(/^0\./, '.') : v) },
+  { title: 'Most Hits', key: 'hits', format: (v) => v },
+  { title: 'Most Singles', key: 'Singles', format: (v) => v },
+  { title: 'Most Doubles', key: 'Doubles', format: (v) => v },
+  { title: 'Most Triples', key: 'Triples', format: (v) => v },
+  { title: 'Most HRs', key: 'HRs', format: (v) => v },
+  { title: 'Most ABs', key: 'AtBats', format: (v) => v },
+  { title: 'Most Dimes', key: 'Dimes', format: (v) => v },
+];
+const LEADER_TOP_N = 3;
+
+const LeadersView = ({ season }) => {
+  const [players, setPlayers] = useState([]);
+  useEffect(() => {
+    let mounted = true;
+    fetchWithToken(`/routes/archive/players?season=${encodeURIComponent(season)}`, { method: 'GET' })
+      .then(res => res.ok ? res.json() : [])
+      .then(data => { if (mounted) setPlayers(Array.isArray(data) ? data : []); })
+      .catch(() => { if (mounted) setPlayers([]); });
+    return () => { mounted = false; };
+  }, [season]);
+
+  const topBy = (key) => {
+    return [...players]
+      .sort((a, b) => {
+        const diff = (Number(b[key]) || 0) - (Number(a[key]) || 0);
+        if (diff !== 0) return diff;
+        return (Number(b.hits) || 0) - (Number(a.hits) || 0) || (Number(b.GP) || 0) - (Number(a.GP) || 0);
+      })
+      .slice(0, LEADER_TOP_N);
+  };
+
+  const tableWrapperStyle = {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
+    gap: 12,
+  };
+
+  const smallTableStyle = { ...tableStyle, minWidth: 260 };
+
+  return (
+    <div>
+      {players.length === 0 && <p style={{ color: '#9fb0bd', padding: 12 }}>No players found for this season.</p>}
+      {players.length > 0 && (
+        <div style={tableWrapperStyle}>
+          {LEADER_CATEGORIES.map(cat => {
+            const rows = topBy(cat.key);
+            return (
+              <div key={cat.key} style={{ overflowX: 'auto' }}>
+                <div style={{ marginBottom: 8, textAlign: 'center', color: '#fff', fontWeight: 700 }}>{cat.title}</div>
+                <table style={smallTableStyle}>
+                  <thead>
+                    <tr>
+                      <th style={{ ...thStyle, width: 30, textAlign: 'center' }}>#</th>
+                      <th style={thStyle}>Name</th>
+                      <th style={thStyle}>Team</th>
+                      <th style={{ ...thStyle, textAlign: 'center', width: 70 }}>{cat.key === 'Avg' ? 'Avg' : 'Total'}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {rows.length === 0 ? (
+                      <tr><td colSpan="4" style={{ padding: 10, textAlign: 'center', color: '#9fb0bd' }}>—</td></tr>
+                    ) : rows.map((p, idx) => (
+                      <tr key={p.id} style={rowStyle}>
+                        <td style={{ ...cellStyle, textAlign: 'center' }}>{idx + 1}</td>
+                        <td style={cellStyle}>{p.name}</td>
+                        <td style={cellStyle}>{p.team_name}</td>
+                        <td style={{ ...cellStyle, textAlign: 'center' }}>{cat.format(p[cat.key] ?? 0)}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 };
@@ -283,11 +368,13 @@ const Archive = () => {
         <>
           <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 16 }}>
             <Tab active={view === 'standings'} onClick={() => setView('standings')}>Standings</Tab>
+            <Tab active={view === 'leaders'} onClick={() => setView('leaders')}>Leaders</Tab>
             <Tab active={view === 'players'} onClick={() => setView('players')}>Players</Tab>
             <Tab active={view === 'results'} onClick={() => setView('results')}>Results</Tab>
           </div>
 
           {view === 'standings' && <StandingsView season={season} />}
+          {view === 'leaders' && <LeadersView season={season} />}
           {view === 'players' && <PlayersView season={season} />}
           {view === 'results' && <ResultsView season={season} />}
         </>

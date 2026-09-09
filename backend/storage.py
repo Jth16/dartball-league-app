@@ -443,14 +443,18 @@ def get_archived_players(season, team_name=None):
 
 
 def get_archived_results(season, limit=10000):
+    """Playoff-series results only (round_label is set) — the full regular-season
+    game log is archived but not surfaced here; see get_archived_regular_results()
+    if that's ever needed."""
     from models import ArchivedResult
     rows = (ArchivedResult.query.filter_by(season=season)
-            .order_by(ArchivedResult.date.desc(), ArchivedResult.game_number.asc())
+            .filter(ArchivedResult.round_label.isnot(None))
+            .order_by(ArchivedResult.date.asc(), ArchivedResult.game_number.asc())
             .limit(limit).all())
     return [{
         'id': r.id,
         'date': r.date.isoformat() if r.date else None,
-        'game_number': r.game_number,
+        'round_label': r.round_label,
         'team1_name': r.team1_name,
         'team2_name': r.team2_name,
         'team1_score': r.team1_score,
