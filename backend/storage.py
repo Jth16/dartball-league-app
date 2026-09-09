@@ -349,6 +349,115 @@ def add_results(date, team1_id, team2_id, games):
     ]
 
 
+# ── Archive ───────────────────────────────────────────────────────────────────
+# Season archiving is SQL-only; STORAGE_BACKEND=json is a retired/legacy mode.
+
+def archive_season(season):
+    """Copy all current teams/players/results into archive tables under `season`,
+    then clear the live tables so they're ready for a new season.
+
+    Runs as one transaction: if anything fails, nothing is archived or cleared.
+    Returns {'teams': n, 'players': n, 'results': n} counts archived.
+    """
+    if STORAGE_BACKEND == 'json':
+        raise NotImplementedError("Archiving requires STORAGE_BACKEND=sql")
+
+    from sqlalchemy import text
+    from models import db, Team, Player, Result, ArchivedTeam, ArchivedPlayer, ArchivedResult
+
+    teams = Team.query.all()
+    players = Player.query.all()
+    results = Result.query.all()
+    team_name_by_id = {t.id: t.name for t in teams}
+
+    try:
+        for t in teams:
+            db.session.add(ArchivedTeam(
+                season=season, original_team_id=t.id, name=t.name,
+                wins=t.wins or 0, losses=t.losses or 0, win_pct=t.win_pct or 0.0,
+                games_behind=t.games_behind or 0.0, games_played=t.games_played or 0,
+            ))
+        for p in players:
+            db.session.add(ArchivedPlayer(
+                season=season, original_player_id=p.id,
+                team_name=team_name_by_id.get(p.team_id, f"Team {p.team_id}"),
+                name=p.name, Singles=p.Singles or 0, Doubles=p.Doubles or 0,
+                Triples=p.Triples or 0, Dimes=p.Dimes or 0, HRs=p.HRs or 0,
+                Avg=p.Avg or 0.0, GP=p.GP or 0, AtBats=p.AtBats or 0, hits=p.hits or 0,
+            ))
+        for r in results:
+            db.session.add(ArchivedResult(
+                season=season, original_result_id=r.id, date=r.date, game_number=r.game_number,
+                team1_name=team_name_by_id.get(r.team1_id, f"Team {r.team1_id}"),
+                team2_name=team_name_by_id.get(r.team2_id, f"Team {r.team2_id}"),
+                team1_score=r.team1_score or 0, team2_score=r.team2_score or 0,
+            ))
+
+        # flush archive inserts before truncating the live tables in the same transaction
+        db.session.flush()
+        db.session.execute(text("TRUNCATE TABLE results, players, teams RESTART IDENTITY CASCADE"))
+        db.session.commit()
+        return {'teams': len(teams), 'players': len(players), 'results': len(results)}
+    except Exception:
+        db.session.rollback()
+        raise
+
+
+def list_archived_seasons():
+    from sqlalchemy import func
+    from models import db, ArchivedTeam
+    rows = (
+        db.session.query(ArchivedTeam.season, func.count(ArchivedTeam.id), func.max(ArchivedTeam.id))
+        .group_by(ArchivedTeam.season)
+        .order_by(func.max(ArchivedTeam.id).desc())
+        .all()
+    )
+    return [{'season': s, 'team_count': c} for s, c, _ in rows]
+
+
+def get_archived_teams(season):
+    from models import ArchivedTeam
+    rows = (ArchivedTeam.query.filter_by(season=season)
+            .order_by(ArchivedTeam.win_pct.desc(), ArchivedTeam.wins.desc()).all())
+    return [{
+        'id': t.id, 'name': t.name,
+        'wins': t.wins or 0, 'losses': t.losses or 0,
+        'win_pct': t.win_pct or 0.0,
+        'games_behind': t.games_behind or 0.0,
+        'games_played': t.games_played or 0,
+    } for t in rows]
+
+
+def get_archived_players(season, team_name=None):
+    from models import ArchivedPlayer
+    q = ArchivedPlayer.query.filter_by(season=season)
+    if team_name:
+        q = q.filter_by(team_name=team_name)
+    rows = q.order_by(ArchivedPlayer.team_name, ArchivedPlayer.id).all()
+    return [{
+        'id': p.id, 'name': p.name, 'team_name': p.team_name,
+        'Singles': p.Singles, 'Doubles': p.Doubles, 'Triples': p.Triples,
+        'Dimes': p.Dimes, 'HRs': p.HRs, 'GP': p.GP,
+        'AtBats': p.AtBats, 'Avg': p.Avg, 'hits': p.hits or 0,
+    } for p in rows]
+
+
+def get_archived_results(season, limit=10000):
+    from models import ArchivedResult
+    rows = (ArchivedResult.query.filter_by(season=season)
+            .order_by(ArchivedResult.date.desc(), ArchivedResult.game_number.asc())
+            .limit(limit).all())
+    return [{
+        'id': r.id,
+        'date': r.date.isoformat() if r.date else None,
+        'game_number': r.game_number,
+        'team1_name': r.team1_name,
+        'team2_name': r.team2_name,
+        'team1_score': r.team1_score,
+        'team2_score': r.team2_score,
+    } for r in rows]
+
+
 # ── Admin / health ────────────────────────────────────────────────────────────
 
 def json_status():

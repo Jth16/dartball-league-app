@@ -9,6 +9,7 @@ import Schedule from "./components/Schedule";
 import Leaders from "./components/Leaders"; // added
 import Rules from "./components/Rules";
 import Playoffs from "./components/Playoffs";
+import Archive from "./components/Archive";
 import PrivacyPolicy from "./components/PrivacyPolicy";
 import { initGA, pageview } from "./utils/analytics";
 import Home from "./components/Home";
@@ -169,6 +170,25 @@ function App() {
             Rules
           </button>
 
+          <button
+            onClick={() => setPage("archive")}
+            style={{
+              background: page === "archive" ? "#ff9800" : "#222",
+              color: "#fff",
+              border: "none",
+              borderRadius: "25px",
+              padding: "0.75rem 1.25rem",
+              margin: "0 .25rem",
+              fontSize: "1.1rem",
+              fontWeight: "bold",
+              cursor: "pointer",
+              boxShadow: page === "archive" ? "0 0 10px #ff9800" : "none",
+              transition: "all 0.2s",
+            }}
+          >
+            Past Seasons
+          </button>
+
         </nav>
         <div style={{ maxWidth: 900, height: "100%", minHeight: "800px", margin: "auto", background: "#111", padding: "2rem", borderRadius: 16, boxShadow: "0 4px 24px rgba(0,0,0,0.8)" }}>
          {page === "home" && <Home onNavigate={setPage} />}
@@ -178,6 +198,7 @@ function App() {
 {page === "leaders" && <Leaders />}
         {page === "playoffs" && <Playoffs />}
         {page === "rules" && <Rules />}
+        {page === "archive" && <Archive />}
         {page === "privacy" && <PrivacyPolicy />}
         {page === "admin" &&
           (isAdmin ? (

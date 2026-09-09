@@ -7,6 +7,7 @@ import DeleteTeam from './DeleteTeam';
 import UpdatePlayerRecord from './UpdatePlayerRecord';
 import { fetchWithToken } from '../api';
 import AddResult from './AddResult';
+import ArchiveSeasonAdmin from './ArchiveSeasonAdmin';
 
 const API_BASE = process.env.REACT_APP_API_URL || 'https://dartball-backend-654879525708.us-central1.run.app';
 const DOWNLOAD_TOKEN = process.env.REACT_APP_DOWNLOAD_TOKEN || '';
@@ -39,8 +40,9 @@ const AdminLogin = () => {
       <TeamAdmin apiBase={API_BASE} downloadToken={DOWNLOAD_TOKEN} />
       <hr />
       <DeleteTeam teams={teams} setTeams={setTeams} />
-     
-      
+      <hr />
+      <ArchiveSeasonAdmin />
+
     </div>
   );
 };

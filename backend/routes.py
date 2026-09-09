@@ -369,6 +369,93 @@ def create_results_batch():
         return jsonify({'message': 'Internal server error', 'error': str(ex)}), 500
 
 
+@routes.route('/routes/archive/seasons', methods=['GET', 'OPTIONS'])
+@cross_origin(headers=['Content-Type', 'X-Download-Token'])
+def list_archive_seasons():
+    if request.method == 'OPTIONS':
+        return ('', 200)
+    try:
+        return jsonify(storage.list_archived_seasons()), 200
+    except Exception as ex:
+        current_app.logger.exception("list_archive_seasons failed: %s", ex)
+        return jsonify({'message': 'Internal server error', 'error': str(ex)}), 500
+
+
+@routes.route('/routes/archive/teams', methods=['GET', 'OPTIONS'])
+@cross_origin(headers=['Content-Type', 'X-Download-Token'])
+def get_archive_teams():
+    if request.method == 'OPTIONS':
+        return ('', 200)
+    season = request.args.get('season')
+    if not season:
+        return jsonify({'message': 'season is required'}), 400
+    try:
+        return jsonify(storage.get_archived_teams(season)), 200
+    except Exception as ex:
+        current_app.logger.exception("get_archive_teams failed: %s", ex)
+        return jsonify({'message': 'Internal server error', 'error': str(ex)}), 500
+
+
+@routes.route('/routes/archive/players', methods=['GET', 'OPTIONS'])
+@cross_origin(headers=['Content-Type', 'X-Download-Token'])
+def get_archive_players():
+    if request.method == 'OPTIONS':
+        return ('', 200)
+    season = request.args.get('season')
+    if not season:
+        return jsonify({'message': 'season is required'}), 400
+    try:
+        return jsonify(storage.get_archived_players(season, team_name=request.args.get('team_name'))), 200
+    except Exception as ex:
+        current_app.logger.exception("get_archive_players failed: %s", ex)
+        return jsonify({'message': 'Internal server error', 'error': str(ex)}), 500
+
+
+@routes.route('/routes/archive/results', methods=['GET', 'OPTIONS'])
+@cross_origin(headers=['Content-Type', 'X-Download-Token'])
+def get_archive_results():
+    if request.method == 'OPTIONS':
+        return ('', 200)
+    season = request.args.get('season')
+    if not season:
+        return jsonify({'message': 'season is required'}), 400
+    try:
+        limit = int(request.args.get('limit') or 10000)
+    except Exception:
+        limit = 10000
+    try:
+        return jsonify(storage.get_archived_results(season, limit=limit)), 200
+    except Exception as ex:
+        current_app.logger.exception("get_archive_results failed: %s", ex)
+        return jsonify({'message': 'Internal server error', 'error': str(ex)}), 500
+
+
+@routes.route('/routes/admin/archive_season', methods=['POST', 'OPTIONS'])
+@cross_origin(headers=['Content-Type', 'X-Download-Token'])
+def archive_season_route():
+    if request.method == 'OPTIONS':
+        return ('', 200)
+
+    # extra guard beyond the client-side admin gate: this action clears all live data
+    token = os.environ.get("DOWNLOAD_TOKEN")
+    header = request.headers.get("X-Download-Token")
+    if token and header != token:
+        return ('', 403)
+
+    data = request.get_json(silent=True) or {}
+    season = (data.get('season') or '').strip()
+    if not season:
+        return jsonify({'message': 'season is required'}), 400
+
+    try:
+        counts = storage.archive_season(season)
+        current_app.logger.info("archive_season archived season=%s counts=%s", season, counts)
+        return jsonify({'message': 'Season archived', 'season': season, 'counts': counts}), 200
+    except Exception as ex:
+        current_app.logger.exception("archive_season failed: %s", ex)
+        return jsonify({'message': 'Internal server error', 'error': str(ex)}), 500
+
+
 @routes.route('/routes/results', methods=['GET', 'OPTIONS'])
 @cross_origin(headers=['Content-Type', 'X-Download-Token'])
 def get_results():
