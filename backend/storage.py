@@ -352,6 +352,37 @@ def add_results(date, team1_id, team2_id, games):
 # ── Archive ───────────────────────────────────────────────────────────────────
 # Season archiving is SQL-only; STORAGE_BACKEND=json is a retired/legacy mode.
 
+def _standings_from_results(results):
+    """Compute wins/losses/games_played/win_pct/games_behind per team_id from a list
+    of Result rows — the same algorithm TeamsTable.jsx uses on the live site, since
+    the stored Team.wins/losses fields are not reliably kept in sync with every game
+    (the live standings page never trusts them either)."""
+    stats = {}
+    for r in results:
+        for tid in (r.team1_id, r.team2_id):
+            stats.setdefault(tid, {'wins': 0, 'losses': 0, 'games_played': 0})
+        stats[r.team1_id]['games_played'] += 1
+        stats[r.team2_id]['games_played'] += 1
+        s1, s2 = r.team1_score or 0, r.team2_score or 0
+        if s1 > s2:
+            stats[r.team1_id]['wins'] += 1
+            stats[r.team2_id]['losses'] += 1
+        elif s2 > s1:
+            stats[r.team2_id]['wins'] += 1
+            stats[r.team1_id]['losses'] += 1
+
+    for s in stats.values():
+        gp = s['games_played']
+        s['win_pct'] = (s['wins'] / gp * 100.0) if gp > 0 else 0.0
+
+    if stats:
+        leader = max(stats.values(), key=lambda s: (s['win_pct'], s['wins']))
+        for s in stats.values():
+            s['games_behind'] = ((leader['wins'] - s['wins']) + (s['losses'] - leader['losses'])) / 2.0
+
+    return stats
+
+
 def archive_season(season):
     """Copy all current teams/players/results into archive tables under `season`,
     then clear the live tables so they're ready for a new season.
@@ -369,13 +400,15 @@ def archive_season(season):
     players = Player.query.all()
     results = Result.query.all()
     team_name_by_id = {t.id: t.name for t in teams}
+    standings = _standings_from_results(results)
 
     try:
         for t in teams:
+            s = standings.get(t.id, {'wins': 0, 'losses': 0, 'games_played': 0, 'win_pct': 0.0, 'games_behind': 0.0})
             db.session.add(ArchivedTeam(
                 season=season, original_team_id=t.id, name=t.name,
-                wins=t.wins or 0, losses=t.losses or 0, win_pct=t.win_pct or 0.0,
-                games_behind=t.games_behind or 0.0, games_played=t.games_played or 0,
+                wins=s['wins'], losses=s['losses'], win_pct=s['win_pct'],
+                games_behind=s['games_behind'], games_played=s['games_played'],
             ))
         for p in players:
             db.session.add(ArchivedPlayer(
