@@ -43,7 +43,8 @@ Single-page app using React Router DOM (`BrowserRouter`/`Routes`/`Route`). `App.
 - **Schedule** — Parses `public/Newest-Darts-Schedule.csv` (hand-edited CSV, not DB-driven)
 - **Results** — Groups game results by date then matchup; uses UTC date normalization
 - **Leaders / ResultLeaders / StatsPage** — Various stat leaderboard views
-- **AdminLogin / AdminPwd** — Admin dashboard behind a simple password gate (`isAdmin` state, resets on navigation)
+- **AdminLogin / AdminPwd** — Admin dashboard behind a simple password gate (`isAdmin` state, resets on navigation); includes `ArchiveSeasonAdmin` for end-of-season archiving
+- **Archive** — "Past Seasons" page: season picker + standings/players/results tabs, reading from `/routes/archive/*`
 - **Home** — Landing page with news, payouts, Facebook embed
 
 `api.js` exports `fetchWithToken()` which attaches the `X-Download-Token` header from env vars to all API requests. All components import from here for authenticated requests.
@@ -54,7 +55,7 @@ Flask app using blueprint pattern. All routes registered under the `/routes/` pr
 
 - **app.py** — App initialization, CORS config, database connection setup (reads `SQLALCHEMY_DATABASE_URI`, loaded from `backend/.env` locally via python-dotenv)
 - **routes.py** — All API endpoints as a Flask blueprint
-- **models.py** — SQLAlchemy ORM models: `Team`, `Player`, `Result`
+- **models.py** — SQLAlchemy ORM models: `Team`, `Player`, `Result`, plus `ArchivedTeam`/`ArchivedPlayer`/`ArchivedResult`
 
 Key API routes:
 - `GET /routes/teams` — All teams (standings stored in DB, but TeamsTable recomputes from results)
@@ -66,6 +67,9 @@ Key API routes:
 - `POST /routes/admin/update_team_record` — **Increments** wins/losses (not absolute values)
 - `POST /routes/admin/add_team`, `add_player`, `DELETE /routes/admin/delete_team`
 - `GET /routes/admin/db_status` — Database connection health check
+- `GET /routes/archive/seasons` — List archived seasons (`{season, team_count}`)
+- `GET /routes/archive/teams|players|results?season=<label>` — Read one archived season's data
+- `POST /routes/admin/archive_season` — **Destructive.** Copies all current teams/players/results into the archive tables under `{season}`, then clears the live tables (one transaction; see `storage.archive_season()`). Checked against `DOWNLOAD_TOKEN` server-side, unlike the other admin routes which only rely on the client-side password gate.
 
 ### Data Models
 
@@ -74,6 +78,8 @@ Team:   id, name, wins, losses, win_pct, games_behind, games_played
 Player: id, name, team_id (FK), Singles, Doubles, Triples, Dimes, HRs, Avg, GP, AtBats, hits
 Result: id, date, game_number, team1_id (FK), team2_id (FK), team1_score, team2_score
 ```
+
+Archive tables mirror these but are denormalized (team names copied in as plain strings instead of FKs) and scoped by a `season` string column, so archived rows stay valid after the live tables are cleared and IDs reused for the next season. See `storage.archive_season()` in [backend/storage.py](backend/storage.py).
 
 ### Styling
 
