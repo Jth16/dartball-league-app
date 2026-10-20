@@ -233,7 +233,7 @@ const Schedule = () => {
   return (
     <div style={containerStyle} ref={containerRef} data-printable>
       <div style={headerRowStyle}>
-        <h1 style={titleStyle}>Labelle Dartball 2025 Schedule</h1>
+        <h1 style={titleStyle}>Labelle Dartball 2026 Schedule</h1>
         <button
           className="no-print"
            onClick={() => printElement(containerRef.current, { fontSize: '11px', cellPadding: '4px' })}
