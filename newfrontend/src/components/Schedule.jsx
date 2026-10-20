@@ -41,7 +41,7 @@ const Schedule = () => {
 
     const rawHeaders = parseLine(lines[0]);
     // determine indices to keep (exclude Game Day and Rep. columns)
-    const exclude = ['Game Day', 'Rep.', 'Round'];
+    const exclude = ['Game Day', 'Rep.', 'Round', 'Bye Team'];
     const keepIdx = rawHeaders.map((h, i) => ({ h, i }))
       .filter(x => !exclude.includes(x.h))
       .map(x => x.i);
@@ -126,7 +126,7 @@ const Schedule = () => {
       } catch (err) {
         console.error('load schedule failed', err);
         // fallback sample or empty state
-        setHeaders(['Date','Round','6:30 PM (Board 1)','6:30 PM (Board 2)','7:30 PM (Board 1)','7:30 PM (Board 2)','Bye Team']);
+        setHeaders(['Date','Round','6:30 PM (Board 1)','6:30 PM (Board 2)','7:30 PM (Board 1)','7:30 PM (Board 2)']);
         setRows([]);
       }
     };
@@ -263,7 +263,7 @@ const Schedule = () => {
             <col />
             <col />
             <col />
-            <col style={{ width: 120 }} />
+            <col />
           </colgroup>
            <thead>
              <tr>
@@ -272,7 +272,6 @@ const Schedule = () => {
                <th style={{ ...thStyle }}>6:30 PM Bd. 2</th>
                <th style={{ ...thStyle }}>7:30 PM Bd. 1</th>
                <th style={{ ...thStyle }}>7:30 PM Bd. 2</th>
-               <th style={{ ...thStyle }}>Bye Team</th>
              </tr>
            </thead>
            <tbody>
