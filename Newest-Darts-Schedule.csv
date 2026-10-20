@@ -1,40 +1,32 @@
 Game Day,Date,Rep.,Round,6:30 PM (Board 1),6:30 PM (Board 2),7:30 PM (Board 1),7:30 PM (Board 2),Bye Team
-1,Oct 29 (Wed),1,R1,KGB vs Softball Dad's,BBD vs Tipsy Tossers,Labelle Firehall vs The Old & the New,Average Bo's vs Prince of Dartness,Hillbillies
-2,Nov 3 (Mon),1,R2,Hillbillies vs Tipsy Tossers,KGB vs The Old & the New,BBD vs Prince of Dartness,Labelle Firehall vs Average Bo's,Softball Dad's
-3,Nov 5 (Wed),1,R3,Softball Dad's vs The Old & the New,Hillbillies vs Prince of Dartness,KGB vs Average Bo's,BBD vs Labelle Firehall,Tipsy Tossers
-4,Nov 10 (Mon),1,R4,Tipsy Tossers vs Prince of Dartness,Softball Dad's vs Average Bo's,Hillbillies vs Labelle Firehall,KGB vs BBD,The Old & the New
-5,Nov 12 (Wed),1,R5,The Old & the New vs Average Bo's,Tipsy Tossers vs Labelle Firehall,Softball Dad's vs BBD,Hillbillies vs KGB,Prince of Dartness
-6,Nov 17 (Mon),1,R6,Prince of Dartness vs Labelle Firehall,The Old & the New vs BBD,Tipsy Tossers vs KGB,Softball Dad's vs Hillbillies,Average Bo's
-7,Nov 19 (Wed),1,R7,Average Bo's vs BBD,Prince of Dartness vs KGB,The Old & the New vs Hillbillies,Tipsy Tossers vs Softball Dad's,Labelle Firehall
-8,Nov 24 (Mon),1,R8,Labelle Firehall vs KGB,Average Bo's vs Hillbillies,Prince of Dartness vs Softball Dad's,The Old & the New vs Tipsy Tossers,BBD
-9,Nov 26 (Wed),1,R9,BBD vs Hillbillies,Labelle Firehall vs Softball Dad's,Average Bo's vs Tipsy Tossers,Prince of Dartness vs The Old & the New,KGB
+1,"Oct 26, 2026 (Mon)",1,R1,Tipsy Tossers vs The Old n The New,Firehall vs TBD,KGB vs Team Felter Snatch,BBD vs Softball Dads,
+2,"Oct 29, 2026 (Thu)",1,R2,KGB vs The Old n The New,BBD vs Tipsy Tossers,Firehall vs Team Felter Snatch,TBD vs Softball Dads,
+3,"Nov 2, 2026 (Mon)",1,R3,Team Felter Snatch vs The Old n The New,TBD vs Tipsy Tossers,KGB vs BBD,Firehall vs Softball Dads,
+4,"Nov 5, 2026 (Thu)",1,R4,Firehall vs The Old n The New,Softball Dads vs Tipsy Tossers,Team Felter Snatch vs BBD,TBD vs KGB,
+5,"Nov 9, 2026 (Mon)",1,R5,Team Felter Snatch vs TBD,Firehall vs Tipsy Tossers,The Old n The New vs BBD,Softball Dads vs KGB,
+6,"Nov 12, 2026 (Thu)",1,R6,The Old n The New vs TBD,Softball Dads vs Team Felter Snatch,Firehall vs BBD,Tipsy Tossers vs KGB,
+7,"Nov 16, 2026 (Mon)",1,R7,BBD vs TBD,Tipsy Tossers vs Team Felter Snatch,The Old n The New vs Softball Dads,Firehall vs KGB,
 ---,---,---,---,---,---,---,---,---
-10,Dec 1 (Mon),2,R1,KGB vs Softball Dad's,BBD vs Tipsy Tossers,Labelle Firehall vs The Old & the New,Average Bo's vs Prince of Dartness,Hillbillies
-11,"Dec 3, 2025 (Wed)",2,R2,Hillbillies vs Tipsy Tossers,KGB vs The Old & the New,BBD vs Prince of Dartness,Labelle Firehall vs Average Bo's,Softball Dad's
-12,"Dec 8, 2025 (Mon)",2,R3,Softball Dad's vs The Old & the New,Hillbillies vs Prince of Dartness,KGB vs Average Bo's,BBD vs Labelle Firehall,Tipsy Tossers
-13,"Dec 10, 2025 (Wed)",2,R4,Tipsy Tossers vs Prince of Dartness,Softball Dad's vs Average Bo's,Hillbillies vs Labelle Firehall,KGB vs BBD,The Old & the New
-14,"Dec 15, 2025 (Mon)",2,R5,The Old & the New vs Average Bo's,Tipsy Tossers vs Labelle Firehall,Softball Dad's vs BBD,Hillbillies vs KGB,Prince of Dartness
-15,"Dec 17, 2025 (Wed)",2,R6,Prince of Dartness vs Labelle Firehall,The Old & the New vs BBD,Tipsy Tossers vs KGB,Softball Dad's vs Hillbillies,Average Bo's
-16,"Dec 20, 2025 (Sat)",2,R7,Labelle Firehall vs KGB,Average Bo's vs Hillbillies,Prince of Dartness vs Softball Dad's,The Old & the New vs Tipsy Tossers,BBD
-17,"Dec 22, 2025 (Mon)",2,R8,Average Bo's vs BBD,Prince of Dartness vs KGB,The Old & the New vs Hillbillies,Tipsy Tossers vs Softball Dad's,Labelle Firehall
-18,"Dec 29, 2025 (Mon)",2,R9,BBD vs Hillbillies,Labelle Firehall vs Softball Dad's,Average Bo's vs Tipsy Tossers,Prince of Dartness vs The Old & the New,KGB
+8,"Nov 19, 2026 (Thu)",2,R1,Firehall vs TBD,KGB vs Team Felter Snatch,BBD vs Softball Dads,Tipsy Tossers vs The Old n The New,
+9,"Nov 23, 2026 (Mon)",2,R2,BBD vs Tipsy Tossers,Firehall vs Team Felter Snatch,TBD vs Softball Dads,KGB vs The Old n The New,
+10,"Nov 30, 2026 (Mon)",2,R3,TBD vs Tipsy Tossers,KGB vs BBD,Firehall vs Softball Dads,Team Felter Snatch vs The Old n The New,
+11,"Dec 3, 2026 (Thu)",2,R4,Softball Dads vs Tipsy Tossers,Team Felter Snatch vs BBD,TBD vs KGB,Firehall vs The Old n The New,
+12,"Dec 7, 2026 (Mon)",2,R5,Firehall vs Tipsy Tossers,The Old n The New vs BBD,Softball Dads vs KGB,Team Felter Snatch vs TBD,
+13,"Dec 10, 2026 (Thu)",2,R6,Softball Dads vs Team Felter Snatch,Firehall vs BBD,Tipsy Tossers vs KGB,The Old n The New vs TBD,
+14,"Dec 14, 2026 (Mon)",2,R7,Tipsy Tossers vs Team Felter Snatch,The Old n The New vs Softball Dads,Firehall vs KGB,BBD vs TBD,
 ---,---,---,---,---,---,---,---,---
-19,"Jan 5, 2026 (Mon)",3,R1,KGB vs Softball Dad's,BBD vs Tipsy Tossers,Labelle Firehall vs The Old & the New,Average Bo's vs Prince of Dartness,Hillbillies
-20,"Jan 7, 2026 (Wed)",3,R2,Hillbillies vs Tipsy Tossers,KGB vs The Old & the New,BBD vs Prince of Dartness,Labelle Firehall vs Average Bo's,Softball Dad's
-21,"Jan 12, 2026 (Mon)",3,R3,Softball Dad's vs The Old & the New,Hillbillies vs Prince of Dartness,KGB vs Average Bo's,BBD vs Labelle Firehall,Tipsy Tossers
-22,"Jan 14, 2026 (Wed)",3,R4,Tipsy Tossers vs Prince of Dartness,Softball Dad's vs Average Bo's,Hillbillies vs Labelle Firehall,KGB vs BBD,The Old & the New
-23,"Jan 19, 2026 (Mon)",3,R5,The Old & the New vs Average Bo's,Tipsy Tossers vs Labelle Firehall,Softball Dad's vs BBD,Hillbillies vs KGB,Prince of Dartness
-24,"Jan 21, 2026 (Wed)",3,R6,Prince of Dartness vs Labelle Firehall,The Old & the New vs BBD,Tipsy Tossers vs KGB,Softball Dad's vs Hillbillies,Average Bo's
-25,"Jan 26, 2026 (Mon)",3,R7,Average Bo's vs BBD,Prince of Dartness vs KGB,The Old & the New vs Hillbillies,Tipsy Tossers vs Softball Dad's,Labelle Firehall
-26,"Jan 28, 2026 (Wed)",3,R8,Labelle Firehall vs KGB,Average Bo's vs Hillbillies,Prince of Dartness vs Softball Dad's,The Old & the New vs Tipsy Tossers,BBD
-27,"Feb 2, 2026 (Mon)",3,R9,BBD vs Hillbillies,Labelle Firehall vs Softball Dad's,Average Bo's vs Tipsy Tossers,Prince of Dartness vs The Old & the New,KGB
+15,"Dec 17, 2026 (Thu)",3,R1,KGB vs Team Felter Snatch,BBD vs Softball Dads,Tipsy Tossers vs The Old n The New,Firehall vs TBD,
+16,"Dec 21, 2026 (Mon)",3,R2,Firehall vs Team Felter Snatch,TBD vs Softball Dads,KGB vs The Old n The New,BBD vs Tipsy Tossers,
+17,"Dec 28, 2026 (Mon)",3,R3,KGB vs BBD,Firehall vs Softball Dads,Team Felter Snatch vs The Old n The New,TBD vs Tipsy Tossers,
+18,"Jan 4, 2027 (Mon)",3,R4,Team Felter Snatch vs BBD,TBD vs KGB,Firehall vs The Old n The New,Softball Dads vs Tipsy Tossers,
+19,"Jan 7, 2027 (Thu)",3,R5,The Old n The New vs BBD,Softball Dads vs KGB,Team Felter Snatch vs TBD,Firehall vs Tipsy Tossers,
+20,"Jan 11, 2027 (Mon)",3,R6,Firehall vs BBD,Tipsy Tossers vs KGB,The Old n The New vs TBD,Softball Dads vs Team Felter Snatch,
+21,"Jan 14, 2027 (Thu)",3,R7,The Old n The New vs Softball Dads,Firehall vs KGB,BBD vs TBD,Tipsy Tossers vs Team Felter Snatch,
 ---,---,---,---,---,---,---,---,---
-28,"Feb 4, 2026 (Wed)",4,R1,KGB vs Softball Dad's,BBD vs Tipsy Tossers,Labelle Firehall vs The Old & the New,Average Bo's vs Prince of Dartness,Hillbillies
-29,"Feb 9, 2026 (Mon)",4,R2,Hillbillies vs Tipsy Tossers,KGB vs The Old & the New,BBD vs Prince of Dartness,Labelle Firehall vs Average Bo's,Softball Dad's
-30,"Feb 11, 2026 (Wed)",4,R3,Softball Dad's vs The Old & the New,Hillbillies vs Prince of Dartness,KGB vs Average Bo's,BBD vs Labelle Firehall,Tipsy Tossers
-31,"Feb 16, 2026 (Mon)",4,R4,Tipsy Tossers vs Prince of Dartness,Softball Dad's vs Average Bo's,Hillbillies vs Labelle Firehall,KGB vs BBD,The Old & the New
-32,"Feb 18, 2026 (Wed)",4,R5,The Old & the New vs Average Bo's,Tipsy Tossers vs Labelle Firehall,Softball Dad's vs BBD,Hillbillies vs KGB,Prince of Dartness
-33,"Feb 23, 2026 (Mon)",4,R6,Prince of Dartness vs Labelle Firehall,The Old & the New vs BBD,Tipsy Tossers vs KGB,Softball Dad's vs Hillbillies,Average Bo's
-34,"Feb 25, 2026 (Wed)",4,R7,BBD vs Hillbillies,Labelle Firehall vs Softball Dad's,Average Bo's vs Tipsy Tossers,Prince of Dartness vs The Old & the New,KGB
-35,"Mar 2, 2026 (Mon)",4,R8,Labelle Firehall vs KGB,Average Bo's vs Hillbillies,Prince of Dartness vs Softball Dad's,The Old & the New vs Tipsy Tossers,BBD
-36,"Mar 4, 2026 (Wed)",4,R9,Average Bo's vs BBD,Prince of Dartness vs KGB,The Old & the New vs Hillbillies,Tipsy Tossers vs Softball Dad's,Labelle Firehall
+22,"Jan 18, 2027 (Mon)",4,R1,BBD vs Softball Dads,Tipsy Tossers vs The Old n The New,Firehall vs TBD,KGB vs Team Felter Snatch,
+23,"Jan 21, 2027 (Thu)",4,R2,TBD vs Softball Dads,KGB vs The Old n The New,BBD vs Tipsy Tossers,Firehall vs Team Felter Snatch,
+24,"Jan 25, 2027 (Mon)",4,R3,Firehall vs Softball Dads,Team Felter Snatch vs The Old n The New,TBD vs Tipsy Tossers,KGB vs BBD,
+25,"Jan 28, 2027 (Thu)",4,R4,TBD vs KGB,Firehall vs The Old n The New,Softball Dads vs Tipsy Tossers,Team Felter Snatch vs BBD,
+26,"Feb 1, 2027 (Mon)",4,R5,Softball Dads vs KGB,Team Felter Snatch vs TBD,Firehall vs Tipsy Tossers,The Old n The New vs BBD,
+27,"Feb 4, 2027 (Thu)",4,R6,Tipsy Tossers vs KGB,The Old n The New vs TBD,Softball Dads vs Team Felter Snatch,Firehall vs BBD,
+28,"Feb 8, 2027 (Mon)",4,R7,Firehall vs KGB,BBD vs TBD,Tipsy Tossers vs Team Felter Snatch,The Old n The New vs Softball Dads,
