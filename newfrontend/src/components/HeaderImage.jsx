@@ -11,7 +11,7 @@ const parseSchedule = (text) => {
   const nights = [];
   for (const line of lines.slice(1)) {
     const m = line.match(DATE_RE);
-    if (m) nights.push({ date: new Date(m[1]), day: m[2] });
+    if (m) nights.push({ date: new Date(m[1]) });
   }
   return { time, nights };
 };
@@ -32,20 +32,14 @@ const HeaderImage = () => {
 
         const today = new Date();
         today.setHours(0, 0, 0, 0);
-        const nextIdx = nights.findIndex((n) => n.date >= today);
-        const next = nights[nextIdx];
-        const startYear = nights[0].date.getFullYear();
-        const days = [...new Set(nights.map((n) => n.day))];
+        const next = nights.find((n) => n.date >= today);
 
         let label = "Next game night";
-        if (nextIdx === 0) label = "Opening night";
         if (next && next.date.getTime() === today.getTime()) label = "Tonight";
 
         setInfo({
-          season: `${startYear}–${String(startYear + 1).slice(-2)} Season`,
           label: next ? label : "Season",
           when: next ? `${fmtDay(next.date)}${time ? ` · ${time}` : ""}` : "Complete",
-          days: days.length <= 3 ? days.join(" & ") : null,
         });
       })
       .catch((err) => console.error("header schedule load failed", err));
@@ -64,9 +58,7 @@ const HeaderImage = () => {
 
       {info && (
         <div className="neon-strip">
-          <div className="neon-tube blue"><small>Now playing</small>{info.season}</div>
           <div className="neon-tube amber"><small>{info.label}</small>{info.when}</div>
-          {info.days && <div className="neon-tube blue hide-sm"><small>Game nights</small>{info.days}</div>}
         </div>
       )}
     </header>

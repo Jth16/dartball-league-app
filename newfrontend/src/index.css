@@ -260,11 +260,6 @@ button, input, select, textarea {
   letter-spacing: 0.2em;
   opacity: 0.8;
 }
-.neon-tube.blue {
-  border-color: #8fb8dc;
-  box-shadow: 0 0 6px #5b8db8, inset 0 0 6px rgba(91, 141, 184, 0.6);
-  text-shadow: 0 0 6px #5b8db8;
-}
 .neon-tube.amber {
   border-color: #ffc061;
   box-shadow: 0 0 8px #ff9800, inset 0 0 8px rgba(255, 152, 0, 0.5);
@@ -277,9 +272,6 @@ button, input, select, textarea {
 }
 @media (prefers-reduced-motion: reduce) {
   .neon-title { animation: none; }
-}
-@media (max-width: 560px) {
-  .neon-tube.hide-sm { display: none; }
 }
 
 code {
