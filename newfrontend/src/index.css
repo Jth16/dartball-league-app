@@ -53,7 +53,128 @@ body {
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.8);
 }
 
+/* ---- Shared page card + data tables ---- */
+.card {
+  max-width: 1100px;
+  margin: 1.5rem auto;
+  padding: 1.5rem;
+  background: linear-gradient(180deg, rgba(8, 18, 24, 0.95) 0%, rgba(6, 30, 36, 0.95) 100%);
+  color: #e6f7ff;
+  border-radius: 14px;
+  box-shadow: 0 10px 30px rgba(2, 6, 8, 0.6);
+}
+
+.card-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 12px;
+  margin-bottom: 1rem;
+}
+
+.table-wrap {
+  overflow-x: auto;
+  border-radius: 10px;
+  -webkit-overflow-scrolling: touch;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 10px;
+  font-size: 0.95rem;
+}
+
+.data-table.wide {
+  min-width: 520px;
+}
+
 /* ---- Phones ---- */
+@media (max-width: 700px) {
+  .card {
+    margin: 0.5rem 0;
+    padding: 0.75rem;
+    border-radius: 10px;
+  }
+  .card h1 {
+    font-size: 1.35rem !important;
+  }
+
+  .data-table {
+    font-size: 0.85rem;
+  }
+  .data-table.wide {
+    min-width: 460px;
+  }
+  .data-table th,
+  .data-table td {
+    padding: 8px 6px !important;
+  }
+  .data-table th {
+    width: auto !important;
+  }
+
+  /* keep the name column pinned while the stats scroll sideways */
+  .data-table.sticky-first th:first-child,
+  .data-table.sticky-first td:first-child {
+    position: sticky;
+    left: 0;
+    z-index: 1;
+    padding-left: 8px !important;
+  }
+  .data-table.sticky-first th:first-child {
+    background: #1d2a35;
+  }
+  .data-table.sticky-first td:first-child {
+    background: #0b1520;
+  }
+
+  /* schedule: one card per game day instead of a 5-column grid */
+  .data-table.stacked colgroup,
+  .data-table.stacked thead {
+    display: none;
+  }
+  .data-table.stacked,
+  .data-table.stacked tbody,
+  .data-table.stacked tr {
+    display: block;
+    width: 100%;
+    min-width: 0;
+  }
+  .data-table.stacked {
+    border-spacing: 0;
+  }
+  .data-table.stacked tr {
+    margin-bottom: 10px;
+    overflow: hidden;
+  }
+  .data-table.stacked td {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    width: auto !important;
+    padding: 8px 12px !important;
+    text-align: right !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+  }
+  .data-table.stacked td::before {
+    content: attr(data-label);
+    color: #9fb0bd;
+    font-weight: 600;
+    text-align: left;
+  }
+  .data-table.stacked td:first-child {
+    justify-content: center;
+    background: #0e2230;
+    border-top: none;
+  }
+  .data-table.stacked td:first-child::before {
+    content: none;
+  }
+}
+
+/* ---- Phones: nav + page wrapper ---- */
 @media (max-width: 700px) {
   /* single swipeable row instead of overflowing the viewport */
   .site-nav {

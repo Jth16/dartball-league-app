@@ -173,24 +173,6 @@ const Leaders = () => {
   });
 
   // Styles matched to TeamsTable theme (dark + dark-orange accent)
-  const containerStyle = {
-    maxWidth: 1100,
-    margin: "2rem auto",
-    background: "linear-gradient(180deg, rgba(8,18,24,0.95) 0%, rgba(6,30,36,0.95) 100%)",
-    color: "#e6f7ff",
-    padding: "1.75rem",
-    borderRadius: 14,
-    boxShadow: "0 10px 30px rgba(2,6,8,0.6)",
-    boxSizing: "border-box"
-  };
-
-  const headerStyle = {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
-    marginBottom: "0.5rem"
-  };
-
   const titleStyle = {
     margin: 0,
     color: "#fff",
@@ -219,14 +201,6 @@ const Leaders = () => {
     marginTop: 14
   };
 
-  const smallTableStyle = {
-    width: '100%',
-    borderCollapse: 'separate',
-    borderSpacing: '0 12px',
-    minWidth: 280,
-    fontSize: "0.95rem"
-  };
-
   const thStyle = {
     padding: '10px',
     textAlign: 'left',
@@ -249,8 +223,8 @@ const Leaders = () => {
   const idForPlayer = (p) => String(p.id ?? p.player_id ?? p.name ?? '');
 
   return (
-    <div ref={containerRef} data-printable style={containerStyle}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+    <div ref={containerRef} data-printable className="card">
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
         <div>
           <h1 style={titleStyle}>League Leaders</h1>
           <div style={descStyle}>Top players by category</div>
@@ -295,7 +269,7 @@ const Leaders = () => {
             <div key={tbl.key} style={{ overflowX: 'auto' }}>
               <div style={{ marginBottom: 8, textAlign: 'center', color: '#fff', fontWeight: 700 }}>{tbl.title}</div>
 
-              <table style={smallTableStyle}>
+              <table className="data-table">
                 <thead>
                   <tr>
                     <th style={{ ...thStyle, width: 36, textAlign: 'center' }}>#</th>

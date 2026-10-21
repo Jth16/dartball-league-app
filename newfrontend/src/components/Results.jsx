@@ -3,15 +3,6 @@ import ResultLeaders from './ResultLeaders';
 
 const API_BASE = process.env.REACT_APP_API_URL || 'https://dartball-backend-654879525708.us-central1.run.app';
 
-const containerStyle = {
-  maxWidth: 980,
-  margin: '1.5rem auto',
-  padding: 16,
-  background: 'linear-gradient(180deg, #071018, #081821)',
-  color: '#e6f7ff',
-  borderRadius: 10,
-  boxShadow: '0 8px 24px rgba(2,6,8,0.6)'
-};
 const headerStyle = { display: 'flex', justifyContent: 'space-between', alignItems: 'center' };
 const dateHeaderStyle = {
   display: 'flex', justifyContent: 'space-between', alignItems: 'center',
@@ -139,7 +130,7 @@ const Results = () => {
   const dateKeys = Object.keys(byDate).sort((a,b) => (a < b ? 1 : -1)); // newest first
 
   return (
-    <div style={containerStyle}>
+    <div className="card">
       <div style={headerStyle}>
         <div>
           <h2 style={{ margin: 0 }}>Results by Date</h2>

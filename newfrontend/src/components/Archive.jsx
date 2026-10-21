@@ -2,33 +2,12 @@ import React, { useEffect, useState, useRef } from 'react';
 import { fetchWithToken } from '../api';
 import { printElement } from '../utils/print';
 
-const containerStyle = {
-  maxWidth: 1100,
-  margin: "1.5rem auto",
-  background: "linear-gradient(180deg, rgba(8,18,24,0.95) 0%, rgba(6,30,36,0.95) 100%)",
-  color: "#e6f7ff",
-  padding: "1.5rem",
-  borderRadius: 14,
-  boxShadow: "0 10px 30px rgba(2,6,8,0.6)",
-  boxSizing: "border-box",
-};
-
 const accentBar = {
   height: 6,
   borderRadius: 6,
   background: "linear-gradient(90deg,#7a2b00,#c2410c,#ff8a00)",
   marginTop: 12,
   boxShadow: "0 6px 18px rgba(194,65,12,0.08)"
-};
-
-const tableWrap = { overflowX: "auto", borderRadius: 10 };
-
-const tableStyle = {
-  width: "100%",
-  minWidth: 520,
-  borderCollapse: "separate",
-  borderSpacing: "0 10px",
-  fontSize: "0.95rem"
 };
 
 const thStyle = {
@@ -89,8 +68,8 @@ const StandingsView = ({ season }) => {
   }, [season]);
 
   return (
-    <div style={tableWrap}>
-      <table style={tableStyle}>
+    <div className="table-wrap">
+      <table className="data-table wide sticky-first">
         <thead>
           <tr>
             <th style={thStyle}>Team Name</th>
@@ -140,8 +119,8 @@ const PlayersView = ({ season }) => {
       {Object.entries(grouped).map(([teamName, teamPlayers]) => (
         <section key={teamName} style={{ marginBottom: 24 }}>
           <h3 style={{ color: '#fff', margin: '0 0 8px 0' }}>{teamName}</h3>
-          <div style={tableWrap}>
-            <table style={tableStyle}>
+          <div className="table-wrap">
+            <table className="data-table wide sticky-first">
               <thead>
                 <tr>
                   <th style={thStyle}>Name</th>
@@ -192,9 +171,9 @@ const ResultsView = ({ season }) => {
   }, [season]);
 
   return (
-    <div style={tableWrap}>
+    <div className="table-wrap">
       <div style={{ marginBottom: 8, color: '#9fb0bd', fontSize: 13 }}>Playoff series results</div>
-      <table style={tableStyle}>
+      <table className="data-table wide sticky-first">
         <thead>
           <tr>
             <th style={thStyle}>Round</th>
@@ -264,8 +243,6 @@ const LeadersView = ({ season }) => {
     gap: 12,
   };
 
-  const smallTableStyle = { ...tableStyle, minWidth: 260 };
-
   return (
     <div>
       {players.length === 0 && <p style={{ color: '#9fb0bd', padding: 12 }}>No players found for this season.</p>}
@@ -276,7 +253,7 @@ const LeadersView = ({ season }) => {
             return (
               <div key={cat.key} style={{ overflowX: 'auto' }}>
                 <div style={{ marginBottom: 8, textAlign: 'center', color: '#fff', fontWeight: 700 }}>{cat.title}</div>
-                <table style={smallTableStyle}>
+                <table className="data-table">
                   <thead>
                     <tr>
                       <th style={{ ...thStyle, width: 30, textAlign: 'center' }}>#</th>
@@ -330,7 +307,7 @@ const Archive = () => {
   }, []);
 
   return (
-    <div ref={containerRef} data-printable style={containerStyle}>
+    <div ref={containerRef} data-printable className="card">
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12 }}>
         <h1 style={{ margin: 0, color: '#fff' }}>Past Seasons</h1>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
@@ -366,7 +343,7 @@ const Archive = () => {
 
       {!loadingSeasons && seasons.length > 0 && (
         <>
-          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 16 }}>
+          <div style={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: 8, marginBottom: 16 }}>
             <Tab active={view === 'standings'} onClick={() => setView('standings')}>Standings</Tab>
             <Tab active={view === 'leaders'} onClick={() => setView('leaders')}>Leaders</Tab>
             <Tab active={view === 'players'} onClick={() => setView('players')}>Players</Tab>

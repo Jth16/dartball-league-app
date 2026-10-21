@@ -5,15 +5,15 @@ const API_BASE = process.env.REACT_APP_API_URL || 'https://dartball-backend-6548
 // compacted panel styles — increased sizes for single panels
 const container = { marginBottom: 10, padding: 10, background: 'linear-gradient(180deg,#07131a,#081821)', borderRadius: 8 };
 const title = { margin: 0, color: '#fff', fontSize: 18, fontWeight: 700 }; // bigger
-const small = { color: '#9fb0bd', fontSize: 12 };
+const small = { color: '#9fb0bd', fontSize: 13 };
 // each stat panel will take about half the width so two panels appear per row
 const statBox = { flex: '0 0 48%', padding: 10, background: 'linear-gradient(180deg,#071724,#07202a)', borderRadius: 6, minWidth: 160, boxSizing: 'border-box' };
 const statValue = { fontSize: 22, fontWeight: 800, color: '#ffdfb5', lineHeight: 1 }; // bigger
 const meta = { marginTop: 6, color: '#cbd5e1', fontSize: 13 }; // slightly bigger
 
-const table = { width: '100%', borderCollapse: 'collapse', marginTop: 6, fontSize: 13 };
-const th = { textAlign: 'left', color: '#fff', fontWeight: 800, padding: '6px 8px', fontSize: 12 };
-const td = { padding: '6px 8px', color: '#e6f7ff', fontSize: 13 };
+const table = { width: '100%', borderCollapse: 'collapse', marginTop: 6, fontSize: 14 };
+const th = { textAlign: 'left', color: '#fff', fontWeight: 800, padding: '6px 8px', fontSize: 13 };
+const td = { padding: '6px 8px', color: '#e6f7ff', fontSize: 14 };
 
 // format dates using UTC so local timezone won't shift the displayed day
 const formatDisplayDate = (isoDate) => {

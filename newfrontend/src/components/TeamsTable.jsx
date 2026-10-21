@@ -124,24 +124,6 @@ const TeamsTable = () => {
     };
 
     // themed styles (blue accents changed to dark orange)
-    const containerStyle = {
-      maxWidth: 1100,
-      margin: "2rem auto",
-      background: "linear-gradient(180deg, rgba(8,18,24,0.95) 0%, rgba(6,30,36,0.95) 100%)",
-      color: "#e6f7ff",
-      padding: "1.5rem",
-      borderRadius: 14,
-      boxShadow: "0 10px 30px rgba(2,6,8,0.6)",
-      boxSizing: "border-box",
-    };
-
-    const headerStyle = {
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "space-between",
-      marginBottom: "1rem"
-    };
-
     const titleStyle = {
       margin: 0,
       color: "#fff",
@@ -157,16 +139,6 @@ const TeamsTable = () => {
       marginTop: 12,
       // boxShadow tint changed to match dark orange
       boxShadow: "0 6px 18px rgba(194,65,12,0.08)"
-    };
-
-    const tableWrap = { overflowX: "auto", borderRadius: 10 };
-
-    const tableStyle = {
-      width: "100%",
-      minWidth: 520,
-      borderCollapse: "separate",
-      borderSpacing: "0 10px",
-      fontSize: "0.95rem"
     };
 
     const theadStyle = {
@@ -209,8 +181,8 @@ const TeamsTable = () => {
 
     return (
          // attach ref and data-printable so print helper can capture the whole component
-         <div ref={containerRef} data-printable style={containerStyle}>
-           <div style={headerStyle}>
+         <div ref={containerRef} data-printable className="card">
+           <div className="card-header">
              <h1 style={titleStyle}>Team Standings</h1>
             <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
               <div style={{ color: "#9fb8d6", fontSize: 14 }}>Season standings (computed from results)</div>
@@ -228,8 +200,8 @@ const TeamsTable = () => {
 
            <div style={{ height: 12 }} />
 
-           <div style={tableWrap}>
-             <table style={tableStyle}>
+           <div className="table-wrap">
+             <table className="data-table sticky-first">
                <thead style={theadStyle}>
                 <tr>
                   <th style={thStyle}>Team Name</th>

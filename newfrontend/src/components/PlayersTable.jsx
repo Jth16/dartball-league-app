@@ -57,17 +57,6 @@ const PlayersTable = () => {
     };
 
     // reuse TeamsTable theme (dark + dark-orange accent)
-    const containerStyle = {
-      maxWidth: 1100,
-      margin: "1.5rem auto",
-      background: "linear-gradient(180deg, rgba(8,18,24,0.95) 0%, rgba(6,30,36,0.95) 100%)",
-      color: "#e6f7ff",
-      padding: "1.25rem",
-      borderRadius: 14,
-      boxShadow: "0 10px 30px rgba(2,6,8,0.6)",
-      boxSizing: "border-box",
-    };
-
     const teamHeaderStyle = {
       display: "flex",
       alignItems: "center",
@@ -88,16 +77,6 @@ const PlayersTable = () => {
       background: "linear-gradient(90deg,#7a2b00,#c2410c,#ff8a00)",
       marginTop: 10,
       boxShadow: "0 6px 18px rgba(194,65,12,0.08)"
-    };
-
-    const tableWrap = { overflowX: "auto", borderRadius: 10 };
-
-    const tableStyle = {
-      width: "100%",
-      minWidth: 520,
-      borderCollapse: "separate",
-      borderSpacing: "0 10px",
-      fontSize: "0.95rem"
     };
 
     const thStyle = {
@@ -145,7 +124,7 @@ const PlayersTable = () => {
     };
 
     return (
-      <div ref={containerRef} data-printable style={containerStyle}>
+      <div ref={containerRef} data-printable className="card">
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <h1 style={{ margin: "0 0 12px 0", color: "#fff" }}>All Players</h1>
           <button
@@ -203,8 +182,8 @@ const PlayersTable = () => {
                 aria-hidden={isCollapsed}
                 style={{ display: isCollapsed ? 'none' : 'block' }}
               >
-                <div style={tableWrap}>
-                  <table style={tableStyle}>
+                <div className="table-wrap">
+                  <table className="data-table wide sticky-first">
                     <thead>
                       <tr>
                         <th style={{ ...thStyle, width: '40%' }}>Name</th>

@@ -136,24 +136,6 @@ const Schedule = () => {
   }, []);
 
   // Styles aligned with PlayersTable / TeamsTable theme (dark + dark-orange accent)
-  const containerStyle = {
-    maxWidth: 1100,
-    margin: "2rem auto",
-    background: "linear-gradient(180deg, rgba(8,18,24,0.95) 0%, rgba(6,30,36,0.95) 100%)",
-    color: "#e6f7ff",
-    padding: "1.5rem",
-    borderRadius: 14,
-    boxShadow: "0 10px 30px rgba(2,6,8,0.6)",
-    boxSizing: "border-box"
-  };
-
-  const headerRowStyle = {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 12
-  };
-
   const titleStyle = {
     margin: 0,
     color: "#fff",
@@ -167,21 +149,6 @@ const Schedule = () => {
     background: "linear-gradient(90deg,#7a2b00,#c2410c,#ff8a00)",
     marginTop: 10,
     boxShadow: "0 6px 18px rgba(194,65,12,0.08)"
-  };
-
-  const tableWrapStyle = {
-    overflowX: "auto",
-    borderRadius: 10,
-    marginTop: 12
-  };
-
-  const tableStyle = {
-    width: "100%",
-    minWidth: 660,
-    borderCollapse: "separate",
-    borderSpacing: "0 10px",
-    fontSize: "0.95rem",
-    tableLayout: "fixed", // ensure header columns align with body
   };
 
   const thStyle = {
@@ -231,8 +198,8 @@ const Schedule = () => {
   let lastRound = null;
 
   return (
-    <div style={containerStyle} ref={containerRef} data-printable>
-      <div style={headerRowStyle}>
+    <div className="card" ref={containerRef} data-printable>
+      <div className="card-header">
         <h1 style={titleStyle}>Labelle Dartball 2026 Schedule</h1>
         <button
           className="no-print"
@@ -255,8 +222,8 @@ const Schedule = () => {
 
       <div style={{ height: 12 }} />
 
-      <div style={tableWrapStyle}>
-        <table style={tableStyle}>
+      <div className="table-wrap">
+        <table className="data-table stacked" style={{ tableLayout: "fixed" }}>
           {/* colgroup gives the browser exact column widths so TH and TD align */}
           <colgroup>
             <col style={{ width: 160 }} />
@@ -313,6 +280,7 @@ const Schedule = () => {
                      {r.map((cell, ci) => (
                        <td
                          key={ci}
+                         data-label={headers[ci] || ''}
                          style={{
                            ...dateCellStyle,
                            textAlign: ci === 0 ? 'center' : 'center',
