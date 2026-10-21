@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter as Router, useLocation, useNavigate } from "react-router-dom";
 import TeamsTable from "./components/TeamsTable";
 import StatsPage from "./components/StatsPage";
 import AdminLogin from "./components/AdminLogin";
@@ -16,6 +16,39 @@ import Home from "./components/Home";
 
 const API_BASE = process.env.REACT_APP_API_URL || "https://dartball-backend-654879525708.us-central1.run.app";
 
+// page key -> URL path. The keys are what the rest of the app (Home's onNavigate) already uses.
+const PAGE_PATHS = {
+  home: "/",
+  teams: "/standings",
+  Stats: "/stats",
+  schedule: "/schedule",
+  rules: "/rules",
+  archive: "/past-seasons",
+  leaders: "/leaders",
+  playoffs: "/playoffs",
+  privacy: "/privacy",
+  admin: "/admin",
+};
+
+const PAGE_TITLES = {
+  home: "Home",
+  teams: "Standings",
+  Stats: "All Stats",
+  schedule: "Schedule",
+  rules: "Rules",
+  archive: "Past Seasons",
+  leaders: "Leaders",
+  playoffs: "Playoffs",
+  privacy: "Privacy Policy",
+  admin: "Admin",
+};
+
+const pageFromPath = (pathname) => {
+  const clean = pathname.replace(/\/+$/, "") || "/";
+  const match = Object.keys(PAGE_PATHS).find((k) => PAGE_PATHS[k] === clean);
+  return match || "home";
+};
+
 const NAV_ITEMS = [
   { key: "home", label: "Home" },
   { key: "teams", label: "Standings" },
@@ -25,16 +58,28 @@ const NAV_ITEMS = [
   { key: "archive", label: "Past Seasons" },
 ];
 
-function App() {
-  const [page, setPage] = React.useState("home");
+function AppShell() {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const page = pageFromPath(location.pathname);
+  const setPage = (key) => {
+    navigate(PAGE_PATHS[key] || "/");
+    window.scrollTo(0, 0);
+  };
   const [teams, setTeams] = React.useState([]);
   const [isAdmin, setIsAdmin] = React.useState(false);
 
   useEffect(() => {
     initGA();
-    // send first pageview
-    pageview(window.location.pathname + window.location.search);
   }, []);
+
+  // pageview + tab title on every route change (back/forward included)
+  useEffect(() => {
+    pageview(location.pathname + location.search);
+    document.title = page === "home"
+      ? "Labelle Dartball League"
+      : `${PAGE_TITLES[page]} | Labelle Dartball League`;
+  }, [location.pathname, location.search, page]);
 
   useEffect(() => {
     async function load() {
@@ -55,16 +100,14 @@ function App() {
     if (page !== "admin" && isAdmin) {
       setIsAdmin(false);
     }
-  }, [page]);
+  }, [page]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
-    <Router>
       <div
         style={{
           background: "#000",
           minHeight: "100vh",
           color: "#fff",
-          fontFamily: "Segoe UI, Arial, sans-serif",
           position: "relative",
         }}
       >
@@ -155,7 +198,13 @@ function App() {
           )}
         </div>
       </div>
+  );
+}
 
+function App() {
+  return (
+    <Router>
+      <AppShell />
     </Router>
   );
 }
