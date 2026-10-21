@@ -1,33 +1,76 @@
-import React from "react";
-import headerImg from "../assets/Header2.png";
+import React, { useEffect, useState } from "react";
 
-const HeaderImage = () => (
-  <div
-    style={{
-      width: "100%",
-      overflow: "hidden",
-      // gradient that matches the image theme
-      background:
-        "radial-gradient(1200px 400px at 10% 10%, rgba(255,149,0,0.06), transparent 12%), " +
-        "linear-gradient(135deg, #10151a 0%, #1a222b 50%, #10151a 100%)",
-      textAlign: "center",
-      
-      boxShadow: "0 6px 28px rgba(0,0,0,0.45)",
-    }}
-  >
-    <img
-      src={headerImg}
-      alt="Labelle Dartball League"
-      style={{
-        width: "100%",        // fill full header width
-        maxWidth: "none",
-        height: "clamp(140px, 30vw, 320px)", // shorter on phones so content stays above the fold
-        objectFit: "cover",   // crop to fill width without distortion
-        display: "block",
-      }}
-    />
-   
-  </div>
-);
+// Neon bar-sign header with a row of info "tubes" fed from the schedule CSV.
+// Styles live in index.css under .neon-header (needs keyframes + media queries).
+
+const DATE_RE = /"([A-Z][a-z]{2} \d{1,2}, \d{4}) \((\w{3})\)"/;
+
+const parseSchedule = (text) => {
+  const lines = text.split(/\r?\n/);
+  const time = (lines[0].match(/(\d{1,2}:\d{2} [AP]M)/) || [])[1] || "";
+  const nights = [];
+  for (const line of lines.slice(1)) {
+    const m = line.match(DATE_RE);
+    if (m) nights.push({ date: new Date(m[1]), day: m[2] });
+  }
+  return { time, nights };
+};
+
+const fmtDay = (d) => d.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" });
+
+const HeaderImage = () => {
+  const [info, setInfo] = useState(null);
+
+  useEffect(() => {
+    let mounted = true;
+    fetch(encodeURI("/Newest-Darts-Schedule.csv"), { cache: "no-cache" })
+      .then((res) => (res.ok ? res.text() : Promise.reject(new Error(`CSV fetch failed: ${res.status}`))))
+      .then((text) => {
+        if (!mounted || text.trim().startsWith("<")) return;
+        const { time, nights } = parseSchedule(text);
+        if (nights.length === 0) return;
+
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const nextIdx = nights.findIndex((n) => n.date >= today);
+        const next = nights[nextIdx];
+        const startYear = nights[0].date.getFullYear();
+        const days = [...new Set(nights.map((n) => n.day))];
+
+        let label = "Next game night";
+        if (nextIdx === 0) label = "Opening night";
+        if (next && next.date.getTime() === today.getTime()) label = "Tonight";
+
+        setInfo({
+          season: `${startYear}–${String(startYear + 1).slice(-2)} Season`,
+          label: next ? label : "Season",
+          when: next ? `${fmtDay(next.date)}${time ? ` · ${time}` : ""}` : "Complete",
+          days: days.length <= 3 ? days.join(" & ") : null,
+        });
+      })
+      .catch((err) => console.error("header schedule load failed", err));
+    return () => { mounted = false; };
+  }, []);
+
+  return (
+    <header className="neon-header">
+      <svg className="neon-dart" viewBox="0 0 120 24" fill="none" stroke="#e6f2ff" strokeWidth="2.2"
+        strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        <path d="M4 12h22M26 8l10 4-10 4M36 12h46M82 9h18l8 3-8 3H82z" />
+        <path d="M100 9l14-7M100 15l14 7M106 12h10" />
+      </svg>
+      <h1 className="neon-title">LaBelle Dartball</h1>
+      <div className="neon-sub">League</div>
+
+      {info && (
+        <div className="neon-strip">
+          <div className="neon-tube blue"><small>Now playing</small>{info.season}</div>
+          <div className="neon-tube amber"><small>{info.label}</small>{info.when}</div>
+          {info.days && <div className="neon-tube blue hide-sm"><small>Game nights</small>{info.days}</div>}
+        </div>
+      )}
+    </header>
+  );
+};
 
 export default HeaderImage;

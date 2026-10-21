@@ -201,6 +201,87 @@ button, input, select, textarea {
   }
 }
 
+/* ---- Site header: neon bar sign (HeaderImage.jsx) ---- */
+.neon-header {
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+  padding: clamp(18px, 3.4vw, 34px) 16px clamp(14px, 2.4vw, 22px);
+  background:
+    radial-gradient(ellipse at 50% 40%, rgba(255, 152, 0, 0.16), transparent 60%),
+    repeating-linear-gradient(0deg, transparent 0 28px, rgba(0, 0, 0, 0.35) 28px 30px),
+    repeating-linear-gradient(90deg, transparent 0 58px, rgba(0, 0, 0, 0.25) 58px 60px),
+    linear-gradient(#1a1f25, #12161b);
+}
+.neon-dart {
+  display: block;
+  width: clamp(60px, 10vw, 110px);
+  margin: 0 auto 6px;
+  filter: drop-shadow(0 0 6px #5b8db8) drop-shadow(0 0 16px #3f6f99);
+}
+.neon-title {
+  margin: 0;
+  font: 700 clamp(1.7rem, 6vw, 4.4rem)/1 'Oswald', sans-serif;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #fff4e0;
+  text-shadow: 0 0 4px #fff, 0 0 10px #ffb547, 0 0 22px #ff9800, 0 0 42px #ff7a00, 0 0 70px #c2410c;
+  animation: neon-flicker 6s infinite;
+}
+.neon-sub {
+  margin-top: 6px;
+  padding-left: 0.5em; /* balances the trailing letter-spacing */
+  font: 500 clamp(0.75rem, 2vw, 1.3rem) 'Oswald', sans-serif;
+  letter-spacing: 0.5em;
+  text-transform: uppercase;
+  color: #e6f2ff;
+  text-shadow: 0 0 4px #fff, 0 0 10px #5b8db8, 0 0 22px #3f6f99, 0 0 40px #3f6f99;
+}
+.neon-strip {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: clamp(8px, 1.6vw, 16px);
+  margin-top: clamp(14px, 2.4vw, 24px);
+}
+.neon-tube {
+  border: 2px solid;
+  border-radius: 10px;
+  padding: 6px 14px;
+  background: rgba(0, 0, 0, 0.35);
+  color: #fff;
+  font: 500 clamp(0.7rem, 1.3vw, 0.9rem)/1.25 'Oswald', sans-serif;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.neon-tube small {
+  display: block;
+  font-size: 0.78em;
+  letter-spacing: 0.2em;
+  opacity: 0.8;
+}
+.neon-tube.blue {
+  border-color: #8fb8dc;
+  box-shadow: 0 0 6px #5b8db8, inset 0 0 6px rgba(91, 141, 184, 0.6);
+  text-shadow: 0 0 6px #5b8db8;
+}
+.neon-tube.amber {
+  border-color: #ffc061;
+  box-shadow: 0 0 8px #ff9800, inset 0 0 8px rgba(255, 152, 0, 0.5);
+  text-shadow: 0 0 6px #ff9800;
+}
+.neon-tube.amber small { color: #ffd59a; }
+@keyframes neon-flicker {
+  0%, 18%, 22%, 62%, 64%, 100% { opacity: 1; }
+  20%, 63% { opacity: 0.55; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .neon-title { animation: none; }
+}
+@media (max-width: 560px) {
+  .neon-tube.hide-sm { display: none; }
+}
+
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
