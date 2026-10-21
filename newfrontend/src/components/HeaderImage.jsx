@@ -21,7 +21,7 @@ const HeaderImage = () => (
       style={{
         width: "100%",        // fill full header width
         maxWidth: "none",
-        height: 320,          // fixed height for a full-bleed look (adjust as needed)
+        height: "clamp(140px, 30vw, 320px)", // shorter on phones so content stays above the fold
         objectFit: "cover",   // crop to fill width without distortion
         display: "block",
       }}

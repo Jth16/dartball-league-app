@@ -37,8 +37,8 @@ const Home = (props) => {
 
   const container = {
     maxWidth: 1100,
-    margin: '2rem auto',
-    padding: '1.5rem',
+    margin: isMobile ? '0.5rem auto' : '2rem auto',
+    padding: isMobile ? '0.75rem' : '1.5rem',
     borderRadius: 14,
     background: 'linear-gradient(180deg, rgba(8,18,24,0.95) 0%, rgba(6,30,36,0.95) 100%)',
     color: '#e6f7ff',

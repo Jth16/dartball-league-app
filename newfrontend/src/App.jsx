@@ -16,6 +16,15 @@ import Home from "./components/Home";
 
 const API_BASE = process.env.REACT_APP_API_URL || "https://dartball-backend-654879525708.us-central1.run.app";
 
+const NAV_ITEMS = [
+  { key: "home", label: "Home" },
+  { key: "teams", label: "Standings" },
+  { key: "Stats", label: "All Stats" },
+  { key: "schedule", label: "Schedule" },
+  { key: "rules", label: "Rules" },
+  { key: "archive", label: "Past Seasons" },
+];
+
 function App() {
   const [page, setPage] = React.useState("home");
   const [teams, setTeams] = React.useState([]);
@@ -52,7 +61,6 @@ function App() {
     <Router>
       <div
         style={{
-          minWidth: "660px",
           background: "#000",
           minHeight: "100vh",
           color: "#fff",
@@ -62,11 +70,8 @@ function App() {
       >
         <HeaderImage />
         <nav
+          className="site-nav"
           style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            padding: "1.5rem 0",
             /* main nav background (keeps existing look) */
             backgroundImage: "linear-gradient(90deg, #232526 0%, #000000 100%) , linear-gradient(90deg, #663e01ff, #663e01ff)",
             /* create a stylish gradient bottom border using a second background + transparent border */
@@ -76,121 +81,17 @@ function App() {
             boxShadow: "0 2px 8px rgba(0,0,0,0.7)",
           }}
         >
-          <button
-            onClick={() => setPage("home")}
-            style={{
-              background: page === "home" ? "#ff9800" : "#222",
-              color: "#fff",
-              border: "none",
-              borderRadius: "25px",
-              padding: "0.75rem 1.25rem",
-              margin: "0 .25rem",
-              fontSize: "1.1rem",
-              fontWeight: "bold",
-              cursor: "pointer",
-              boxShadow: page === "home" ? "0 0 10px #ff9800" : "none",
-              transition: "all 0.2s",
-            }}
-          >
-            Home
-          </button>
-          <button
-            onClick={() => setPage("teams")}
-            style={{
-              background: page === "teams" ? "#ff9800" : "#222",
-              color: "#fff",
-              border: "none",
-              borderRadius: "25px",
-              padding: "0.75rem 1rem",
-              margin: "0 .25rem",
-              fontSize: "1.1rem",
-              fontWeight: "bold",
-              cursor: "pointer",
-              boxShadow: page === "teams" ? "0 0 10px #ff9800" : "none",
-              transition: "all 0.2s",
-            }}
-          >
-            Standings
-          </button>
-          <button
-            onClick={() => setPage("Stats")}
-            style={{
-              background: page === "Stats" ? "#ff9800" : "#222",
-              color: "#fff",
-              border: "none",
-              borderRadius: "25px",
-              padding: "0.75rem 1.25rem",
-              margin: "0 .25rem",
-              fontSize: "1.1rem",
-              fontWeight: "bold",
-              cursor: "pointer",
-              boxShadow: page === "players" ? "0 0 10px #ff9800" : "none",
-              transition: "all 0.2s",
-            }}
-          >
-           All Stats
-          </button>
- 
-      
-          <button
-            onClick={() => setPage("schedule")}
-            style={{
-              background: page === "schedule" ? "#ff9800" : "#222",
-              color: "#fff",
-              border: "none",
-              borderRadius: "25px",
-              padding: "0.75rem 1.25rem",
-              margin: "0 .25rem",
-              fontSize: "1.1rem",
-              fontWeight: "bold",
-              cursor: "pointer",
-              boxShadow: page === "schedule" ? "0 0 10px #ff9800" : "none",
-              transition: "all 0.2s",
-            }}
-          >
-            Schedule
-          </button>
-
-          <button
-            onClick={() => setPage("rules")}
-            style={{
-              background: page === "rules" ? "#ff9800" : "#222",
-              color: "#fff",
-              border: "none",
-              borderRadius: "25px",
-              padding: "0.75rem 1.25rem",
-              margin: "0 .25rem",
-              fontSize: "1.1rem",
-              fontWeight: "bold",
-              cursor: "pointer",
-              boxShadow: page === "rules" ? "0 0 10px #ff9800" : "none",
-              transition: "all 0.2s",
-            }}
-          >
-            Rules
-          </button>
-
-          <button
-            onClick={() => setPage("archive")}
-            style={{
-              background: page === "archive" ? "#ff9800" : "#222",
-              color: "#fff",
-              border: "none",
-              borderRadius: "25px",
-              padding: "0.75rem 1.25rem",
-              margin: "0 .25rem",
-              fontSize: "1.1rem",
-              fontWeight: "bold",
-              cursor: "pointer",
-              boxShadow: page === "archive" ? "0 0 10px #ff9800" : "none",
-              transition: "all 0.2s",
-            }}
-          >
-            Past Seasons
-          </button>
-
+          {NAV_ITEMS.map(({ key, label }) => (
+            <button
+              key={key}
+              className={"nav-btn" + (page === key ? " nav-btn-active" : "")}
+              onClick={() => setPage(key)}
+            >
+              {label}
+            </button>
+          ))}
         </nav>
-        <div style={{ maxWidth: 900, height: "100%", minHeight: "800px", margin: "auto", background: "#111", padding: "2rem", borderRadius: 16, boxShadow: "0 4px 24px rgba(0,0,0,0.8)" }}>
+        <div className="site-content">
          {page === "home" && <Home onNavigate={setPage} />}
         {page === "teams" && <TeamsTable teams={teams} />}
         {page === "Stats" && <StatsPage />}
@@ -254,7 +155,7 @@ function App() {
           )}
         </div>
       </div>
-      
+
     </Router>
   );
 }
