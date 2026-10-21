@@ -135,15 +135,15 @@ const TeamsTable = () => {
       height: 6,
       borderRadius: 6,
       // replaced teal/cyan with dark orange gradient
-      background: "linear-gradient(90deg,#7a2b00,#c2410c,#ff8a00)",
+      background: "linear-gradient(90deg,#7c4310,#c8650f,#f2a33a)",
       marginTop: 12,
       // boxShadow tint changed to match dark orange
-      boxShadow: "0 6px 18px rgba(194,65,12,0.08)"
+      boxShadow: "0 6px 18px rgba(200,101,15,0.08)"
     };
 
     const theadStyle = {
       background: "transparent",
-      color: "#cdeef2"
+      color: "#dbe6f0"
     };
 
     const thStyle = {
@@ -156,7 +156,7 @@ const TeamsTable = () => {
     };
 
     const rowStyle = {
-      background: "linear-gradient(180deg,#07101a 0%, #0b1520 100%)",
+      background: "linear-gradient(180deg,#141a21 0%, #1d2630 100%)",
       color: "#fff",
       borderRadius: 8,
       boxShadow: "inset 0 -1px 0 rgba(255,255,255,0.02)"
@@ -173,7 +173,7 @@ const TeamsTable = () => {
       padding: "6px 8px",
       borderRadius: 8,
       // badge background and text updated to dark orange tones
-      background: "rgba(194,65,12,0.12)",
+      background: "rgba(200,101,15,0.12)",
       color: "#ffd7b0",
       fontWeight: 700,
       textAlign: "center"
@@ -185,11 +185,11 @@ const TeamsTable = () => {
            <div className="card-header">
              <h1 style={titleStyle}>Team Standings</h1>
             <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-              <div style={{ color: "#9fb8d6", fontSize: 14 }}>Season standings (computed from results)</div>
+              <div style={{ color: "#9fb0c0", fontSize: 14 }}>Season standings (computed from results)</div>
               <button
                 className="no-print"
                 onClick={() => printElement(containerRef.current)}
-                style={{ padding: '6px 10px', cursor: 'pointer', borderRadius: 6, border: 'none', background: '#c2410c', color: '#fff' }}
+                style={{ padding: '6px 10px', cursor: 'pointer', borderRadius: 6, border: 'none', background: '#c8650f', color: '#fff' }}
               >
                 Print
               </button>

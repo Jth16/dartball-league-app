@@ -5,9 +5,9 @@ import { printElement } from '../utils/print';
 const accentBar = {
   height: 6,
   borderRadius: 6,
-  background: "linear-gradient(90deg,#7a2b00,#c2410c,#ff8a00)",
+  background: "linear-gradient(90deg,#7c4310,#c8650f,#f2a33a)",
   marginTop: 12,
-  boxShadow: "0 6px 18px rgba(194,65,12,0.08)"
+  boxShadow: "0 6px 18px rgba(200,101,15,0.08)"
 };
 
 const thStyle = {
@@ -19,7 +19,7 @@ const thStyle = {
 };
 
 const rowStyle = {
-  background: "linear-gradient(180deg,#07101a 0%, #0b1520 100%)",
+  background: "linear-gradient(180deg,#141a21 0%, #1d2630 100%)",
   color: "#fff",
   borderRadius: 8
 };
@@ -33,7 +33,7 @@ const Tab = ({ active, onClick, children }) => (
       padding: '8px 16px',
       borderRadius: 10,
       border: active ? '1px solid rgba(255,145,64,0.95)' : '1px solid rgba(255,255,255,0.06)',
-      background: active ? 'linear-gradient(90deg, rgba(194,65,12,0.18), rgba(255,138,0,0.08))' : 'rgba(255,255,255,0.02)',
+      background: active ? 'linear-gradient(90deg, rgba(200,101,15,0.18), rgba(255,138,0,0.08))' : 'rgba(255,255,255,0.02)',
       color: '#fff',
       cursor: 'pointer',
       fontWeight: 700,
@@ -91,7 +91,7 @@ const StandingsView = ({ season }) => {
           ))}
         </tbody>
       </table>
-      {teams.length === 0 && <p style={{ color: '#9fb0bd', padding: 12 }}>No standings found for this season.</p>}
+      {teams.length === 0 && <p style={{ color: '#9fb0c0', padding: 12 }}>No standings found for this season.</p>}
     </div>
   );
 };
@@ -115,7 +115,7 @@ const PlayersView = ({ season }) => {
 
   return (
     <div>
-      {Object.keys(grouped).length === 0 && <p style={{ color: '#9fb0bd', padding: 12 }}>No players found for this season.</p>}
+      {Object.keys(grouped).length === 0 && <p style={{ color: '#9fb0c0', padding: 12 }}>No players found for this season.</p>}
       {Object.entries(grouped).map(([teamName, teamPlayers]) => (
         <section key={teamName} style={{ marginBottom: 24 }}>
           <h3 style={{ color: '#fff', margin: '0 0 8px 0' }}>{teamName}</h3>
@@ -172,7 +172,7 @@ const ResultsView = ({ season }) => {
 
   return (
     <div className="table-wrap">
-      <div style={{ marginBottom: 8, color: '#9fb0bd', fontSize: 13 }}>Playoff series results</div>
+      <div style={{ marginBottom: 8, color: '#9fb0c0', fontSize: 13 }}>Playoff series results</div>
       <table className="data-table wide sticky-first">
         <thead>
           <tr>
@@ -190,16 +190,16 @@ const ResultsView = ({ season }) => {
             return (
               <tr key={r.id} style={rowStyle}>
                 <td style={{ ...cellStyle, paddingLeft: 18 }}>{r.round_label}</td>
-                <td style={{ ...cellStyle, fontWeight: t1Won ? 700 : 400, color: t1Won ? '#fff' : '#9fb0bd' }}>{r.team1_name}</td>
+                <td style={{ ...cellStyle, fontWeight: t1Won ? 700 : 400, color: t1Won ? '#fff' : '#9fb0c0' }}>{r.team1_name}</td>
                 <td style={{ ...cellStyle, textAlign: 'center', fontWeight: t1Won ? 700 : 400 }}>{r.team1_score}</td>
-                <td style={{ ...cellStyle, fontWeight: t2Won ? 700 : 400, color: t2Won ? '#fff' : '#9fb0bd' }}>{r.team2_name}</td>
+                <td style={{ ...cellStyle, fontWeight: t2Won ? 700 : 400, color: t2Won ? '#fff' : '#9fb0c0' }}>{r.team2_name}</td>
                 <td style={{ ...cellStyle, textAlign: 'center', fontWeight: t2Won ? 700 : 400 }}>{r.team2_score}</td>
               </tr>
             );
           })}
         </tbody>
       </table>
-      {results.length === 0 && <p style={{ color: '#9fb0bd', padding: 12 }}>No playoff results found for this season.</p>}
+      {results.length === 0 && <p style={{ color: '#9fb0c0', padding: 12 }}>No playoff results found for this season.</p>}
     </div>
   );
 };
@@ -245,7 +245,7 @@ const LeadersView = ({ season }) => {
 
   return (
     <div>
-      {players.length === 0 && <p style={{ color: '#9fb0bd', padding: 12 }}>No players found for this season.</p>}
+      {players.length === 0 && <p style={{ color: '#9fb0c0', padding: 12 }}>No players found for this season.</p>}
       {players.length > 0 && (
         <div style={tableWrapperStyle}>
           {LEADER_CATEGORIES.map(cat => {
@@ -264,7 +264,7 @@ const LeadersView = ({ season }) => {
                   </thead>
                   <tbody>
                     {rows.length === 0 ? (
-                      <tr><td colSpan="4" style={{ padding: 10, textAlign: 'center', color: '#9fb0bd' }}>—</td></tr>
+                      <tr><td colSpan="4" style={{ padding: 10, textAlign: 'center', color: '#9fb0c0' }}>—</td></tr>
                     ) : rows.map((p, idx) => (
                       <tr key={p.id} style={rowStyle}>
                         <td style={{ ...cellStyle, textAlign: 'center' }}>{idx + 1}</td>
@@ -325,7 +325,7 @@ const Archive = () => {
           <button
             className="no-print"
             onClick={() => printElement(containerRef.current)}
-            style={{ padding: '6px 10px', cursor: 'pointer', borderRadius: 6, border: 'none', background: '#c2410c', color: '#fff' }}
+            style={{ padding: '6px 10px', cursor: 'pointer', borderRadius: 6, border: 'none', background: '#c8650f', color: '#fff' }}
           >
             Print
           </button>
@@ -335,10 +335,10 @@ const Archive = () => {
       <div style={accentBar} />
       <div style={{ height: 12 }} />
 
-      {loadingSeasons && <p style={{ color: '#9fb0bd' }}>Loading seasons…</p>}
+      {loadingSeasons && <p style={{ color: '#9fb0c0' }}>Loading seasons…</p>}
 
       {!loadingSeasons && seasons.length === 0 && (
-        <p style={{ color: '#9fb0bd' }}>No archived seasons yet — check back after the current season wraps up.</p>
+        <p style={{ color: '#9fb0c0' }}>No archived seasons yet — check back after the current season wraps up.</p>
       )}
 
       {!loadingSeasons && seasons.length > 0 && (

@@ -9,7 +9,7 @@ const HeaderImage = () => (
       // gradient that matches the image theme
       background:
         "radial-gradient(1200px 400px at 10% 10%, rgba(255,149,0,0.06), transparent 12%), " +
-        "linear-gradient(135deg, #031323 0%, #07202a 35%, #08343a 65%, #062827 100%)",
+        "linear-gradient(135deg, #10151a 0%, #1a222b 50%, #10151a 100%)",
       textAlign: "center",
       
       boxShadow: "0 6px 28px rgba(0,0,0,0.45)",

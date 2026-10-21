@@ -71,9 +71,9 @@ const AddPlayer = ({ teams, onPlayerAdded }) => {
     borderRadius: 8,
     border: 'none',
     background: 'linear-gradient(90deg, rgb(124 68 32), rgb(212 109 6))',
-    color: '#042027',
+    color: '#182029',
     fontWeight: 700,
-    boxShadow: '0 6px 18px rgba(6,182,212,0.18)',
+    boxShadow: '0 6px 18px rgba(90,150,210,0.18)',
     cursor: 'pointer',
     transition: 'transform 120ms ease'
   };
@@ -82,7 +82,7 @@ const AddPlayer = ({ teams, onPlayerAdded }) => {
     marginTop: 12,
     padding: '8px 12px',
     borderRadius: 8,
-    color: '#0f172a',
+    color: '#141a21',
     background: 'transparent'
   };
 

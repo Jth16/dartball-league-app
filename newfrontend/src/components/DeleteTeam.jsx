@@ -56,7 +56,7 @@ const DeleteTeam = ({ teams, setTeams }) => {
     marginTop: 12,
     padding: '8px 12px',
     borderRadius: 8,
-    color: '#0f172a',
+    color: '#141a21',
     background: 'transparent'
   };
 

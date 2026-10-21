@@ -5,7 +5,7 @@ import Results from './Results';
 import Playoffs from './Playoffs';
 import HeadToHead from './HeadToHead';
 
-const placeholderStyle = { padding: 18, color: '#9fb0bd' };
+const placeholderStyle = { padding: 18, color: '#9fb0c0' };
 
 const Btn = ({ active, onClick, children }) => {
   const base = {
@@ -13,12 +13,12 @@ const Btn = ({ active, onClick, children }) => {
     minHeight: 44,
     borderRadius: 10,
     border: active ? '1px solid rgba(255,145,64,0.95)' : '1px solid rgba(255,255,255,0.06)',
-    background: active ? 'linear-gradient(90deg, rgba(194,65,12,0.18), rgba(255,138,0,0.08))' : 'rgba(255,255,255,0.02)',
-    color: active ? '#fff' : '#e6f7ff',
+    background: active ? 'linear-gradient(90deg, rgba(200,101,15,0.18), rgba(255,138,0,0.08))' : 'rgba(255,255,255,0.02)',
+    color: active ? '#fff' : '#edf2f7',
     cursor: 'pointer',
     fontWeight: 800,
     letterSpacing: '0.02em',
-    boxShadow: active ? '0 6px 20px rgba(194,65,12,0.14)' : '0 4px 12px rgba(0,0,0,0.25)',
+    boxShadow: active ? '0 6px 20px rgba(200,101,15,0.14)' : '0 4px 12px rgba(0,0,0,0.25)',
     transition: 'transform 120ms ease, box-shadow 160ms ease',
     transform: 'translateY(0)',
     minWidth: 72,

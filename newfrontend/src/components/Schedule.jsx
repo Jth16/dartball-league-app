@@ -146,9 +146,9 @@ const Schedule = () => {
   const accentBar = {
     height: 6,
     borderRadius: 6,
-    background: "linear-gradient(90deg,#7a2b00,#c2410c,#ff8a00)",
+    background: "linear-gradient(90deg,#7c4310,#c8650f,#f2a33a)",
     marginTop: 10,
-    boxShadow: "0 6px 18px rgba(194,65,12,0.08)"
+    boxShadow: "0 6px 18px rgba(200,101,15,0.08)"
   };
 
   const thStyle = {
@@ -156,13 +156,13 @@ const Schedule = () => {
     textAlign: "center",
     color: "#ffe8d0",
     fontWeight: 700,
-    background: "#222",
+    background: "#2a323b",
     boxSizing: "border-box"
   };
 
   // row style used for schedule rows
   const rowStyle = {
-    background: "linear-gradient(180deg,#07101a 0%, #0b1520 100%)",
+    background: "linear-gradient(180deg,#141a21 0%, #1d2630 100%)",
     color: "#fff",
     borderRadius: 8,
     boxShadow: "inset 0 -1px 0 rgba(255,255,255,0.02)",
@@ -180,12 +180,12 @@ const Schedule = () => {
     ...cellStyle,
     width: 160,
     fontWeight: 700,
-    color: "#e6f7ff"
+    color: "#edf2f7"
   };
 
   const roundHeaderStyle = {
     padding: "10px 12px",
-    background: "#0e2230",
+    background: "#27333f",
     color: "#cbd5e1",
     fontWeight: 700,
     borderRadius: 8,
@@ -209,7 +209,7 @@ const Schedule = () => {
             cursor: 'pointer',
             borderRadius: 6,
             border: 'none',
-            background: '#c2410c',
+            background: '#c8650f',
             color: '#fff',
             fontWeight: 700
           }}

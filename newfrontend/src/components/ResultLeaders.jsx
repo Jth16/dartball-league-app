@@ -3,17 +3,17 @@ import React, { useEffect, useState } from 'react';
 const API_BASE = process.env.REACT_APP_API_URL || 'https://dartball-backend-654879525708.us-central1.run.app';
 
 // compacted panel styles — increased sizes for single panels
-const container = { marginBottom: 10, padding: 10, background: 'linear-gradient(180deg,#07131a,#081821)', borderRadius: 8 };
+const container = { marginBottom: 10, padding: 10, background: 'linear-gradient(180deg,#182029,#182029)', borderRadius: 8 };
 const title = { margin: 0, color: '#fff', fontSize: 18, fontWeight: 700 }; // bigger
-const small = { color: '#9fb0bd', fontSize: 13 };
+const small = { color: '#9fb0c0', fontSize: 13 };
 // each stat panel will take about half the width so two panels appear per row
-const statBox = { flex: '0 0 48%', padding: 10, background: 'linear-gradient(180deg,#071724,#07202a)', borderRadius: 6, minWidth: 160, boxSizing: 'border-box' };
+const statBox = { flex: '0 0 48%', padding: 10, background: 'linear-gradient(180deg,#182029,#182029)', borderRadius: 6, minWidth: 160, boxSizing: 'border-box' };
 const statValue = { fontSize: 22, fontWeight: 800, color: '#ffdfb5', lineHeight: 1 }; // bigger
 const meta = { marginTop: 6, color: '#cbd5e1', fontSize: 13 }; // slightly bigger
 
 const table = { width: '100%', borderCollapse: 'collapse', marginTop: 6, fontSize: 14 };
 const th = { textAlign: 'left', color: '#fff', fontWeight: 800, padding: '6px 8px', fontSize: 13 };
-const td = { padding: '6px 8px', color: '#e6f7ff', fontSize: 14 };
+const td = { padding: '6px 8px', color: '#edf2f7', fontSize: 14 };
 
 // format dates using UTC so local timezone won't shift the displayed day
 const formatDisplayDate = (isoDate) => {
@@ -367,7 +367,7 @@ const ResultLeaders = ({ topN = 9 }) => {
         </div>
 
         <div style={{ flex: 1, minWidth: 300 }}>
-          <div style={{ background: 'linear-gradient(180deg,#071724,#071b22)', padding: 10, borderRadius: 8 }}>
+          <div style={{ background: 'linear-gradient(180deg,#182029,#182029)', padding: 10, borderRadius: 8 }}>
             <h4 style={{ ...title, fontSize: 13 }}>Season: Runs & Diff</h4>
             <div style={small}>Combined table of total runs and run differential</div>
             <table style={table}>
@@ -390,14 +390,14 @@ const ResultLeaders = ({ topN = 9 }) => {
                     <td style={td}>{Number(t.avgRunsPerGame || 0).toFixed(1)}</td>
                   </tr>
                 ))}
-                {statsList.length === 0 && <tr><td colSpan="5" style={{ padding: 10, color: '#9fb0bd' }}>—</td></tr>}
+                {statsList.length === 0 && <tr><td colSpan="5" style={{ padding: 10, color: '#9fb0c0' }}>—</td></tr>}
               </tbody>
             </table>
           </div>
 
           <div style={{ height: 10 }} />
 
-          <div style={{ background: 'linear-gradient(180deg,#071724,#071b22)', padding: 10, borderRadius: 8 }}>
+          <div style={{ background: 'linear-gradient(180deg,#182029,#182029)', padding: 10, borderRadius: 8 }}>
             <h4 style={{ ...title, fontSize: 13 }}>Sweeps (3–0) — For & Against</h4>
             <div style={small}>How many 3–0 series each team has won and lost</div>
             <table style={{ ...table, marginTop: 6 }}>
@@ -416,7 +416,7 @@ const ResultLeaders = ({ topN = 9 }) => {
                     <td style={{ ...td, textAlign: 'center' }}>{row.swept_against}</td>
                   </tr>
                 ))}
-                {sweepsTable.length === 0 && <tr><td colSpan="3" style={{ padding: 10, color: '#9fb0bd' }}>—</td></tr>}
+                {sweepsTable.length === 0 && <tr><td colSpan="3" style={{ padding: 10, color: '#9fb0c0' }}>—</td></tr>}
               </tbody>
             </table>
           </div>

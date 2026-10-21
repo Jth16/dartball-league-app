@@ -1,9 +1,9 @@
 import React from 'react';
 
 const sectionStyle = { marginBottom: 16, lineHeight: 1.5 };
-const headingStyle = { color: '#e6f7ff', marginBottom: 8 };
+const headingStyle = { color: '#edf2f7', marginBottom: 8 };
 const textStyle = { color: '#cbd5e1' };
-const container = { padding: 16, borderRadius: 10, background: '#07101a', border: '1px solid rgba(255,255,255,0.04)' };
+const container = { padding: 16, borderRadius: 10, background: '#141a21', border: '1px solid rgba(255,255,255,0.04)' };
 
 const Rules = () => (
     <article style={container}>

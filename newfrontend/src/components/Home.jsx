@@ -4,7 +4,7 @@ import Playoffs from './Playoffs';
 const CollapsibleArticle = ({ label, headline, children, defaultOpen = true, isMobile }) => {
   const [open, setOpen] = useState(defaultOpen);
   return (
-    <div style={{ borderLeft: '3px solid #c2410c', paddingLeft: 12, marginBottom: 14 }}>
+    <div style={{ borderLeft: '3px solid #c8650f', paddingLeft: 12, marginBottom: 14 }}>
       <div
         onClick={() => setOpen(o => !o)}
         style={{ cursor: 'pointer', display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 8, userSelect: 'none' }}
@@ -40,27 +40,27 @@ const Home = (props) => {
     margin: isMobile ? '0.5rem auto' : '2rem auto',
     padding: isMobile ? '0.75rem' : '1.5rem',
     borderRadius: 14,
-    background: 'linear-gradient(180deg, rgba(8,18,24,0.95) 0%, rgba(6,30,36,0.95) 100%)',
-    color: '#e6f7ff',
-    boxShadow: '0 10px 30px rgba(2,6,8,0.6)',
+    background: 'linear-gradient(180deg, rgba(24,32,41,0.95) 0%, rgba(18,25,32,0.95) 100%)',
+    color: '#edf2f7',
+    boxShadow: '0 10px 30px rgba(0,0,0,0.6)',
     boxSizing: 'border-box'
   };
 
   const title = { margin: 0, fontSize: isMobile ? '1.4rem' : '1.6rem', color: '#fff' };
   const lead = { color: '#ffd7b0', marginTop: 8, marginBottom: 16, fontSize: isMobile ? '1.05rem' : undefined };
   const blurb = {
-    background: 'linear-gradient(180deg,#07101a 0%, #0b1520 100%)',
+    background: 'linear-gradient(180deg,#141a21 0%, #1d2630 100%)',
     padding: 12,
     borderRadius: 10,
     marginBottom: 12,
-    color: '#e6f7ff',
+    color: '#edf2f7',
     boxShadow: 'inset 0 -1px 0 rgba(255,255,255,0.02)'
   };
 
   const accentBar = {
     height: 6,
     borderRadius: 6,
-    background: 'linear-gradient(90deg,#7a2b00,#c2410c,#ff8a00)',
+    background: 'linear-gradient(90deg,#7c4310,#c8650f,#f2a33a)',
     margin: '14px 0'
   };
 

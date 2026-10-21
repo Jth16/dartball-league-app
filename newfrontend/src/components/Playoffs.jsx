@@ -73,8 +73,8 @@ const Playoffs = () => {
         return (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
                 <div style={{
-                    background: 'linear-gradient(180deg, #0d1b2a 0%, #0b1520 100%)',
-                    border: '1px solid #1e3a50',
+                    background: 'linear-gradient(180deg, #141a21 0%, #1d2630 100%)',
+                    border: '1px solid #34475a',
                     borderRadius: 6,
                     width,
                     flexShrink: 0,
@@ -82,7 +82,7 @@ const Playoffs = () => {
                 }}>
                     {title && (
                         <div style={{
-                            background: 'linear-gradient(90deg, #7a2b00, #c2410c)',
+                            background: 'linear-gradient(90deg, #7c4310, #c8650f)',
                             color: '#fff',
                             fontSize: '0.6rem',
                             fontWeight: 'bold',
@@ -97,7 +97,7 @@ const Playoffs = () => {
                     )}
                     <div style={{
                         padding: '6px 10px',
-                        borderBottom: '1px solid #1e3a50',
+                        borderBottom: '1px solid #34475a',
                         display: 'flex',
                         alignItems: 'center',
                         gap: 6,
@@ -105,7 +105,7 @@ const Playoffs = () => {
                     }}>
                         <span style={{ color: '#ff9800', fontSize: '0.7rem', fontWeight: 'bold', minWidth: 16 }}>{topLabel}</span>
                         <span style={{ fontSize: '0.8rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', flex: 1 }}>{topName}</span>
-                        {topScore != null && <span style={{ fontSize: '0.9rem', fontWeight: 'bold', color: topWon ? '#fff' : '#7a8fa0', minWidth: 12, textAlign: 'right' }}>{topScore}</span>}
+                        {topScore != null && <span style={{ fontSize: '0.9rem', fontWeight: 'bold', color: topWon ? '#fff' : '#7f93a6', minWidth: 12, textAlign: 'right' }}>{topScore}</span>}
                     </div>
                     <div style={{
                         padding: '6px 10px',
@@ -116,11 +116,11 @@ const Playoffs = () => {
                     }}>
                         <span style={{ color: '#ff9800', fontSize: '0.7rem', fontWeight: 'bold', minWidth: 16 }}>{bottomLabel}</span>
                         <span style={{ fontSize: '0.8rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', flex: 1 }}>{bottomName}</span>
-                        {bottomScore != null && <span style={{ fontSize: '0.9rem', fontWeight: 'bold', color: bottomWon ? '#fff' : '#7a8fa0', minWidth: 12, textAlign: 'right' }}>{bottomScore}</span>}
+                        {bottomScore != null && <span style={{ fontSize: '0.9rem', fontWeight: 'bold', color: bottomWon ? '#fff' : '#7f93a6', minWidth: 12, textAlign: 'right' }}>{bottomScore}</span>}
                     </div>
                 </div>
                 {time && (
-                    <div style={{ fontSize: '0.65rem', color: '#7a8fa0', textAlign: 'center', paddingLeft: 2 }}>{time}</div>
+                    <div style={{ fontSize: '0.65rem', color: '#7f93a6', textAlign: 'center', paddingLeft: 2 }}>{time}</div>
                 )}
             </div>
         );
@@ -164,18 +164,18 @@ const Playoffs = () => {
         <div style={{
             maxWidth: 1100,
             margin: '2rem auto',
-            background: 'linear-gradient(180deg, rgba(8,18,24,0.95) 0%, rgba(6,30,36,0.95) 100%)',
-            color: '#e6f7ff',
+            background: 'linear-gradient(180deg, rgba(24,32,41,0.95) 0%, rgba(18,25,32,0.95) 100%)',
+            color: '#edf2f7',
             padding: '1.5rem',
             borderRadius: 14,
-            boxShadow: '0 10px 30px rgba(2,6,8,0.6)',
+            boxShadow: '0 10px 30px rgba(0,0,0,0.6)',
         }}>
             <h1 style={{ margin: 0, color: '#fff', fontSize: '1.5rem', letterSpacing: '0.02em' }}>Playoffs</h1>
             <p style={{ color: '#888', marginTop: 4, marginBottom: 12, fontSize: '0.8rem' }}> *Player must have played in at least 32 games to be eligble for the playoffs</p>
             <div style={{
                 height: 6, borderRadius: 6, marginTop: 12,
-                background: 'linear-gradient(90deg,#7a2b00,#c2410c,#ff8a00)',
-                boxShadow: '0 6px 18px rgba(194,65,12,0.08)',
+                background: 'linear-gradient(90deg,#7c4310,#c8650f,#f2a33a)',
+                boxShadow: '0 6px 18px rgba(200,101,15,0.08)',
             }} />
 
             {/* ── Playoff Bracket ── */}
@@ -300,8 +300,8 @@ const Playoffs = () => {
                     { seed: 9, games: 2, winner: true },
                 ].map(({ seed, games, winner }) => (
                     <div key={seed} style={{
-                        background: winner ? 'linear-gradient(180deg, #2a1a0e, #1a0f05)' : 'linear-gradient(180deg, #0d1b2a, #0b1520)',
-                        border: `1px solid ${winner ? '#ff9800' : '#1e3a50'}`,
+                        background: winner ? 'linear-gradient(180deg, #2a1a0e, #1a0f05)' : 'linear-gradient(180deg, #141a21, #1d2630)',
+                        border: `1px solid ${winner ? '#ff9800' : '#34475a'}`,
                         borderRadius: 8,
                         padding: '4px 8px',
                         display: 'flex',
@@ -311,7 +311,7 @@ const Playoffs = () => {
                     }}>
                         <span style={{ color: '#ff9800', fontWeight: 'bold', fontSize: '0.8rem' }}>#{seed}</span>
                         <span style={{ fontSize: '0.9rem', flex: 1 }}>{seedName(seed)}</span>
-                        <span style={{ fontSize: '1.5rem', fontWeight: 'bold', color: winner ? '#fff' : '#7a8fa0' }}>{games}</span>
+                        <span style={{ fontSize: '1.5rem', fontWeight: 'bold', color: winner ? '#fff' : '#7f93a6' }}>{games}</span>
                         {winner && <span style={{ fontSize: '0.7rem', color: '#ff9800', fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Winner</span>}
                     </div>
                 ))}

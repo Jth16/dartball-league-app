@@ -494,11 +494,11 @@ return (
 
         {/* suggestion list - shown while typing (matches present) */}
         {matches.length > 0 && !selected && (
-            <div style={{ background: '#07101a', borderRadius: 8, marginTop: 8, padding: 8 }}>
+            <div style={{ background: '#141a21', borderRadius: 8, marginTop: 8, padding: 8 }}>
                 {matches.map((p) => (
                     <div
                         key={p.id || p.name}
-                        style={{ padding: '8px 10px', borderRadius: 6, cursor: 'pointer', color: '#e6f7ff' }}
+                        style={{ padding: '8px 10px', borderRadius: 6, cursor: 'pointer', color: '#edf2f7' }}
                         onClick={() => pick(p)}
                     >
                         <div style={{ fontWeight: 800, textAlign: 'left' }}>{p.name}</div>
@@ -509,7 +509,7 @@ return (
 
         {/* selected full player record - only shown after a suggestion is picked */}
         {selected && (
-            <div style={{ marginTop: 16, padding: 12, borderRadius: 8, border: '1px solid rgba(255, 255, 255, 0.62)', background: '#07101a', textAlign: 'center' }}>
+            <div style={{ marginTop: 16, padding: 12, borderRadius: 8, border: '1px solid rgba(255, 255, 255, 0.62)', background: '#141a21', textAlign: 'center' }}>
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'left', marginBottom: 2 }}>
                     <div>
                         <div style={{ fontSize: 18, paddingLeft: 10, fontWeight: 800, color: '#fff', textAlign: 'left' }}>{selected.name}</div>
@@ -562,7 +562,7 @@ return (
                                 padding: '4px 8px',
                                 borderRadius: 8,
                                 background: i % 2 === 0 ? 'rgba(255,255,255,0.02)' : 'rgba(255,255,255,0.01)',
-                                color: '#e6f7ff',
+                                color: '#edf2f7',
                                 fontWeight: 600
                               }}
                             >

@@ -7,7 +7,7 @@ const headerStyle = { display: 'flex', justifyContent: 'space-between', alignIte
 const dateHeaderStyle = {
   display: 'flex', justifyContent: 'space-between', alignItems: 'center',
   padding: '10px 12px', cursor: 'pointer',
-  background: 'linear-gradient(180deg,#0c2430,#06202a)', borderRadius: 6,
+  background: 'linear-gradient(180deg,#202b36,#202b36)', borderRadius: 6,
   marginBottom: 8
 };
 const matchupHeaderStyle = {
@@ -15,7 +15,7 @@ const matchupHeaderStyle = {
   display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid rgba(255,255,255,0.02)'
 };
 const gameRowStyle = { padding: '8px 12px', borderBottom: '1px solid rgba(255,255,255,0.03)', display: 'flex', justifyContent: 'space-between' };
-const smallMuted = { color: '#9fb0bd', fontSize: 13 };
+const smallMuted = { color: '#9fb0c0', fontSize: 13 };
 
 // format dates using UTC so local timezone won't shift the displayed day
 const formatDisplayDate = (isoDate) => {
@@ -139,9 +139,9 @@ const Results = () => {
       </div>
 
       <div style={{ marginTop: 12 }}>
-        {loading && <div style={{ padding: 12, color: '#9fb0bd' }}>Loading results…</div>}
+        {loading && <div style={{ padding: 12, color: '#9fb0c0' }}>Loading results…</div>}
         {err && <div style={{ padding: 12, color: '#ffb4a2' }}>{err}</div>}
-        {!loading && dateKeys.length === 0 && <div style={{ padding: 12, color: '#9fb0bd' }}>No results found</div>}
+        {!loading && dateKeys.length === 0 && <div style={{ padding: 12, color: '#9fb0c0' }}>No results found</div>}
 
         {dateKeys.map(dateKey => {
           const matchups = byDate[dateKey] || [];
@@ -189,8 +189,8 @@ const Results = () => {
                                       const bScore = Number(gTeamB_score) || 0;
                                       const aIsWinner = aScore > bScore;
                                       const bIsWinner = bScore > aScore;
-                                      const winnerStyle = { fontWeight: 800, color: '#ffdfb5' , background: 'rgba(194,65,12,0.08)', padding: '2px 6px', borderRadius: 6 };
-                                      const normalStyle = { color: '#e6f7ff' };
+                                      const winnerStyle = { fontWeight: 800, color: '#ffdfb5' , background: 'rgba(200,101,15,0.08)', padding: '2px 6px', borderRadius: 6 };
+                                      const normalStyle = { color: '#edf2f7' };
                                       return (
                                         <>
                                           <div style={aIsWinner ? winnerStyle : normalStyle}>{teamA} <span style={{ marginLeft: 8, opacity: 0.9 }}>{aScore}</span></div>

@@ -105,7 +105,7 @@ function AppShell() {
   return (
       <div
         style={{
-          background: "#000",
+          background: "#0f1318",
           minHeight: "100vh",
           color: "#fff",
           position: "relative",
@@ -116,7 +116,7 @@ function AppShell() {
           className="site-nav"
           style={{
             /* main nav background (keeps existing look) */
-            backgroundImage: "linear-gradient(90deg, #232526 0%, #000000 100%) , linear-gradient(90deg, #663e01ff, #663e01ff)",
+            backgroundImage: "linear-gradient(90deg, #1a222b 0%, #0f1318 100%) , linear-gradient(90deg, #3f6f99, #7fb0d9, #3f6f99)",
             /* create a stylish gradient bottom border using a second background + transparent border */
             borderBottom: "6px solid transparent",
             backgroundOrigin: "padding-box, border-box",
@@ -167,7 +167,7 @@ function AppShell() {
             left: 0,
             bottom: 0,
             width: "100%",
-            background: "#222",
+            background: "#2a323b",
             textAlign: "center",
             padding: "1rem 0",
             boxShadow: "0 -2px 8px rgba(0,0,0,0.7)",
@@ -187,7 +187,7 @@ function AppShell() {
                 textDecoration: "none",
                 padding: "0.75rem 2rem",
                 borderRadius: "25px",
-                background: "#222",
+                background: "#2a323b",
                 boxShadow: "0 0 10px #ff9800",
                 cursor: "pointer",
                 transition: "all 0.2s",

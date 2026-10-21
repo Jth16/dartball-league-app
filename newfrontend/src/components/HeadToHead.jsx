@@ -99,11 +99,11 @@ const HeadToHead = () => {
     if (rowId === colId) return { background: '#1c1c1c', color: '#555' };
     const record = matrix[rowId]?.[colId];
     if (!record || (record.wins === 0 && record.losses === 0)) {
-      return { background: 'transparent', color: '#9fb0bd' };
+      return { background: 'transparent', color: '#9fb0c0' };
     }
     if (record.wins > record.losses) return { background: 'rgba(255,152,0,0.15)', color: '#ffd7b0' };
     if (record.losses > record.wins) return { background: 'rgba(180,30,30,0.18)', color: '#ffaaaa' };
-    return { background: 'transparent', color: '#e6f7ff' };
+    return { background: 'transparent', color: '#edf2f7' };
   };
 
   const getCellText = (rowId, colId) => {
@@ -113,34 +113,34 @@ const HeadToHead = () => {
     return `${record.wins}-${record.losses}`;
   };
 
-  const stickyColBg = (ri) => ri % 2 === 0 ? '#0d1b2a' : '#0b1520';
+  const stickyColBg = (ri) => ri % 2 === 0 ? '#141a21' : '#1d2630';
 
   return (
     <div style={{
       margin: '2rem auto',
-      background: 'linear-gradient(180deg, rgba(8,18,24,0.95) 0%, rgba(6,30,36,0.95) 100%)',
-      color: '#e6f7ff',
+      background: 'linear-gradient(180deg, rgba(24,32,41,0.95) 0%, rgba(18,25,32,0.95) 100%)',
+      color: '#edf2f7',
       padding: '1.5rem',
       borderRadius: 14,
-      boxShadow: '0 10px 30px rgba(2,6,8,0.6)',
+      boxShadow: '0 10px 30px rgba(0,0,0,0.6)',
       boxSizing: 'border-box',
     }}>
       <h1 style={{ margin: 0, color: '#fff', fontSize: '1.5rem', letterSpacing: '0.02em' }}>
         Head-to-Head Records
       </h1>
-      <div style={{ color: '#9fb0bd', fontSize: '0.85rem', marginTop: 4 }}>
+      <div style={{ color: '#9fb0c0', fontSize: '0.85rem', marginTop: 4 }}>
         Row team's W-L record against each column team · Teams sorted by standings
       </div>
       <div style={{
         height: 6,
         borderRadius: 6,
-        background: 'linear-gradient(90deg,#7a2b00,#c2410c,#ff8a00)',
+        background: 'linear-gradient(90deg,#7c4310,#c8650f,#f2a33a)',
         marginTop: 12,
         marginBottom: 16,
       }} />
 
       {loading ? (
-        <div style={{ color: '#9fb0bd', textAlign: 'center', padding: '2rem' }}>Loading...</div>
+        <div style={{ color: '#9fb0c0', textAlign: 'center', padding: '2rem' }}>Loading...</div>
       ) : (
         <div style={{ overflowX: 'auto' }}>
           <table style={{ borderCollapse: 'collapse', fontSize: '0.88rem', whiteSpace: 'nowrap' }}>
@@ -153,10 +153,10 @@ const HeadToHead = () => {
                   fontWeight: 700,
                   position: 'sticky',
                   left: 0,
-                  background: '#0d1b2a',
+                  background: '#141a21',
                   zIndex: 2,
-                  borderBottom: '2px solid #c2410c',
-                  borderRight: '1px solid #333',
+                  borderBottom: '2px solid #c8650f',
+                  borderRight: '1px solid #3a4654',
                   minWidth: 100,
                 }}>Team</th>
                 {teams.map(t => (
@@ -165,7 +165,7 @@ const HeadToHead = () => {
                     textAlign: 'center',
                     color: '#ffe8d0',
                     fontWeight: 700,
-                    borderBottom: '2px solid #c2410c',
+                    borderBottom: '2px solid #c8650f',
                     minWidth: 36,
                     height: 110,
                     verticalAlign: 'bottom',
@@ -183,15 +183,15 @@ const HeadToHead = () => {
                   textAlign: 'center',
                   color: '#ffe8d0',
                   fontWeight: 700,
-                  borderBottom: '2px solid #c2410c',
-                  borderLeft: '2px solid #c2410c',
+                  borderBottom: '2px solid #c8650f',
+                  borderLeft: '2px solid #c8650f',
                   minWidth: 72,
                 }}>Overall</th>
               </tr>
             </thead>
             <tbody>
               {teams.map((rowTeam, ri) => (
-                <tr key={rowTeam.id} style={{ background: ri % 2 === 0 ? '#0d1b2a' : '#0b1520' }}>
+                <tr key={rowTeam.id} style={{ background: ri % 2 === 0 ? '#141a21' : '#1d2630' }}>
                   <td style={{
                     padding: '9px 14px',
                     fontWeight: 700,
@@ -200,7 +200,7 @@ const HeadToHead = () => {
                     left: 0,
                     background: stickyColBg(ri),
                     zIndex: 1,
-                    borderRight: '1px solid #333',
+                    borderRight: '1px solid #3a4654',
                   }}>{rowTeam.name}</td>
                   {teams.map(colTeam => {
                     const cs = getCellStyle(rowTeam.id, colTeam.id);
@@ -220,8 +220,8 @@ const HeadToHead = () => {
                     textAlign: 'center',
                     fontWeight: 700,
                     color: '#ffd7b0',
-                    borderLeft: '2px solid #c2410c',
-                    background: 'rgba(194,65,12,0.12)',
+                    borderLeft: '2px solid #c8650f',
+                    background: 'rgba(200,101,15,0.12)',
                   }}>
                     {rowTeam.wins}-{rowTeam.losses}
                   </td>

@@ -161,7 +161,7 @@ const UpdatePlayerRecord = ({ teams }) => {
     marginTop: 10,
     padding: '8px 12px',
     borderRadius: 8,
-    color: message.type === 'success' ? '#064e3b' : (message.type === 'error' ? '#7f1d1d' : '#0f172a'),
+    color: message.type === 'success' ? '#064e3b' : (message.type === 'error' ? '#7f1d1d' : '#141a21'),
     background: message.type === 'success' ? '#bbf7d0' : (message.type === 'error' ? '#fecaca' : 'transparent'),
     border: message.type ? '1px solid rgba(0,0,0,0.06)' : 'none'
   };

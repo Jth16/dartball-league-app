@@ -163,7 +163,7 @@ const AddResult = () => {
         {message && <div style={{ marginTop: 8, color: '#ffd7a8' }}>{message}</div>}
 
         <div style={{ marginTop: 12 }}>
-          <button type="submit" disabled={loading} style={{ padding: '8px 12px', background: '#c2410c', color: '#fff', border: 'none', borderRadius: 6, cursor: 'pointer' }}>
+          <button type="submit" disabled={loading} style={{ padding: '8px 12px', background: '#c8650f', color: '#fff', border: 'none', borderRadius: 6, cursor: 'pointer' }}>
             {loading ? 'Saving...' : 'Save Results'}
           </button>
         </div>

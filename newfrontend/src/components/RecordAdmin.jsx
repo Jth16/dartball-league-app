@@ -141,9 +141,9 @@ const RecordAdmin = ({ teams, setTeams, apiBase, downloadToken }) => {
     borderRadius: 8,
     border: 'none',
     background: 'linear-gradient(90deg, rgb(124 68 32), rgb(212 109 6))',
-    color: '#042027',
+    color: '#182029',
     fontWeight: 700,
-    boxShadow: '0 6px 18px rgba(6,182,212,0.18)',
+    boxShadow: '0 6px 18px rgba(90,150,210,0.18)',
     cursor: 'pointer',
     transition: 'transform 120ms ease',
     marginBottom: 12
@@ -160,7 +160,7 @@ const RecordAdmin = ({ teams, setTeams, apiBase, downloadToken }) => {
     marginTop: 10,
     padding: '8px 12px',
     borderRadius: 8,
-    color: message.type === 'success' ? '#064e3b' : (message.type === 'error' ? '#7f1d1d' : '#0f172a'),
+    color: message.type === 'success' ? '#064e3b' : (message.type === 'error' ? '#7f1d1d' : '#141a21'),
     background: message.type === 'success' ? '#bbf7d0' : (message.type === 'error' ? '#fecaca' : 'transparent'),
     border: message.type ? '1px solid rgba(0,0,0,0.06)' : 'none'
   };

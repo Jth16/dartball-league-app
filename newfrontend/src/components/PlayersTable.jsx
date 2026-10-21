@@ -74,21 +74,21 @@ const PlayersTable = () => {
     const accentBar = {
       height: 6,
       borderRadius: 6,
-      background: "linear-gradient(90deg,#7a2b00,#c2410c,#ff8a00)",
+      background: "linear-gradient(90deg,#7c4310,#c8650f,#f2a33a)",
       marginTop: 10,
-      boxShadow: "0 6px 18px rgba(194,65,12,0.08)"
+      boxShadow: "0 6px 18px rgba(200,101,15,0.08)"
     };
 
     const thStyle = {
       padding: "8px 8px",
       textAlign: "left",
-      background: "#222",
+      background: "#2a323b",
       color: "#fff",
       fontWeight: 700
     };
 
     const rowStyle = {
-      background: "linear-gradient(180deg,#07101a 0%, #0b1520 100%)",
+      background: "linear-gradient(180deg,#141a21 0%, #1d2630 100%)",
       color: "#fff",
       borderRadius: 8
     };
@@ -130,7 +130,7 @@ const PlayersTable = () => {
           <button
             className="no-print"
             onClick={() => printElement(containerRef.current)}
-            style={{ padding: '6px 10px', cursor: 'pointer', borderRadius: 6, border: 'none', background: '#c2410c', color: '#fff' }}
+            style={{ padding: '6px 10px', cursor: 'pointer', borderRadius: 6, border: 'none', background: '#c8650f', color: '#fff' }}
           >
             Print
           </button>
