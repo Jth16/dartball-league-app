@@ -195,6 +195,7 @@ const PlayersTable = () => {
                         <th style={{ ...thStyle, textAlign: 'center' }}>Triples</th>
                         <th style={{ ...thStyle, textAlign: 'center' }}>HRs</th>
                         <th style={{ ...thStyle, textAlign: 'center' }}>Dimes</th>
+                        <th style={{ ...thStyle, textAlign: 'center' }}>Errors</th>
                         <th style={{ ...thStyle, textAlign: 'center' }}>GP</th>
                       </tr>
                     </thead>
@@ -210,6 +211,7 @@ const PlayersTable = () => {
                           <td style={{ ...cellStyle, textAlign: 'center' }}>{player.Triples ?? 0}</td>
                           <td style={{ ...cellStyle, textAlign: 'center' }}>{player.HRs ?? 0}</td>
                           <td style={{ ...cellStyle, textAlign: 'center' }}>{player.Dimes ?? 0}</td>
+                          <td style={{ ...cellStyle, textAlign: 'center' }}>{player.Errors ?? 0}</td>
                           <td style={{ ...cellStyle, textAlign: 'center' }}>{player.GP ?? 0}</td>
                         </tr>
                       ))}

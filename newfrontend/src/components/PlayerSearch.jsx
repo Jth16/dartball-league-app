@@ -102,7 +102,8 @@ const PlayerSearch = () => {
       { key: 'doubles', getter: p => Number(p.Doubles ?? p.doubles ?? NaN) },
       { key: 'triples', getter: p => Number(p.Triples ?? p.triples ?? NaN) },
       { key: 'hrs', getter: p => Number(p.HRs ?? p.hrs ?? NaN) },
-      { key: 'dimes', getter: p => Number(p.Dimes ?? p.dimes ?? NaN) }
+      { key: 'dimes', getter: p => Number(p.Dimes ?? p.dimes ?? NaN) },
+      { key: 'errors', getter: p => Number(p.Errors ?? p.errors ?? NaN) }
     ];
 
     const idFor = (p) => String(p.id ?? p.player_id ?? p.name ?? '');
@@ -233,6 +234,8 @@ const PlayerSearch = () => {
           p.hrsRank = eHrs.rank; p.hrsTied = !!eHrs.tied;
           const eDimes = getRankEntry(maps, 'dimes', p);
           p.dimesRank = eDimes.rank; p.dimesTied = !!eDimes.tied;
+          const eErrors = getRankEntry(maps, 'errors', p);
+          p.errorsRank = eErrors.rank; p.errorsTied = !!eErrors.tied;
         });
       }
 
@@ -308,6 +311,8 @@ const PlayerSearch = () => {
           p.hrsRank = eHrs.rank; p.hrsTied = !!eHrs.tied;
           const eDimes = getRankEntry(maps, 'dimes', p);
           p.dimesRank = eDimes.rank; p.dimesTied = !!eDimes.tied;
+          const eErrors = getRankEntry(maps, 'errors', p);
+          p.errorsRank = eErrors.rank; p.errorsTied = !!eErrors.tied;
         }
       } catch (e) {
         console.warn('loadFullPlayer: annotation failed', e);
@@ -352,6 +357,8 @@ const PlayerSearch = () => {
         p.hrsRank = eHrs.rank; p.hrsTied = !!eHrs.tied;
         const eDimes = getRankEntry(maps, 'dimes', p);
         p.dimesRank = eDimes.rank; p.dimesTied = !!eDimes.tied;
+        const eErrors = getRankEntry(maps, 'errors', p);
+        p.errorsRank = eErrors.rank; p.errorsTied = !!eErrors.tied;
       }
     } catch (e) {
       console.warn('loadFullPlayer rank annotation failed', e);
@@ -393,6 +400,8 @@ const PlayerSearch = () => {
       withName.hrsRank = eHrs.rank; withName.hrsTied = !!eHrs.tied;
       const eDimes = getRankEntry(maps2, 'dimes', withName);
       withName.dimesRank = eDimes.rank; withName.dimesTied = !!eDimes.tied;
+      const eErrors = getRankEntry(maps2, 'errors', withName);
+      withName.errorsRank = eErrors.rank; withName.errorsTied = !!eErrors.tied;
     }
     setSelected(withName);
   };
@@ -537,6 +546,7 @@ return (
                       <th style={{ textAlign: 'center', padding: '4px 8px', color: '#ffd7b0', fontWeight: 700 }}>Doubles</th>
                       <th style={{ textAlign: 'center', padding: '4px 8px', color: '#ffd7b0', fontWeight: 700 }}>Triples</th>
                       <th style={{ textAlign: 'center', padding: '4px 8px', color: '#ffd7b0', fontWeight: 700 }}>Dimes</th>
+                      <th style={{ textAlign: 'center', padding: '4px 8px', color: '#ffd7b0', fontWeight: 700 }}>Errors</th>
                       <th style={{ textAlign: 'center', padding: '4px 8px', color: '#ffd7b0', fontWeight: 700 }}>HRs</th>
                       <th style={{ textAlign: 'center', padding: '4px 8px', color: '#ffd7b0', fontWeight: 700 }}>GP</th>
                     </tr>
@@ -551,6 +561,7 @@ return (
                           fmt(selected.Doubles ?? selected.doubles),
                           fmt(selected.Triples ?? selected.triples),
                           fmt(selected.Dimes ?? selected.dimes),
+                          fmt(selected.Errors ?? selected.errors),
                           fmt(selected.HRs ?? selected.hrs),
                           fmt(selected.GP ?? selected.gp)
                         ].map((val, i) => (
@@ -607,6 +618,11 @@ return (
                         <div style={{ textAlign: 'center' }}>
                             <div style={{ color: '#cbd5e1' }}>Dimes</div>
                             <div style={{ color: '#ffd7b0', fontWeight: 700 }}>{formatRank(selected.dimesRank, selected.dimesTied)}</div>
+                        </div>
+
+                        <div style={{ textAlign: 'center' }}>
+                            <div style={{ color: '#cbd5e1' }}>Errors</div>
+                            <div style={{ color: '#ffd7b0', fontWeight: 700 }}>{formatRank(selected.errorsRank, selected.errorsTied)}</div>
                         </div>
                     </div>
                 </div>

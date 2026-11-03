@@ -75,7 +75,7 @@ Key API routes:
 
 ```
 Team:   id, name, wins, losses, win_pct, games_behind, games_played
-Player: id, name, team_id (FK), Singles, Doubles, Triples, Dimes, HRs, Avg, GP, AtBats, hits
+Player: id, name, team_id (FK), Singles, Doubles, Triples, Dimes, Errors, HRs, Avg, GP, AtBats, hits
 Result: id, date, game_number, team1_id (FK), team2_id (FK), team1_score, team2_score
 ```
 

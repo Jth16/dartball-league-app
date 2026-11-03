@@ -132,6 +132,7 @@ const PlayersView = ({ season }) => {
                   <th style={{ ...thStyle, textAlign: 'center' }}>Triples</th>
                   <th style={{ ...thStyle, textAlign: 'center' }}>HRs</th>
                   <th style={{ ...thStyle, textAlign: 'center' }}>Dimes</th>
+                  <th style={{ ...thStyle, textAlign: 'center' }}>Errors</th>
                   <th style={{ ...thStyle, textAlign: 'center' }}>GP</th>
                 </tr>
               </thead>
@@ -147,6 +148,7 @@ const PlayersView = ({ season }) => {
                     <td style={{ ...cellStyle, textAlign: 'center' }}>{p.Triples ?? 0}</td>
                     <td style={{ ...cellStyle, textAlign: 'center' }}>{p.HRs ?? 0}</td>
                     <td style={{ ...cellStyle, textAlign: 'center' }}>{p.Dimes ?? 0}</td>
+                    <td style={{ ...cellStyle, textAlign: 'center' }}>{p.Errors ?? 0}</td>
                     <td style={{ ...cellStyle, textAlign: 'center' }}>{p.GP ?? 0}</td>
                   </tr>
                 ))}
@@ -213,6 +215,7 @@ const LEADER_CATEGORIES = [
   { title: 'Most HRs', key: 'HRs', format: (v) => v },
   { title: 'Most ABs', key: 'AtBats', format: (v) => v },
   { title: 'Most Dimes', key: 'Dimes', format: (v) => v },
+  { title: 'Most Errors', key: 'Errors', format: (v) => v },
 ];
 const LEADER_TOP_N = 3;
 

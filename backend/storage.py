@@ -178,7 +178,7 @@ def add_player(name, team_id):
             players = _load('players')
             new_player = {
                 'id': _next_id(players), 'name': name, 'team_id': team_id,
-                'Singles': 0, 'Doubles': 0, 'Triples': 0, 'Dimes': 0, 'HRs': 0,
+                'Singles': 0, 'Doubles': 0, 'Triples': 0, 'Dimes': 0, 'Errors': 0, 'HRs': 0,
                 'Avg': 0.0, 'GP': 0, 'AtBats': 0, 'hits': 0,
             }
             players.append(new_player)
@@ -186,7 +186,7 @@ def add_player(name, team_id):
         return new_player
     from models import db, Player
     p = Player(name=name, team_id=team_id, Singles=0, Doubles=0, Triples=0,
-               Dimes=0, HRs=0, Avg=0.0, GP=0, AtBats=0)
+               Dimes=0, Errors=0, HRs=0, Avg=0.0, GP=0, AtBats=0)
     db.session.add(p)
     db.session.commit()
     return {'id': p.id, 'name': p.name, 'team_id': p.team_id}
@@ -195,9 +195,10 @@ def add_player(name, team_id):
 def update_player(player_id, increments):
     """Apply incremental stat updates to a player.
 
-    increments: dict with optional int keys Singles, Doubles, Triples, Dimes, HRs, AtBats
+    increments: dict with optional int keys Singles, Doubles, Triples, Dimes, Errors, HRs, AtBats
                 and optional str key 'name'.
-    Increments GP by 1 per call. Recomputes hits and Avg.
+    Increments GP by 1 per call. Recomputes hits and Avg. Errors is a plain counter:
+    it does not affect AtBats, hits or Avg.
     Returns updated player dict or None if not found.
     """
     if STORAGE_BACKEND == 'json':
@@ -206,7 +207,7 @@ def update_player(player_id, increments):
             player = next((p for p in players if p['id'] == player_id), None)
             if player is None:
                 return None
-            for field in ('Singles', 'Doubles', 'Triples', 'Dimes', 'HRs', 'AtBats'):
+            for field in ('Singles', 'Doubles', 'Triples', 'Dimes', 'Errors', 'HRs', 'AtBats'):
                 player[field] = (player.get(field) or 0) + increments.get(field, 0)
             hits_inc = sum(increments.get(f, 0) for f in ('Singles', 'Doubles', 'Triples', 'HRs'))
             player['hits'] = (player.get('hits') or 0) + hits_inc
@@ -221,7 +222,7 @@ def update_player(player_id, increments):
     player = Player.query.get(player_id)
     if player is None:
         return None
-    for field in ('Singles', 'Doubles', 'Triples', 'Dimes', 'HRs', 'AtBats'):
+    for field in ('Singles', 'Doubles', 'Triples', 'Dimes', 'Errors', 'HRs', 'AtBats'):
         setattr(player, field, (getattr(player, field, 0) or 0) + increments.get(field, 0))
     hits_inc = sum(increments.get(f, 0) for f in ('Singles', 'Doubles', 'Triples', 'HRs'))
     player.hits = (player.hits or 0) + hits_inc
@@ -239,7 +240,7 @@ def _player_dict(p):
     return {
         'id': p.id, 'name': p.name, 'team_id': p.team_id,
         'Singles': p.Singles, 'Doubles': p.Doubles, 'Triples': p.Triples,
-        'Dimes': p.Dimes, 'HRs': p.HRs, 'GP': p.GP,
+        'Dimes': p.Dimes, 'Errors': p.Errors or 0, 'HRs': p.HRs, 'GP': p.GP,
         'AtBats': p.AtBats, 'Avg': p.Avg, 'hits': p.hits or 0,
     }
 
@@ -415,7 +416,7 @@ def archive_season(season):
                 season=season, original_player_id=p.id,
                 team_name=team_name_by_id.get(p.team_id, f"Team {p.team_id}"),
                 name=p.name, Singles=p.Singles or 0, Doubles=p.Doubles or 0,
-                Triples=p.Triples or 0, Dimes=p.Dimes or 0, HRs=p.HRs or 0,
+                Triples=p.Triples or 0, Dimes=p.Dimes or 0, Errors=p.Errors or 0, HRs=p.HRs or 0,
                 Avg=p.Avg or 0.0, GP=p.GP or 0, AtBats=p.AtBats or 0, hits=p.hits or 0,
             ))
         for r in results:
@@ -470,7 +471,7 @@ def get_archived_players(season, team_name=None):
     return [{
         'id': p.id, 'name': p.name, 'team_name': p.team_name,
         'Singles': p.Singles, 'Doubles': p.Doubles, 'Triples': p.Triples,
-        'Dimes': p.Dimes, 'HRs': p.HRs, 'GP': p.GP,
+        'Dimes': p.Dimes, 'Errors': p.Errors or 0, 'HRs': p.HRs, 'GP': p.GP,
         'AtBats': p.AtBats, 'Avg': p.Avg, 'hits': p.hits or 0,
     } for p in rows]
 

@@ -185,6 +185,7 @@ def update_player():
         'Doubles': to_int(data.get('Doubles', 0)),
         'Triples': to_int(data.get('Triples', 0)),
         'Dimes':   to_int(data.get('Dimes', 0)),
+        'Errors':  to_int(data.get('Errors', 0)),
         'HRs':     to_int(data.get('HRs', 0)),
         'AtBats':  to_int(data.get('AtBats', 0)),
     }

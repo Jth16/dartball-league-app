@@ -19,6 +19,7 @@ const buildRankMaps = (players = []) => {
     { key: 'Triples', getter: p => Number(p.Triples ?? p.triples ?? NaN) },
     { key: 'HRs', getter: p => Number(p.HRs ?? p.hrs ?? NaN) },
     { key: 'Dimes', getter: p => Number(p.Dimes ?? p.dimes ?? NaN) },
+    { key: 'Errors', getter: p => Number(p.Errors ?? p.errors ?? NaN) },
     { key: 'hits', getter: p => Number(p.hits ?? NaN) },
     { key: 'ABs', getter: p => Number(p.ABs ?? p.ABS ?? p.abs ?? p.atBats ?? p.at_bats ?? p.ab ?? p.AtBats ?? NaN) }
   ];
@@ -78,7 +79,8 @@ const Leaders = () => {
     { label: 'HRs', key: 'HRs' },
     { label: 'Hits', key: 'hits' },
     { label: 'ABs', key: 'ABs' },
-    { label: 'DMs', key: 'Dimes' }
+    { label: 'DMs', key: 'Dimes' },
+    { label: 'Errors', key: 'Errors' }
   ];
 
   useEffect(() => {
@@ -105,6 +107,7 @@ const Leaders = () => {
           Doubles: normalizeNum(p.Doubles),
           Triples: normalizeNum(p.Triples),
           Dimes: normalizeNum(p.Dimes),
+          Errors: normalizeNum(p.Errors),
           HRs: normalizeNum(p.HRs),
           // normalize various possible AB fields into ABs
           ABs: normalizeNum(p.ABs ?? p.ABS ?? p.abs ?? p.atBats ?? p.at_bats ?? p.ab ?? p.AtBats),
@@ -150,6 +153,7 @@ const Leaders = () => {
     { title: 'Most HRs', key: 'HRs', label: 'Most HRs', format: (v) => v },
     { title: 'Most ABs', key: 'ABs', label: 'Most ABs', format: (v) => v },
     { title: 'Most Dimes', key: 'Dimes', label: 'Most Dimes', format: (v) => v },
+    { title: 'Most Errors', key: 'Errors', label: 'Most Errors', format: (v) => v },
   ];
 
   const submenuStyle = {

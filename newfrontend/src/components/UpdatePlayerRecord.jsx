@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { fetchWithToken } from '../api';
 
-const ZERO_STATS = { Singles: 0, Doubles: 0, Triples: 0, Dimes: 0, HRs: 0, AtBats: 0 };
+const ZERO_STATS = { Singles: 0, Doubles: 0, Triples: 0, Dimes: 0, Errors: 0, HRs: 0, AtBats: 0 };
 
 const UpdatePlayerRecord = ({ teams }) => {
   const [selectedTeam, setSelectedTeam] = useState('');
@@ -299,7 +299,21 @@ const UpdatePlayerRecord = ({ teams }) => {
               style={inputStyle}
               disabled={!selectedPlayerId}
             />
-          </div>       
+          </div>
+
+          <div style={fieldWrapStyle}>
+            <label style={labelStyle}>Errors</label>
+            <input
+              type="number"
+              inputMode="numeric"
+              min="0"
+              step="1"
+              value={stats.Errors}
+              onChange={e => handleChange('Errors', e.target.value)}
+              style={inputStyle}
+              disabled={!selectedPlayerId}
+            />
+          </div>
 
           <div style={fieldWrapStyle}>
             <button
@@ -328,6 +342,7 @@ const UpdatePlayerRecord = ({ teams }) => {
               
               <th style={thStyle}>HRs</th>
              <th style={thStyle}>Dimes</th>
+              <th style={thStyle}>Errors</th>
               <th style={thStyle}>Hits</th>
               <th style={thStyle}>GP</th>
               <th style={thStyle}>Avg</th>
@@ -342,6 +357,7 @@ const UpdatePlayerRecord = ({ teams }) => {
               <td style={tdStyle}>{selectedPlayer.Triples ?? 0}</td>
               <td style={tdStyle}>{selectedPlayer.HRs ?? 0}</td>
             <td style={tdStyle}>{selectedPlayer.Dimes ?? 0}</td>
+              <td style={tdStyle}>{selectedPlayer.Errors ?? 0}</td>
               <td style={tdStyle}>{selectedPlayer.hits ?? 0}</td> 
               <td style={tdStyle}>{selectedPlayer.GP ?? 0}</td>
               <td style={tdStyle}>{typeof selectedPlayer.Avg === 'number' ? selectedPlayer.Avg.toFixed(3).replace(/^0\./, '.') : (selectedPlayer.Avg ?? '0')}</td>
