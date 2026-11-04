@@ -276,7 +276,7 @@ const Leaders = () => {
               <table className="data-table">
                 <thead>
                   <tr>
-                    <th style={{ ...thStyle, width: 36, textAlign: 'center' }}>#</th>
+                    <th style={{ ...thStyle, width: 56, textAlign: 'center', whiteSpace: 'nowrap' }}>#</th>
                     <th style={thStyle}>Name</th>
                     <th style={thStyle}>Team</th>
                     <th style={{ ...thStyle, textAlign: 'center', width: 80 }}>{tbl.title.includes('Avg') ? 'Avg' : 'Total'}</th>
@@ -292,7 +292,7 @@ const Leaders = () => {
 
                     return (
                       <tr key={p.id || idx} style={rowStyle}>
-                        <td style={{ ...tdStyle, textAlign: 'center' }}>{rankDisplay}</td>
+                        <td style={{ ...tdStyle, textAlign: 'center', whiteSpace: 'nowrap', minWidth: 56 }}>{rankDisplay}</td>
                         <td style={tdStyle}>{p.name}</td>
                         <td style={tdStyle}>{teamsMap[p.team_id] ?? p.team_id}</td>
                         <td style={{ ...tdStyle, textAlign: 'center' }}>{tbl.format(p[tbl.key] ?? 0)}</td>
