@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { printElement } from '../utils/print';
+import { fetchWithToken } from '../api';
 
-const API_BASE = process.env.REACT_APP_API_URL || 'https://dartball-backend-654879525708.us-central1.run.app';
 const TOP_N = 5;
 
 const normalizeNum = (v) => {
@@ -87,14 +87,14 @@ const Leaders = () => {
     let mounted = true;
     (async () => {
       try {
-        const teamsRes = await fetch(`${API_BASE}/routes/teams`);
+        const teamsRes = await fetchWithToken("/routes/teams", { method: "GET" });
         const teams = teamsRes.ok ? await teamsRes.json() : [];
         const map = {};
-        teams.forEach(t => { map[t.id] = t.name; });
+        teams.forEach(t => { map[String(t.id)] = t.name; });
         if (!mounted) return;
         setTeamsMap(map);
 
-        const playersRes = await fetch(`${API_BASE}/routes/players`);
+        const playersRes = await fetchWithToken("/routes/players", { method: "GET" });
         const allPlayers = playersRes.ok ? await playersRes.json() : [];
         if (!mounted) return;
 
@@ -294,7 +294,7 @@ const Leaders = () => {
                       <tr key={p.id || idx} style={rowStyle}>
                         <td style={{ ...tdStyle, textAlign: 'center', whiteSpace: 'nowrap', minWidth: 56 }}>{rankDisplay}</td>
                         <td style={tdStyle}>{p.name}</td>
-                        <td style={tdStyle}>{teamsMap[p.team_id] ?? p.team_id}</td>
+                        <td style={tdStyle}>{teamsMap[String(p.team_id)] ?? p.team_id}</td>
                         <td style={{ ...tdStyle, textAlign: 'center' }}>{tbl.format(p[tbl.key] ?? 0)}</td>
                       </tr>
                     );
