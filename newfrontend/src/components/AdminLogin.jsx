@@ -5,6 +5,7 @@ import TeamAdmin from './TeamAdmin';
 import AddPlayer from './AddPlayer';
 import DeleteTeam from './DeleteTeam';
 import UpdatePlayerRecord from './UpdatePlayerRecord';
+import EditPlayerStats from './EditPlayerStats';
 import { fetchWithToken } from '../api';
 import AddResult from './AddResult';
 import ArchiveSeasonAdmin from './ArchiveSeasonAdmin';
@@ -34,6 +35,8 @@ const AdminLogin = () => {
       </div>
       <hr />
       <UpdatePlayerRecord teams={teams} />
+      <hr />
+      <EditPlayerStats teams={teams} />
       <hr />
       <AddPlayer teams={teams} />
       <hr />

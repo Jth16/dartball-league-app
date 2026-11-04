@@ -236,6 +236,46 @@ def update_player(player_id, increments):
     return _player_dict(player)
 
 
+def set_player_stats(player_id, stats):
+    """Overwrite a player's stats with absolute values (not increments).
+
+    stats: dict with int keys Singles, Doubles, Triples, Dimes, Errors, HRs, AtBats, GP
+           and optional str key 'name'.
+    hits is recomputed as Singles + Doubles + Triples + HRs and Avg as hits / AtBats.
+    Returns updated player dict or None if not found.
+    """
+    fields = ('Singles', 'Doubles', 'Triples', 'Dimes', 'Errors', 'HRs', 'AtBats', 'GP')
+    if STORAGE_BACKEND == 'json':
+        with _lock:
+            players = _load('players')
+            player = next((p for p in players if p['id'] == player_id), None)
+            if player is None:
+                return None
+            for field in fields:
+                player[field] = stats.get(field, 0)
+            player['hits'] = sum(player[f] for f in ('Singles', 'Doubles', 'Triples', 'HRs'))
+            ab = player['AtBats']
+            player['Avg'] = round(float(player['hits']) / ab, 3) if ab > 0 else 0.0
+            if 'name' in stats:
+                player['name'] = stats['name']
+            _save('players', players)
+        return player
+    from models import db, Player
+    player = Player.query.get(player_id)
+    if player is None:
+        return None
+    for field in fields:
+        setattr(player, field, stats.get(field, 0))
+    player.hits = sum(getattr(player, f) for f in ('Singles', 'Doubles', 'Triples', 'HRs'))
+    ab = player.AtBats or 0
+    player.Avg = float(player.hits) / ab if ab > 0 else 0.0
+    if 'name' in stats:
+        player.name = stats['name']
+    db.session.add(player)
+    db.session.commit()
+    return _player_dict(player)
+
+
 def _player_dict(p):
     return {
         'id': p.id, 'name': p.name, 'team_id': p.team_id,

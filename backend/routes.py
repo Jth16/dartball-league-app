@@ -204,6 +204,40 @@ def update_player():
         return jsonify({'message': 'Internal server error', 'error': str(ex)}), 500
 
 
+@routes.route('/routes/admin/set_player_stats', methods=['POST', 'OPTIONS'])
+@cross_origin(headers=['Content-Type', 'X-Download-Token'])
+def set_player_stats():
+    if request.method == 'OPTIONS':
+        return ('', 200)
+
+    data = request.get_json(silent=True) or {}
+    player_id = data.get('player_id') or request.args.get('player_id')
+    if not player_id:
+        return jsonify({'message': 'player_id is required'}), 400
+
+    def to_int(v):
+        try:
+            return max(0, int(v))
+        except Exception:
+            return 0
+
+    stats = {f: to_int(data.get(f, 0))
+             for f in ('Singles', 'Doubles', 'Triples', 'Dimes', 'Errors', 'HRs', 'AtBats', 'GP')}
+    if 'name' in data:
+        stats['name'] = data['name']
+
+    try:
+        player = storage.set_player_stats(int(player_id), stats)
+        if player is None:
+            return jsonify({'message': 'player not found'}), 404
+        current_app.logger.info("set_player_stats id=%s hits=%s atbats=%s gp=%s",
+                                player['id'], player.get('hits'), player.get('AtBats'), player.get('GP'))
+        return jsonify({'message': 'Player stats saved', 'player': player}), 200
+    except Exception as ex:
+        current_app.logger.exception("set_player_stats failed: %s", ex)
+        return jsonify({'message': 'Internal server error', 'error': str(ex)}), 500
+
+
 @routes.route('/routes/admin/update_team_record', methods=['POST', 'OPTIONS'])
 @cross_origin(headers=['Content-Type', 'X-Download-Token'])
 def update_team_record():
